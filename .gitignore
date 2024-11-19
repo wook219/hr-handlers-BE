@@ -35,3 +35,16 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### macOS ###
+# General
+.DS_Store
+.DSStore
+..DSStore
+/.DS_Store
+/..DS_Store
+.AppleDouble
+.LSOverride
+
+### mapperImpl ###
+/src/main/generated/
