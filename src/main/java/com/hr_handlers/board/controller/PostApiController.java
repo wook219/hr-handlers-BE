@@ -26,12 +26,14 @@ public class PostApiController {
         return ResponseEntity.ok(posts);
     }
 
-    /*
+    // 특정 게시글 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<PostDetailResponseDto> getPostById(@PathVariable Long id) {
-        // 특정 게시글 상세 조회 로직
-        return ResponseEntity.ok().body();
+        PostDetailResponseDto postDetail = postService.getPostById(id);
+        return ResponseEntity.ok().body(postDetail);
     }
+
+    /*
 
     @PostMapping
     public ResponseEntity<PostDetailResponseDto> createPost(@RequestBody PostDetailResponseDto request) {
