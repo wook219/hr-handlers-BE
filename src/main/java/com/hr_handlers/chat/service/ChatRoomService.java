@@ -5,6 +5,7 @@ import com.hr_handlers.chat.dto.ChatRoomResponseDto;
 import com.hr_handlers.chat.entity.ChatRoom;
 import com.hr_handlers.chat.mapper.ChatRoomMapper;
 import com.hr_handlers.chat.repository.ChatRoomRepository;
+import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,19 +21,20 @@ public class ChatRoomService {
 
     // 채팅방 생성
     @Transactional
-    public ChatRoomResponseDto createChatRoom(ChatRoomRequestDto chatRoomRequestDto) {
+    public SuccessResponse<ChatRoomResponseDto> createChatRoom(ChatRoomRequestDto chatRoomRequestDto) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .title(chatRoomRequestDto.getTitle())
                 .userCount(0)
                 .build();
 
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
-        return chatRoomMapper.toDto(savedChatRoom);
+        ChatRoomResponseDto chatRoomResponseDto = chatRoomMapper.toDto(savedChatRoom);
+        return SuccessResponse.of("채팅방 생성 성공", chatRoomResponseDto);
     }
 
     // 채팅방 조회
     @Transactional(readOnly = true)
-    public List<ChatRoomResponseDto> getChatRooms() {
+    public SuccessResponse<List<ChatRoomResponseDto>> getChatRooms() {
         List<ChatRoom> chatRooms = chatRoomRepository.findAll();
 
         List<ChatRoomResponseDto> chatRoomResponseDtos = new ArrayList<>();
@@ -40,6 +42,6 @@ public class ChatRoomService {
         for (ChatRoom chatRoom : chatRooms) {
             chatRoomResponseDtos.add(chatRoomMapper.toDto(chatRoom));
         }
-        return chatRoomResponseDtos;
+        return SuccessResponse.of("생성된 채팅방 목록 조회 성공", chatRoomResponseDtos);
     }
 }

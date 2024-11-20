@@ -4,6 +4,7 @@ import com.hr_handlers.chat.dto.ChatRoomRequestDto;
 import com.hr_handlers.chat.dto.ChatRoomResponseDto;
 import com.hr_handlers.chat.service.ChatMessageService;
 import com.hr_handlers.chat.service.ChatRoomService;
+import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +24,13 @@ public class ChatRoomApiController {
 
     // 채팅방 생성
     @PostMapping
-    public ResponseEntity createChatRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
-        ChatRoomResponseDto chatRoomResponseDto = chatRoomService.createChatRoom(chatRoomRequestDto);
-
-        return ResponseEntity.ok()
-                .body(chatRoomResponseDto);
+    public SuccessResponse<ChatRoomResponseDto> createChatRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
+        return chatRoomService.createChatRoom(chatRoomRequestDto);
     }
 
     // 채팅방 목록 조회
     @GetMapping
-    public ResponseEntity<List<ChatRoomResponseDto>> getChatRooms() {
-        List<ChatRoomResponseDto> chatRooms = chatRoomService.getChatRooms();
-
-        return ResponseEntity.ok(chatRooms);
+    public SuccessResponse<List<ChatRoomResponseDto>> getChatRooms() {
+        return chatRoomService.getChatRooms();
     }
 }
