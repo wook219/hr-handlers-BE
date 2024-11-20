@@ -1,5 +1,6 @@
 package com.hr_handlers.board.entity;
 
+import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,10 +24,9 @@ public class ParentComment extends BaseTimeEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    /*
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;*/
+    private Employee employee;
 
     @Column(name = "comment_content", columnDefinition = "TEXT", nullable = false)
     private String commentContent;
