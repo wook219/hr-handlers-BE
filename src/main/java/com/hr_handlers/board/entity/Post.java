@@ -1,5 +1,6 @@
 package com.hr_handlers.board.entity;
 
+import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,10 +20,9 @@ public class Post extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
-    /*
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;*/
+    private Employee employee;
 
     @Column(name = "title", length = 50, nullable = false)
     private String title;
