@@ -21,4 +21,7 @@ public class ChatRoom extends BaseTimeEntity {
     @Column
     @Size(min = 1, max = 100)
     private String title;
+
+    @Column
+    private int user_count;
 }
