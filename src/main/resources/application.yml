@@ -10,5 +10,5 @@ spring:
         format_sql: 'true'
         auto_quote_keyword: 'true'
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: 'true'
