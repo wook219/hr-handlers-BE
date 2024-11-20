@@ -1,5 +1,6 @@
 //package com.hr_handlers.chat.entity;
 //
+//import jakarta.persistence.Column;
 //import jakarta.persistence.Embeddable;
 //import lombok.AllArgsConstructor;
 //import lombok.Getter;
@@ -15,7 +16,10 @@
 //@NoArgsConstructor
 //@AllArgsConstructor
 //public class ChatId implements Serializable {
+//    @Column(name = "chat_room_id")
 //    private Long chatRoomId;
+//
+//    @Column(name = "employee_id")
 //    private Long employeeId;
 //
 //    @Override
@@ -23,7 +27,7 @@
 //        if (this == o) return true;
 //        if (o == null || getClass() != o.getClass()) return false;
 //        ChatId chatId = (ChatId) o;
-//        return chatRoomId == chatId.chatRoomId && employeeId == chatId.employeeId;
+//        return chatRoomId.equals(chatId.chatRoomId) && employeeId.equals(chatId.employeeId);
 //    }
 //
 //    @Override
