@@ -1,5 +1,6 @@
 package com.hr_handlers.chat.entity;
 
+import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,7 +18,7 @@ public class ChatMessage extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     @NotEmpty
     private String message;
 
@@ -25,7 +26,7 @@ public class ChatMessage extends BaseTimeEntity {
     @JoinColumn(name = "chat_room_id", referencedColumnName = "id", nullable = false)
     private ChatRoom chatRoom;
 
-//    @ManyToOne
-//    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
-//    private Employee employee;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
+    private Employee employee;
 }
