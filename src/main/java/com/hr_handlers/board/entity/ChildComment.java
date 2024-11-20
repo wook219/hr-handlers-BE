@@ -21,9 +21,10 @@ public class ChildComment extends BaseTimeEntity {
     @JoinColumn(name = "pcomment_id", nullable = false)
     private ParentComment parentComment;
 
+    /*
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;
+    private Employee employee;*/
 
     @Column(name = "comment_content", columnDefinition = "TEXT", nullable = false)
     private String commentContent;
