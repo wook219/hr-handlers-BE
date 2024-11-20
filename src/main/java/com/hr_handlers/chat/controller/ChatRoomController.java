@@ -5,19 +5,16 @@ import com.hr_handlers.chat.dto.ChatRoomResponseDto;
 import com.hr_handlers.chat.service.ChatMessageService;
 import com.hr_handlers.chat.service.ChatRoomService;
 import com.hr_handlers.global.dto.SuccessResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/chatroom")
+@RequestMapping("/chatroom")
 @RequiredArgsConstructor
-public class ChatRoomApiController {
+public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate simpMessagingTemplate;
