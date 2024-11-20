@@ -4,14 +4,14 @@ import com.hr_handlers.chat.dto.ChatRoomRequestDto;
 import com.hr_handlers.chat.dto.ChatRoomResponseDto;
 import com.hr_handlers.chat.service.ChatMessageService;
 import com.hr_handlers.chat.service.ChatRoomService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/chatroom")
@@ -28,5 +28,13 @@ public class ChatRoomApiController {
 
         return ResponseEntity.ok()
                 .body(chatRoomResponseDto);
+    }
+
+    // 채팅방 목록 조회
+    @GetMapping
+    public ResponseEntity<List<ChatRoomResponseDto>> getChatRooms() {
+        List<ChatRoomResponseDto> chatRooms = chatRoomService.getChatRooms();
+
+        return ResponseEntity.ok(chatRooms);
     }
 }

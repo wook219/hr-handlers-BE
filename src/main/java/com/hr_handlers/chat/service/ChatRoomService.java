@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
@@ -25,5 +28,18 @@ public class ChatRoomService {
 
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
         return chatRoomMapper.toDto(savedChatRoom);
+    }
+
+    // 채팅방 조회
+    @Transactional(readOnly = true)
+    public List<ChatRoomResponseDto> getChatRooms() {
+        List<ChatRoom> chatRooms = chatRoomRepository.findAll();
+
+        List<ChatRoomResponseDto> chatRoomResponseDtos = new ArrayList<>();
+
+        for (ChatRoom chatRoom : chatRooms) {
+            chatRoomResponseDtos.add(chatRoomMapper.toDto(chatRoom));
+        }
+        return chatRoomResponseDtos;
     }
 }
