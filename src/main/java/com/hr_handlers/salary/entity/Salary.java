@@ -1,5 +1,6 @@
 package com.hr_handlers.salary.entity;
 
+import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,9 +22,9 @@ public class Salary extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "employee_id", nullable = false)
-//    private Employee employee;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
     @Column(name = "basic_salary", nullable = false)
     private int basicSalary;
