@@ -29,4 +29,8 @@ public class ChatMessage extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
     private Employee employee;
+
+    public void updateMessage(String message) {
+        this.message = message;
+    }
 }
