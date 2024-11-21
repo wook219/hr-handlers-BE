@@ -30,4 +30,6 @@ public class ChatRoomController {
     public SuccessResponse<List<ChatRoomResponseDto>> getChatRooms() {
         return chatRoomService.getChatRooms();
     }
+    
+    // TODO 채팅방 메시지 내역 조회
 }

@@ -20,7 +20,6 @@ public class ChatRoomService {
     private final ChatRoomMapper chatRoomMapper;
 
     // 채팅방 생성
-    @Transactional
     public SuccessResponse<ChatRoomResponseDto> createChatRoom(ChatRoomRequestDto chatRoomRequestDto) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .title(chatRoomRequestDto.getTitle())
@@ -33,7 +32,6 @@ public class ChatRoomService {
     }
 
     // 채팅방 조회
-    @Transactional(readOnly = true)
     public SuccessResponse<List<ChatRoomResponseDto>> getChatRooms() {
         List<ChatRoom> chatRooms = chatRoomRepository.findAll();
 
