@@ -1,7 +1,7 @@
 package com.hr_handlers.chat.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +16,10 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatId implements Serializable {
-    @Column(name = "chat_room_id")
+    @JoinColumn(name = "chat_room_id")
     private Long chatRoomId;
 
-    @Column(name = "employee_id")
+    @JoinColumn(name = "employee_id")
     private Long employeeId;
 
     @Override
