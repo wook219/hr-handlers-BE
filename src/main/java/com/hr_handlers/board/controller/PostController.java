@@ -7,6 +7,7 @@ import com.hr_handlers.board.dto.PostResponseDto;
 import com.hr_handlers.board.service.PostService;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/post")
+@Slf4j
 public class PostController {
 
     private final PostService postService;
@@ -35,22 +37,20 @@ public class PostController {
         return postService.createPost(request);
     }
 
-    /*
 
     // 특정 게시글 수정
     @PutMapping("/{id}")
-    public SuccessResponse<PostDetailResponseDto> updatePost(@PathVariable Long id, @RequestBody PostDetailResponseDto request) {
-        PostDetailResponseDto updatedPost = postService.updatePost(id, request);
-        return SuccessResponse.of("게시글 수정 성공", updatedPost);
+    public SuccessResponse<PostActionResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto request) {
+        return postService.updatePost(id, request);
     }
 
     // 특정 게시글 삭제
     @DeleteMapping("/{id}")
     public SuccessResponse<String> deletePost(@PathVariable Long id) {
-        postService.deletePost(id);
-        return SuccessResponse.of("게시글 삭제 성공", "게시글이 삭제되었습니다.");
+        return postService.deletePost(id);
     }
 
+    /*
     // 특정 해시태그로 게시글 조회
     @GetMapping(params = "hashtag")
     public SuccessResponse<List<PostResponseDto>> getPostsByHashtag(@RequestParam String hashtag) {
