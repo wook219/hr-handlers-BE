@@ -15,17 +15,15 @@ import lombok.Setter;
 @Table(name = "chat")
 public class Chat {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
     @EmbeddedId
     private ChatId id;
 
-    @ManyToOne
-    @JoinColumn(name = "id.chat_room_id", referencedColumnName = "id", nullable = false)
+    @MapsId("chatRoomId")
+    @ManyToOne(targetEntity=ChatRoom.class)
     private ChatRoom chatRoom;
 
-    @ManyToOne
-    @JoinColumn(name = "id.employee_id", referencedColumnName = "id", nullable = false)
+    @MapsId("employeeId")
+    @ManyToOne(targetEntity=Employee.class)
     private Employee employee;
+
 }
