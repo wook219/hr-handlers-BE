@@ -10,5 +10,5 @@ public interface ChatRoomMapper {
 
     // Entity -> DTO
     @Mapping(source = "id", target = "chatRoomId")  // id -> chatRoomId
-    ChatRoomResponseDto toDto(ChatRoom chatRoom); // title, userCount는 동일한 이름이므로 자동 매핑
+    ChatRoomResponseDto toChatRoomResponseDto(ChatRoom chatRoom); // title, userCount는 동일한 이름이므로 자동 매핑
 }

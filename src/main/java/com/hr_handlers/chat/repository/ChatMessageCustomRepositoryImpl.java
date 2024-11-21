@@ -4,6 +4,7 @@ import com.hr_handlers.chat.entity.ChatMessage;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,5 +24,16 @@ public class ChatMessageCustomRepositoryImpl implements ChatMessageCustomReposit
                         chatMessage.chatRoom.id.eq(chatRoomId)
                 )
                 .fetch();
+    }
+
+    @Override
+    @Transactional
+    public void deleteChatMessagesByChatRoomId(Long chatRoomId) {
+        jpaQueryFactory
+                .delete(chatMessage)
+                .where(
+                        chatMessage.chatRoom.id.eq(chatRoomId)
+                )
+                .execute();
     }
 }

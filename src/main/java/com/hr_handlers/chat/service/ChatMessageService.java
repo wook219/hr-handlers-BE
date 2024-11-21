@@ -47,6 +47,9 @@ public class ChatMessageService {
 
     // 메시지 조회
     public SuccessResponse<List<ChatMessageResponseDto>> getChatMessages(Long chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
         List<ChatMessage> chatMessages = chatMessageRepository.findChatMessagesByChatRoomId(chatRoomId);
         List<ChatMessageResponseDto> chatMessageResponseDtos = new ArrayList<>();
 
