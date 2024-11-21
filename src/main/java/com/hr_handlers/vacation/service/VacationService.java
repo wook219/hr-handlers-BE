@@ -89,6 +89,7 @@ public class VacationService {
         return year + randomPart;
     }
 
+    // 휴가 수정
     public SuccessResponse<VacationResponse> modifyVacation(Long id, VacationModifyRequest request){
         Vacation vacation = vacationRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
@@ -104,6 +105,7 @@ public class VacationService {
                 response);
     }
 
+    // 휴가 삭제
     public SuccessResponse<VacationResponse> deleteVacation(Long id){
         Vacation vacation = vacationRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
@@ -114,6 +116,17 @@ public class VacationService {
 
         return SuccessResponse.of(
                 "휴가 삭제 성공",
+                response);
+    }
+
+    // 잔여 휴가 일수 조회
+    public SuccessResponse<VacationBalanceResponse> getBalance(Long employeeId){
+        Long balance = vacationRepository.findEmployeeVacationBalanceById(employeeId);
+
+        VacationBalanceResponse response = new VacationBalanceResponse(balance);
+
+        return  SuccessResponse.of(
+                "잔여 휴가 조회 성공",
                 response);
     }
 }

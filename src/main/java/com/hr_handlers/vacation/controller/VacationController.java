@@ -46,4 +46,10 @@ public class VacationController {
     public SuccessResponse<VacationResponse> deleteVacation(@PathVariable("vacationId") Long id){
         return vacationService.deleteVacation(id);
     }
+
+    // 잔여 휴가 조회
+    @GetMapping("/balance/{employeeId}")
+    public SuccessResponse<VacationBalanceResponse> getBalance(@PathVariable("employeeId") Long employeeId){
+        return vacationService.getBalance(employeeId);
+    }
 }

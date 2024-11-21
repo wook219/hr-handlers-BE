@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.hr_handlers.employee.entity.QEmployee.employee;
 import static com.hr_handlers.vacation.entity.QVacation.vacation;
 
 @Repository
@@ -38,5 +39,16 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
                             .and(vacation.status.eq(VacationStatus.APPROVED))
                 )
                 .fetch();
+    }
+
+    @Override
+    public Long findEmployeeVacationBalanceById(Long employeeId) {
+        return jpaQueryFactory
+                .select(employee.leaveBalance)
+                .from(employee)
+                .where(
+                        employee.id.eq(employeeId)
+                )
+                .fetchOne();
     }
 }
