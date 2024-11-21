@@ -37,6 +37,7 @@ public class SalaryRepositoryCustomImpl implements SalaryRepositoryCustom {
                 .where(
                         salary.employee.id.eq(employeeId)
                 )
+                .orderBy(salary.payDate.asc())
                 .fetch();
     }
 }
