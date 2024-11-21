@@ -18,5 +18,4 @@ public class PostResponseDto {
     private String employeeName;
     private Timestamp createdAt;
     private List<String> hashtagContent;
-    private String imageUrl;
 }

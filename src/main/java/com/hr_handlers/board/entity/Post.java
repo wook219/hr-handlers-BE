@@ -40,5 +40,5 @@ public class Post extends BaseTimeEntity {
     private List<ParentComment> parentComments;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HashTag> hashTags;
+    private List<HashTag> hashtagContent;
 }
