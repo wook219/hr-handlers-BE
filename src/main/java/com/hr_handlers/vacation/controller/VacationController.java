@@ -13,22 +13,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/vacation")
+@RequestMapping("/vacation")
 @RequiredArgsConstructor
-public class VacationApiController {
+public class VacationController {
 
     private final VacationService vacationService;
 
+    // 휴가 승인 대기 목록 조회
     @GetMapping("/pending/{employeeId}")
     public SuccessResponse<List<PendingVacationResponse>> getPendingVacations(@PathVariable("employeeId") Long employeeId){
         return vacationService.getPendingVacations(employeeId);
     }
 
+    // 휴가 승인 확정 목록 조회
     @GetMapping("/approved/{employeeId}")
     public SuccessResponse<List<ApprovedVacationResponse>> getApprovedVacations(@PathVariable ("employeeId") Long employeeId){
         return vacationService.getApprovedVacations(employeeId);
     }
 
+    // 휴가 등록
     @PostMapping
     public SuccessResponse<VacationResponse> enrollVacation(@RequestBody VacationRequest request){
         return vacationService.enrollVacation(request);
