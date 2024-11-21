@@ -18,6 +18,9 @@ public enum ErrorCode {
     //게시판
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST-01", "해당 게시글을 찾을 수 없습니다."),
     POSTS_NOT_FOUND(HttpStatus.NOT_FOUND, "POST-02", "전체 게시글을 조회할 수 없습니다."),
+    POST_CREATE_FAILED(HttpStatus.NOT_FOUND, "POST-03", "게시글 생성에 실패했습니다."),
+    POST_UPDATE_FAILED(HttpStatus.NOT_FOUND, "POST-04", "게시글 수정에 실패했습니다."),
+    POST_DELETE_FAILED(HttpStatus.NOT_FOUND, "POST-05", "게시글 삭제에 실패했습니다."),
     //채팅
 
     //급여
