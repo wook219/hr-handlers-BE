@@ -15,9 +15,6 @@ import lombok.Setter;
 @Table(name = "chat")
 public class Chat {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
     @EmbeddedId
     private ChatId id;
 
