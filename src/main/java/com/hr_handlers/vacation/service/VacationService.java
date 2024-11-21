@@ -5,10 +5,7 @@ import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
-import com.hr_handlers.vacation.dto.ApprovedVacationResponse;
-import com.hr_handlers.vacation.dto.PendingVacationResponse;
-import com.hr_handlers.vacation.dto.VacationRequest;
-import com.hr_handlers.vacation.dto.VacationResponse;
+import com.hr_handlers.vacation.dto.*;
 import com.hr_handlers.vacation.entity.Vacation;
 import com.hr_handlers.vacation.entity.VacationStatus;
 import com.hr_handlers.vacation.mapper.VacationMapper;
@@ -78,11 +75,11 @@ public class VacationService {
 
         vacationRepository.save(vacation);
 
-        VacationResponse reponse = vacationMapper.toVacationResponse(vacation);
+        VacationResponse response = vacationMapper.toVacationResponse(vacation);
 
         return SuccessResponse.of(
                 "휴가 등록 성공",
-                reponse);
+                response);
     }
 
     // 문서 번호 생성 로직
@@ -90,5 +87,33 @@ public class VacationService {
         String year = String.valueOf(LocalDate.now().getYear()); // 현재 연도 가져오기
         String randomPart = UUID.randomUUID().toString().replace("-", "").substring(0, 8); // 랜덤 문자열 8자리
         return year + randomPart;
+    }
+
+    public SuccessResponse<VacationResponse> modifyVacation(Long id, VacationModifyRequest request){
+        Vacation vacation = vacationRepository.findById(id)
+                .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
+
+        vacation.modify(request);
+
+        vacationRepository.save(vacation);
+
+        VacationResponse response = vacationMapper.toVacationResponse(vacation);
+
+        return SuccessResponse.of(
+                "휴가 수정 성공",
+                response);
+    }
+
+    public SuccessResponse<VacationResponse> deleteVacation(Long id){
+        Vacation vacation = vacationRepository.findById(id)
+                .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
+
+        vacationRepository.delete(vacation);
+
+        VacationResponse response = vacationMapper.toVacationResponse(vacation);
+
+        return SuccessResponse.of(
+                "휴가 삭제 성공",
+                response);
     }
 }
