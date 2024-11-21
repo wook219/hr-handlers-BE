@@ -16,6 +16,7 @@ public class ChatMessageCustomRepositoryImpl implements ChatMessageCustomReposit
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    // 채팅방 메시지 내역 조회
     @Override
     public List<ChatMessage> findChatMessagesByChatRoomId(Long chatRoomId) {
         return jpaQueryFactory
@@ -26,6 +27,7 @@ public class ChatMessageCustomRepositoryImpl implements ChatMessageCustomReposit
                 .fetch();
     }
 
+    // 채팅 메시지 삭제
     @Override
     @Transactional
     public void deleteChatMessagesByChatRoomId(Long chatRoomId) {

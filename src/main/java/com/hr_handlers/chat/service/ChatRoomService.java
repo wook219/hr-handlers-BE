@@ -47,8 +47,8 @@ public class ChatRoomService {
 
     // 채팅방 삭제
     public SuccessResponse<Long> deleteChatRoom(Long chatRoomId) {
-        chatMessageRepository.deleteChatMessagesByChatRoomId(chatRoomId);
-        chatRoomRepository.deleteById(chatRoomId);
+        chatMessageRepository.deleteChatMessagesByChatRoomId(chatRoomId); // 채팅방 삭제 전 메시지 모두 삭제
+        chatRoomRepository.deleteById(chatRoomId); // 채팅방 삭제
         return SuccessResponse.of("채팅방 삭제 성공", chatRoomId);
     }
 }
