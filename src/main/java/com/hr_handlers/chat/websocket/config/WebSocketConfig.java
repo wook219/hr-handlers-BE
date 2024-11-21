@@ -12,9 +12,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // stomp 접속 주소 url = ws://localhost:8080/ws
         registry.addEndpoint("/ws") // socket 연결 엔드포인트
                 .setAllowedOrigins("*") // CORS 허용범위
                 .withSockJS(); // 브라우저 호환성을 위해
+        registry.addEndpoint("/ws") // 테스트용 연결 엔드포인트
+                .setAllowedOrigins("*");
     }
 
     @Override
