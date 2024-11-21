@@ -1,4 +1,4 @@
-package com.hr_handlers.salary.dto.response;
+package com.hr_handlers.admin.dto.salary.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-public class SalaryResponse {
+public class AdminSalaryResponse {
 
     private Long salayId;
     private Long employeeId;
