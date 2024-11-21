@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
@@ -17,7 +18,7 @@ public class SalaryResponse {
     private int basicSalary;
     private int deduction;
     private int netSalary;
-    private Timestamp payDate;
+    private LocalDate payDate;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
