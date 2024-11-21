@@ -29,6 +29,15 @@ public class VacationService {
 
     private final EmpRepository empRepository;
 
+    //휴가 상세 조회
+    public SuccessResponse<VacationDetailResponse> getVacationDetail(Long id){
+        VacationDetailResponse response = vacationRepository.findVacationDetailById(id);
+
+        return SuccessResponse.of(
+                "휴가 상세 조회 성공",
+                response);
+    }
+
     // 휴가 승인 대기 목록 조회
     public SuccessResponse<List<PendingVacationResponse>> getPendingVacations(Long employeeId){
         List<PendingVacationResponse> response = vacationRepository.findPendingVacations(employeeId);

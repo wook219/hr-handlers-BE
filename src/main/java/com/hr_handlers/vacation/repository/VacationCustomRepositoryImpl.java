@@ -2,6 +2,7 @@ package com.hr_handlers.vacation.repository;
 
 import com.hr_handlers.vacation.dto.ApprovedVacationResponse;
 import com.hr_handlers.vacation.dto.PendingVacationResponse;
+import com.hr_handlers.vacation.dto.VacationDetailResponse;
 import com.hr_handlers.vacation.entity.Vacation;
 import com.hr_handlers.vacation.entity.VacationStatus;
 import com.querydsl.core.types.Projections;
@@ -20,6 +21,27 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
 
     public VacationCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory){
         this.jpaQueryFactory = jpaQueryFactory;
+    }
+
+    @Override
+    public VacationDetailResponse findVacationDetailById(Long id) {
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                VacationDetailResponse.class,
+                                vacation.id,
+                                vacation.title,
+                                vacation.type,
+                                vacation.startDate,
+                                vacation.endDate,
+                                vacation.reason
+                        )
+                )
+                .from(vacation)
+                .where(
+                        vacation.id.eq(id)
+                )
+                .fetchOne();
     }
 
     @Override
