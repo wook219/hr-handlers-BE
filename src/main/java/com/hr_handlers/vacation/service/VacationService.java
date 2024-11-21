@@ -31,12 +31,7 @@ public class VacationService {
 
     // 휴가 승인 대기 목록 조회
     public SuccessResponse<List<PendingVacationResponse>> getPendingVacations(Long employeeId){
-        List<Vacation> vacations = vacationRepository.findPendingVacations(employeeId);
-
-        List<PendingVacationResponse> response = new ArrayList<>();
-        for (Vacation vacation : vacations) {
-            response.add(vacationMapper.toPendingVacationResponse(vacation));
-        }
+        List<PendingVacationResponse> response = vacationRepository.findPendingVacations(employeeId);
 
         return SuccessResponse.of(
                 "승인 대기 휴가 목록 조회 성공",
@@ -45,12 +40,7 @@ public class VacationService {
 
     // 휴가 승인 확정 목록 조회
     public SuccessResponse<List<ApprovedVacationResponse>> getApprovedVacations(Long employeeId){
-        List<Vacation> vacations = vacationRepository.findApprovedVacations(employeeId);
-
-        List<ApprovedVacationResponse> response = new ArrayList<>();
-        for (Vacation vacation : vacations) {
-            response.add(vacationMapper.toApprovedVacationResponse(vacation));
-        }
+        List<ApprovedVacationResponse> response = vacationRepository.findApprovedVacations(employeeId);
 
         return SuccessResponse.of(
                 "승인 확정 휴가 목록 조회 성공",
