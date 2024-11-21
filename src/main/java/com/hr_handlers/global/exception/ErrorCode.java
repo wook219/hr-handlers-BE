@@ -22,7 +22,10 @@ public enum ErrorCode {
     POST_UPDATE_FAILED(HttpStatus.NOT_FOUND, "POST-04", "게시글 수정에 실패했습니다."),
     POST_DELETE_FAILED(HttpStatus.NOT_FOUND, "POST-05", "게시글 삭제에 실패했습니다."),
     //채팅
-
+    CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT_ROOM-01", "해당 채팅방을 찾을 수 없습니다."),
+    CHAT_MESSAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT_MESSAGE-01", "해당 메시지를 찾을 수 없습니다."),
+    CHAT_MESSAGE_UPDATE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "CHAT_MESSAGE-02", "메시지 수정 권한이 없습니다."),
+    CHAT_MESSAGE_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "CHAT_MESSAGE-03", "메시지 삭제 권한이 없습니다."),
     //급여
 
     //사원
