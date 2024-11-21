@@ -1,5 +1,7 @@
 package com.hr_handlers.chat.controller;
 
+import com.hr_handlers.chat.dto.ChatMessageRequestDto;
+import com.hr_handlers.chat.dto.ChatMessageResponseDto;
 import com.hr_handlers.chat.dto.ChatRoomRequestDto;
 import com.hr_handlers.chat.dto.ChatRoomResponseDto;
 import com.hr_handlers.chat.service.ChatMessageService;
@@ -29,5 +31,17 @@ public class ChatRoomController {
     @GetMapping
     public SuccessResponse<List<ChatRoomResponseDto>> getChatRooms() {
         return chatRoomService.getChatRooms();
+    }
+    
+    // 채팅방 메시지 내역 조회
+    @GetMapping("/{chatRoomId}")
+    public SuccessResponse<List<ChatMessageResponseDto>> getChatMessages(@PathVariable("chatRoomId") Long chatRoomId) {
+        return chatMessageService.getChatMessages(chatRoomId);
+    }
+
+    // 채팅방 삭제
+    @DeleteMapping("/{chatRoomId}")
+    public SuccessResponse<Long> deleteChatRoom(@PathVariable("chatRoomId") Long chatRoomId) {
+        return chatRoomService.deleteChatRoom(chatRoomId);
     }
 }
