@@ -1,6 +1,8 @@
 package com.hr_handlers.board.controller;
 
+import com.hr_handlers.board.dto.PostActionResponseDto;
 import com.hr_handlers.board.dto.PostDetailResponseDto;
+import com.hr_handlers.board.dto.PostRequestDto;
 import com.hr_handlers.board.dto.PostResponseDto;
 import com.hr_handlers.board.service.PostService;
 import com.hr_handlers.global.dto.SuccessResponse;
@@ -27,13 +29,13 @@ public class PostController {
         return postService.getPostById(id);
     }
 
-    /*
     // 게시글 생성
     @PostMapping
-    public SuccessResponse<PostDetailResponseDto> createPost(@RequestBody PostDetailResponseDto request) {
-        PostDetailResponseDto createdPost = postService.createPost(request);
-        return SuccessResponse.of("게시글 생성 성공", createdPost);
+    public SuccessResponse<PostActionResponseDto> createPost(@RequestBody PostRequestDto request) {
+        return postService.createPost(request);
     }
+
+    /*
 
     // 특정 게시글 수정
     @PutMapping("/{id}")
