@@ -16,6 +16,12 @@ public class VacationController {
 
     private final VacationService vacationService;
 
+    // 휴가 상세 조회
+    @GetMapping("/{vacationId}")
+    public SuccessResponse<VacationDetailResponse> getVacationDetail(@PathVariable("vacationId") Long id){
+        return vacationService.getVacationDetail(id);
+    }
+
     // 휴가 승인 대기 목록 조회
     @GetMapping("/pending/{employeeId}")
     public SuccessResponse<List<PendingVacationResponse>> getPendingVacations(@PathVariable("employeeId") Long employeeId){
@@ -45,5 +51,11 @@ public class VacationController {
     @DeleteMapping("/{vacationId}")
     public SuccessResponse<VacationResponse> deleteVacation(@PathVariable("vacationId") Long id){
         return vacationService.deleteVacation(id);
+    }
+
+    // 잔여 휴가 조회
+    @GetMapping("/balance/{employeeId}")
+    public SuccessResponse<VacationBalanceResponse> getBalance(@PathVariable("employeeId") Long employeeId){
+        return vacationService.getBalance(employeeId);
     }
 }
