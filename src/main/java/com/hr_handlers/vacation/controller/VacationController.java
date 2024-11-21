@@ -1,10 +1,7 @@
 package com.hr_handlers.vacation.controller;
 
 import com.hr_handlers.global.dto.SuccessResponse;
-import com.hr_handlers.vacation.dto.ApprovedVacationResponse;
-import com.hr_handlers.vacation.dto.PendingVacationResponse;
-import com.hr_handlers.vacation.dto.VacationRequest;
-import com.hr_handlers.vacation.dto.VacationResponse;
+import com.hr_handlers.vacation.dto.*;
 import com.hr_handlers.vacation.service.VacationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +32,18 @@ public class VacationController {
     @PostMapping
     public SuccessResponse<VacationResponse> enrollVacation(@RequestBody VacationRequest request){
         return vacationService.enrollVacation(request);
+    }
+
+    // 휴가 수정
+    @PutMapping("/{vacationId}")
+    public SuccessResponse<VacationResponse> modifyVacation(@PathVariable("vacationId") Long id,
+                                                            @RequestBody VacationModifyRequest request){
+        return vacationService.modifyVacation(id, request);
+    }
+
+    // 휴가 삭제
+    @DeleteMapping("/{vacationId}")
+    public SuccessResponse<VacationResponse> deleteVacation(@PathVariable("vacationId") Long id){
+        return vacationService.deleteVacation(id);
     }
 }
