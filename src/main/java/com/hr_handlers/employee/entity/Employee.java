@@ -18,8 +18,11 @@ public class Employee extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false)
-    @Comment(value = "사원 번호(아이디)")
     private Long id;
+
+    @Column(name = "emp_no", nullable = false)
+    @Comment(value = "사원 번호(아이디)")
+    private String empNo;
 
     @Column(name = "position", nullable = false)
     @Comment(value = "직급")
@@ -37,7 +40,7 @@ public class Employee extends BaseTimeEntity {
     @Comment(value = "비밀번호")
     private String password;
 
-    @Column(name = "phone", nullable = false, length = 15)
+    @Column(name = "phone", nullable = false, length = 13)
     @Comment(value = "연락처")
     private String phone;
 
@@ -46,7 +49,7 @@ public class Employee extends BaseTimeEntity {
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "contract_type", nullable = false)
+    @Column(name = "contract_type", nullable = true)
     @Comment(value = "계약형태")
     private ContractType contractType;
 
