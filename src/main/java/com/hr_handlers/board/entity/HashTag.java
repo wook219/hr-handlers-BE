@@ -1,5 +1,6 @@
 package com.hr_handlers.board.entity;
 
+import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,8 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "hash_tag")
-public class HashTag {
+@ToString(exclude = {"post"}) // 순환 참조 방지
+public class HashTag extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

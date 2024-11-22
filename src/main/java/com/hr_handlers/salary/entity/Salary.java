@@ -1,5 +1,6 @@
 package com.hr_handlers.salary.entity;
 
+import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Entity
 @Builder
@@ -21,9 +22,9 @@ public class Salary extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "employee_id", nullable = false)
-//    private Employee employee;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", nullable = false)
+    private Employee employee;
 
     @Column(name = "basic_salary", nullable = false)
     private int basicSalary;
@@ -34,6 +35,6 @@ public class Salary extends BaseTimeEntity {
     @Column(name = "net_salary", nullable = false)
     private int netSalary;
 
-    @Column(name = "pay_date", nullable = false, columnDefinition = "TIMESTAMP")
-    private Timestamp payDate;
+    @Column(name = "pay_date", nullable = false, columnDefinition = "DATE")
+    private LocalDate payDate;
 }

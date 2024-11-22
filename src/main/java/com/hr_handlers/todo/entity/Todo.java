@@ -30,13 +30,13 @@ public class Todo {
     private String content;
 
     @Column(name = "start_time", nullable = false)
-    private Timestamp start_time;
+    private Timestamp startTime;
 
     @Column(name = "end_time", nullable = false)
-    private Timestamp end_time;
+    private Timestamp endTime;
 
     @Column(name = "employee_id", nullable = false)
-    private Long employee_id;
+    private Long employeeId;
 
 //    @ManyToOne
 //    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)

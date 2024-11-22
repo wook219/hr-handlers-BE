@@ -43,7 +43,7 @@ dependencies {
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 	// security
-	// implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	// swagger
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.4.0'
@@ -53,6 +53,7 @@ dependencies {
 
 	// websocket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework:spring-messaging'
 
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
@@ -64,10 +65,14 @@ dependencies {
 	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	// developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
 	// mysql
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// excel
+	implementation 'org.apache.poi:poi:5.2.3'        // HSSF (for .xls files)
+	implementation 'org.apache.poi:poi-ooxml:5.2.3'  // XSSF (for .xlsx files)
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
