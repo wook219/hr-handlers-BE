@@ -26,4 +26,9 @@ public class ChatRoom extends BaseTimeEntity {
 
     @Column
     private int userCount;
+
+    // 참여 인원 수 변경
+    public void updateUserCount(int userCount) {
+        this.userCount = userCount;
+    }
 }
