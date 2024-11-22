@@ -2,10 +2,7 @@ package com.hr_handlers.chat.entity;
 
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -13,6 +10,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Embeddable
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatId implements Serializable {
