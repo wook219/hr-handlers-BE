@@ -1,11 +1,9 @@
 package com.hr_handlers.chat.controller;
 
-import com.hr_handlers.chat.dto.ChatMessageRequestDto;
-import com.hr_handlers.chat.dto.ChatMessageResponseDto;
-import com.hr_handlers.chat.dto.ChatRoomRequestDto;
-import com.hr_handlers.chat.dto.ChatRoomResponseDto;
+import com.hr_handlers.chat.dto.*;
 import com.hr_handlers.chat.service.ChatMessageService;
 import com.hr_handlers.chat.service.ChatRoomService;
+import com.hr_handlers.chat.service.ChatService;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -20,6 +18,7 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final ChatService chatService;
 
     // 채팅방 생성
     @PostMapping
@@ -37,6 +36,12 @@ public class ChatRoomController {
     @GetMapping("/{chatRoomId}")
     public SuccessResponse<List<ChatMessageResponseDto>> getChatMessages(@PathVariable("chatRoomId") Long chatRoomId) {
         return chatMessageService.getChatMessages(chatRoomId);
+    }
+
+    // 채팅방 참여
+    @PostMapping("/{chatRoomId}")
+    public SuccessResponse<ChatResponseDto> enterChat(@PathVariable("chatRoomId") Long chatRoomId, @RequestBody ChatRequestDto chatRequestDto) {
+        return chatService.enterChatRoom(chatRoomId, chatRequestDto.getEmployeeId());
     }
 
     // 채팅방 삭제
