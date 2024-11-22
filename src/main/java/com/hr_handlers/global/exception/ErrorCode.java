@@ -29,7 +29,14 @@ public enum ErrorCode {
     //급여
 
     //사원
-    EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "EMPLOYEE-01", "사원을 찾을 수 없습니다.");
+    EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "EMPLOYEE-01", "사원을 찾을 수 없습니다."),
+    EMPLOYEE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"EMPLOYEE-02", "사원 번호가 이미 존재합니다."),
+
+    // 로그인
+    INVALID_LOGIN_REQUEST(HttpStatus.BAD_REQUEST, "LOGIN-01", "잘못된 로그인 요청입니다."),
+
+    // JWT
+    INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "JWT-01", "유효하지 않은 Access Token입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
