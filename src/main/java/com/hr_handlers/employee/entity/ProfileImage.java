@@ -17,7 +17,7 @@ public class ProfileImage extends BaseTimeEntity {
     private Long id;
 
     @Column(name = "profile_image_url", nullable = false, length = 1000)
-    @Comment(value = "이미지 URL")
+    @Comment(value = "프로필 이미지 URL")
     private String profileImageUrl;
 
     @OneToOne(mappedBy = "profileImage", fetch = FetchType.LAZY)
