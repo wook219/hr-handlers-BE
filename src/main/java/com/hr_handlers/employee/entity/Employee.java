@@ -63,7 +63,7 @@ public class Employee extends BaseTimeEntity {
 
     @Column(name = "leave_balance", nullable = false, columnDefinition = "DECIMAL(2,1)")
     @Comment(value = "휴가잔여일수")
-    private double leaveBalance; // TODO: 음수 허용 x
+    private double leaveBalance;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

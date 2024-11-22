@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public class EmpRegisterDto {
     private String empNo;
     private String password;
-    private Long leaveBalance;
+    private double leaveBalance;
     private Role role;
     private ContractType contractType;
     private LocalDate joinDate;
