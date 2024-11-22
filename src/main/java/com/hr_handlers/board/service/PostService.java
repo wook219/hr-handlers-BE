@@ -33,6 +33,9 @@ public class PostService {
     private final PostMapper postMapper;
     private final EmpRepository empRepository;
 
+    /**
+     * 회원 기능 추가 이후 사용자 구분 예정
+     * **/
     // 게시글 목록 조회
     public SuccessResponse<List<PostResponseDto>> getAllPosts() {
         List<Post> posts = postRepository.findAll();
@@ -117,7 +120,6 @@ public class PostService {
 
         for (String newContent : newHashtagContents) {
             if (existingHashTagMap.containsKey(newContent)) {
-                // 이미 존재하는 해시태그는 그대로 둠
                 existingHashTagMap.remove(newContent);
             } else {
                 // 새로 추가할 해시태그 생성
@@ -129,7 +131,7 @@ public class PostService {
             }
         }
 
-        // DTO에 없는 기존 해시태그는 제거
+        // DTO에 남아있는 기존 해시태그는 제거
         for (HashTag orphanHashTag : existingHashTagMap.values()) {
             existingHashTags.remove(orphanHashTag);
         }

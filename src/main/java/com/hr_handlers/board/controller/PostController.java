@@ -20,6 +20,9 @@ public class PostController {
 
     private final PostService postService;
 
+    /**
+     * 회원 기능 추가 이후 사용자 구분 예정
+     ***/
     @GetMapping
     public SuccessResponse<List<PostResponseDto>> getAllPosts() {
         return postService.getAllPosts();
