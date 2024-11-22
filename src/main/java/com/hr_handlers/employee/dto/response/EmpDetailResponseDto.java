@@ -1,4 +1,4 @@
-package com.hr_handlers.employee.dto;
+package com.hr_handlers.employee.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
