@@ -3,6 +3,7 @@ package com.hr_handlers.vacation.controller;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.vacation.dto.*;
 import com.hr_handlers.vacation.service.VacationService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class VacationController {
 
     // 휴가 등록
     @PostMapping
-    public SuccessResponse<VacationResponse> enrollVacation(@RequestBody VacationRequest request){
+    public SuccessResponse<VacationResponse> enrollVacation(@RequestBody @Valid VacationRequest request){
         return vacationService.enrollVacation(request);
     }
 
