@@ -12,7 +12,7 @@ public enum ErrorCode {
     VACATION_NOT_FOUND(HttpStatus.NOT_FOUND, "VACATION-01", "해당 휴가를 조회할 수 없습니다."),
 
     //근태
-
+    ATTENDANCE_NOT_FOUND(HttpStatus.NOT_FOUND, "ATTENDANCE-01", "해당 출근 기록을 찾을 수 없습니다."),
     //일정
     TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO-01", "해당 일정을 찾을 수 없습니다."),
     //게시판
