@@ -120,7 +120,7 @@ public class VacationService {
 
     // 잔여 휴가 일수 조회
     public SuccessResponse<VacationBalanceResponse> getBalance(Long employeeId){
-        Long balance = vacationRepository.findEmployeeVacationBalanceById(employeeId);
+        Double balance = vacationRepository.findEmployeeVacationBalanceById(employeeId);
 
         VacationBalanceResponse response = new VacationBalanceResponse(balance);
 
