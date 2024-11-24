@@ -25,10 +25,10 @@ public class Attendance {
     private AttendanceStatus status;
 
     @Column(name = "check_in_time", nullable = false)
-    private Timestamp check_in_time;
+    private Timestamp checkInTime;
 
     @Column(name = "check_out_time")
-    private Timestamp check_out_time;
+    private Timestamp checkOutTime;
 
     @Column(name = "employee_id", nullable = false)
     private Long employee_id;

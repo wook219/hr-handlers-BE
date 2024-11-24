@@ -1,11 +1,10 @@
 package com.hr_handlers.vacation.entity;
 
+import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
+import com.hr_handlers.vacation.dto.VacationModifyRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Timestamp;
 
@@ -22,7 +21,7 @@ public class Vacation extends BaseTimeEntity {
     private Long id;
 
     @Column(name = "doc_num", nullable = false)
-    private String doc_num;
+    private String docNum;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -32,10 +31,10 @@ public class Vacation extends BaseTimeEntity {
     private VacationType type;
 
     @Column(name = "start_date", nullable = false)
-    private Timestamp start_date;
+    private Timestamp startDate;
 
     @Column(name = "end_date", nullable = false)
-    private Timestamp end_date;
+    private Timestamp endDate;
 
     @Column(name = "reason", nullable = false)
     private String reason;
@@ -45,15 +44,24 @@ public class Vacation extends BaseTimeEntity {
     private VacationStatus status;
 
     @Column(name = "approved_at")
-    private Timestamp approved_at;
+    private Timestamp approvedAt;
 
     @Column(name = "approver")
     private String approver;
 
-    @Column(name = "employee_id", nullable = false)
-    private Long employee_id;
+//    @Column(name = "employee_id", nullable = false)
+//    private Long employee_id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
+    private Employee employee;
+
+
+    public void modify(VacationModifyRequest request){
+        this.title = request.getTitle();
+        this.type = request.getType();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
+        this.reason = request.getReason();
+    }
 }

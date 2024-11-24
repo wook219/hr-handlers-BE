@@ -1,5 +1,6 @@
 package com.hr_handlers.board.entity;
 
+import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,16 +14,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"parentComments", "hashtagContent"})
 public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    /*
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
-    private Employee employee;*/
+    private Employee employee;
 
     @Column(name = "title", length = 50, nullable = false)
     private String title;
@@ -40,5 +41,5 @@ public class Post extends BaseTimeEntity {
     private List<ParentComment> parentComments;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<HashTag> hashTags;
+    private List<HashTag> hashtagContent;
 }
