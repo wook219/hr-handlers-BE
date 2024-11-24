@@ -87,7 +87,7 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
     }
 
     @Override
-    public Long findEmployeeVacationBalanceById(Long employeeId) {
+    public Double findEmployeeVacationBalanceById(Long employeeId) {
         return jpaQueryFactory
                 .select(employee.leaveBalance)
                 .from(employee)

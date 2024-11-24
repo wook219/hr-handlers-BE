@@ -21,5 +21,5 @@ public interface VacationCustomRepository {
     List<ApprovedVacationResponse> findApprovedVacations(Long employeeId);
 
     // 사원 잔여 휴가 일수 조회
-    Long findEmployeeVacationBalanceById(Long employeeId);
+    Double findEmployeeVacationBalanceById(Long employeeId);
 }
