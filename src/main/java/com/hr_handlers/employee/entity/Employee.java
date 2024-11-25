@@ -77,4 +77,17 @@ public class Employee extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = true)
     private Department department;
+
+    // Update 메서드
+    public void update(String email, String phone, String introduction, String profileImage) {
+        this.email = email;
+        this.phone = phone;
+        this.introduction = introduction;
+
+        if (profileImage != null) {
+            this.profileImage = ProfileImage.builder()
+                    .profileImageUrl(profileImage)
+                    .build();
+        }
+    }
 }

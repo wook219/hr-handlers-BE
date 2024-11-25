@@ -1,14 +1,12 @@
 package com.hr_handlers.employee.controller;
 
+import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
 import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
 import com.hr_handlers.employee.service.EmpService;
 
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,10 +22,9 @@ public class EmpController {
     }
 
     // 사원 수정
-
-
-
-
-
-
+    @PutMapping("/{empNo}")
+    public SuccessResponse<Void> modifyEmpDetail(@PathVariable("empNo") String empNo,
+                                                 @RequestBody EmpUpdateRequestDto updateRequest){
+        return empService.updateEmpDetail(empNo, updateRequest);
+    }
 }
