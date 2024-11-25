@@ -69,7 +69,6 @@ public class ChatService {
     }
 
     // 채팅방 탈퇴
-    // 탈퇴하면서 채팅방 참여 인원도 감소시킬 것
     public SuccessResponse<Long> exitChatRoom(Long chatRoomId, Long employeeId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_ROOM_NOT_FOUND));
@@ -84,7 +83,6 @@ public class ChatService {
             throw new GlobalException(ErrorCode.CHAT_NOT_FOUND); 
         }
 
-        chatRoomRepository.save(chatRoom);
         chatRepository.delete(chat);
 
         return SuccessResponse.of("채팅방 퇴장에 성공했습니다.", chatRoomId);
