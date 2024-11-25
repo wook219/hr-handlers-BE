@@ -29,4 +29,11 @@ public class AdminEmpController {
     // 사원 전체 조회
 
 
+    // 사원 수정
+
+
+
+    // 사원 삭제
+
+
 }
