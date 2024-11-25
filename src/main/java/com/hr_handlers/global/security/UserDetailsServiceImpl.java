@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final EmpRepository empRepository;
 
-    // 사원은 empNo를 id로 로그인
+    // 사원은 empNo로 로그인
     @Override
     public UserDetails loadUserByUsername(String empNo) throws UsernameNotFoundException {
             Employee employee = empRepository.findByEmpNo(empNo)
