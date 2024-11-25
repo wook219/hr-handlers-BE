@@ -1,6 +1,7 @@
 package com.hr_handlers.admin.controller;
 
 import com.hr_handlers.admin.dto.employee.EmpRegisterDto;
+import com.hr_handlers.admin.dto.employee.request.AdminEmpUpdateRequestDto;
 import com.hr_handlers.admin.service.AdminEmpService;
 import com.hr_handlers.global.dto.SuccessResponse;
 import jakarta.validation.Valid;
@@ -27,12 +28,15 @@ public class AdminEmpController {
 
 
     // 사원 수정
+    @PatchMapping("/{empNo}")
+    public SuccessResponse<Void> updateEmpDetail(@PathVariable("empNo") String empNo,
+                                                 @RequestBody AdminEmpUpdateRequestDto updateRequest){
+        return adminEmpService.updateEmpDetail(empNo, updateRequest);
+    }
 
     // 사원 삭제
     @DeleteMapping("/{empNo}")
     public SuccessResponse<Void> deleteEmp(@PathVariable("empNo") String empNo){
         return adminEmpService.delete(empNo);
     }
-
-
 }

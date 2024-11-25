@@ -1,6 +1,8 @@
 package com.hr_handlers.admin.service;
 
 import com.hr_handlers.admin.dto.employee.EmpRegisterDto;
+import com.hr_handlers.admin.dto.employee.request.AdminEmpUpdateRequestDto;
+import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.mapper.EmpMapper;
 import com.hr_handlers.employee.repository.EmpRepository;
@@ -38,5 +40,21 @@ public class AdminEmpService {
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
         empRepository.delete(employee);
         return SuccessResponse.of("사원 삭제 성공", null);
+    }
+
+    public SuccessResponse<Void> updateEmpDetail(String empNo, AdminEmpUpdateRequestDto updateRequest) {
+        Employee employee = empRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+
+        employee.adminUpdate(
+                updateRequest.getEmpNo(),
+                updateRequest.getContractType(),
+                updateRequest.getPosition(),
+                updateRequest.getLeaveBalance(),
+                updateRequest.getDepartmentName()
+        );
+        empRepository.save(employee);
+
+        return SuccessResponse.of("사원 정보 수정", null);
     }
 }

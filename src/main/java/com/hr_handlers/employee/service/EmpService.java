@@ -32,7 +32,7 @@ public class EmpService {
         Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
-        employee.update(
+        employee.empUpdate(
                 updateRequest.getEmail(),
                 updateRequest.getPhone(),
                 updateRequest.getIntroduction(),

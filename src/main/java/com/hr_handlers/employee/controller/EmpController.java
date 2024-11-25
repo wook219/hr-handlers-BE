@@ -22,7 +22,7 @@ public class EmpController {
     }
 
     // 사원 수정
-    @PutMapping("/{empNo}")
+    @PatchMapping("/{empNo}")
     public SuccessResponse<Void> modifyEmpDetail(@PathVariable("empNo") String empNo,
                                                  @RequestBody EmpUpdateRequestDto updateRequest){
         return empService.updateEmpDetail(empNo, updateRequest);
