@@ -16,6 +16,7 @@ public class JwtUtil {
 
     private SecretKey secretKey;
 
+    // 비밀키 가져오기
     public JwtUtil(@Value("${jwt.secret}") String secret) {
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm());
@@ -34,13 +35,12 @@ public class JwtUtil {
     }
 
     public String createToken(String empNo, String role, Long expiredMs) {
-
         return Jwts.builder()
                 .claim("empNo", empNo)
                 .claim("role", role)
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .issuedAt(new Date(System.currentTimeMillis())) // 발급 시간
+                .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 만료 시간
+                .signWith(secretKey, SignatureAlgorithm.HS256) // secretKey를 이용해 서명
                 .compact();
     }
 }

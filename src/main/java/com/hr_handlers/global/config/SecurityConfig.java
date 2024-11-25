@@ -79,7 +79,7 @@ public class SecurityConfig {
         // 경로별 접근 제어
         http.authorizeHttpRequests((request) ->
                 request
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/login", "/emp/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // Swagger 문서 관련 경로 전체 접근 허용
                         // .requestMatchers("/swagger-ui/**").permitAll()

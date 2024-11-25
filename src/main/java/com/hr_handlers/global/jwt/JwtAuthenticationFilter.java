@@ -2,6 +2,8 @@ package com.hr_handlers.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hr_handlers.employee.dto.request.LoginRequestDto;
+import com.hr_handlers.global.exception.ErrorCode;
+import com.hr_handlers.global.exception.GlobalException;
 import com.hr_handlers.global.security.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,40 +33,42 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            // JSON 데이터 읽기
             ObjectMapper objectMapper = new ObjectMapper();
             LoginRequestDto loginRequestDto = objectMapper.readValue(request.getInputStream(), LoginRequestDto.class);
 
-            // empNo 값이 null인지 확인
             if (loginRequestDto.getEmpNo() == null || loginRequestDto.getEmpNo().isEmpty()) {
-                throw new IllegalArgumentException("empNo 값이 없습니다.");
+                throw new GlobalException(ErrorCode.INVALID_LOGIN_REQUEST);
             }
 
-            // empNo와 password 추출
             String empNo = loginRequestDto.getEmpNo();
             String password = loginRequestDto.getPassword();
 
-            // 토큰 생성 및 인증 요청
+            // 토큰 생성 인증 요청
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(empNo, password, null);
             return authenticationManager.authenticate(authToken);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to parse login request", e);
+            throw new GlobalException(ErrorCode.INVALID_LOGIN_REQUEST);
         }
     }
 
-    // 인증 성공 처리 -> JWT를 생성하여 클라이언트에 반환
+    // 인증 성공 처리 : JWT 토큰 생성
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
         log.info("로그인 성공, Jwt 발급 시작");
+
+        // 인증 사용자 가져오기
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         String empNo = userDetails.getUsername();
 
+        // 권한 정보 추출
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
+
+        // 토큰 생성
         String token = jwtUtil.createToken(empNo, role, 10*60*60*1000L); // 시간 설정 필요
 
         response.addHeader("Authorization", "Bearer " +token);
