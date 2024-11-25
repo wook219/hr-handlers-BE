@@ -25,7 +25,6 @@ public class ChatRoomService {
     public SuccessResponse<ChatRoomResponseDto> createChatRoom(ChatRoomRequestDto chatRoomRequestDto) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .title(chatRoomRequestDto.getTitle())
-                .userCount(0)
                 .build();
 
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
