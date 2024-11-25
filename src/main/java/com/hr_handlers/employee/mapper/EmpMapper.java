@@ -1,6 +1,7 @@
 package com.hr_handlers.employee.mapper;
 
 import com.hr_handlers.admin.dto.employee.EmpRegisterDto;
+import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
 import com.hr_handlers.employee.entity.Employee;
 
 public class EmpMapper {
@@ -19,6 +20,17 @@ public class EmpMapper {
                 .email(registerRequest.getEmail())
                 .phone(registerRequest.getPhone())
                 .birthDate(registerRequest.getBirthDate())
+                .build();
+    }
+
+    // Employee -> EmpDetailResponseDto
+    public static EmpDetailResponseDto toEmpDetailResponseDto(Employee employee) {
+        return EmpDetailResponseDto.builder()
+                .email(employee.getEmail())
+                .phone(employee.getPhone())
+                .birthDate(employee.getBirthDate())
+                .introduction(employee.getIntroduction())
+                .profileImageUrl(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null) // 프로필 이미지 URL
                 .build();
     }
 }

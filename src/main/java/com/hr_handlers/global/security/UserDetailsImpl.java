@@ -13,6 +13,7 @@ public class UserDetailsImpl implements UserDetails {
 
     private final Employee employee;
 
+    // 사용자의 권한(Role) 정보를 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
