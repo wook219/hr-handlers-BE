@@ -58,7 +58,6 @@ public class SecurityConfig {
                 request
                         // 로그인 경로 전체 접근 허용
                         .requestMatchers("/login").permitAll()
-                        // TODO : 관리자만 접근 가능 (사원 등록)
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // Swagger 문서 관련 경로 전체 접근 허용
                         // .requestMatchers("/swagger-ui/**").permitAll()

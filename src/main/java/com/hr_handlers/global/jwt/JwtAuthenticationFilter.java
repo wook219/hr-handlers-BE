@@ -68,9 +68,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-        String token = jwtUtil.createToken(empNo, role, 60*60*10L);
+        String token = jwtUtil.createToken(empNo, role, 10*60*60*1000L); // 시간 설정 필요
 
-        response.addHeader("Authorization", "Bearer" +token);
+        response.addHeader("Authorization", "Bearer " +token);
     }
 
     @Override
