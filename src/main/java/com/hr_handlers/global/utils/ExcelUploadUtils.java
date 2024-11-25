@@ -40,7 +40,7 @@ public class ExcelUploadUtils implements ExcelUtilMethodFactory {
                 });
 
         if (!excelHeaders.containsAll(classHeaders)) {
-            // 업로드한 엑셀 헤더가 불일치 할경우
+            // 업로드한 엑셀 헤더가 엑셀Dto에 선언한 내용과 불일치 할경우
             //todo exception 따로처리
             throw new IllegalStateException("헤더 불일치.");
         }

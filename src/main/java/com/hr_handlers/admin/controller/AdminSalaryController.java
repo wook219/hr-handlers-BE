@@ -34,6 +34,11 @@ public class AdminSalaryController {
         return adminSalaryService.createSalary(salaryCreateRequest);
     }
 
+    @DeleteMapping()
+    public SuccessResponse deleteSalary(@RequestBody List<Long> salaryIds) {
+        return adminSalaryService.deleteSalary(salaryIds);
+    }
+
     @PostMapping("/excel/upload")
     public SuccessResponse excelUpload(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
