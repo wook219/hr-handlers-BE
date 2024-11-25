@@ -51,6 +51,13 @@ public class AdminSalaryService {
                 null);
     }
 
+    public SuccessResponse deleteSalary(List<Long> salaryIds) {
+        adminSalaryRepository.deleteAllByIdInBatch(salaryIds);
+        return SuccessResponse.of(
+                "급여가 삭제 되었습니다.",
+                null);
+    }
+
     @Transactional
     public SuccessResponse excelUploadSalary(List<AdminSalaryExcelUploadRequest> adminSalaryExcelUploadRequests) {
 
@@ -70,6 +77,11 @@ public class AdminSalaryService {
         Map<Long, Employee> employeeMap = empRepository.findAllById(employeeIds).stream()
                 .collect(Collectors.toMap(Employee::getId, e -> e));
 
+        // todo :
+//        select
+//                *
+//                from table
+//        where employee in (select * from employee where id = 1)
 
         List<Salary> salaries = adminSalaryExcelUploadRequests.stream()
                 .map(request -> {
