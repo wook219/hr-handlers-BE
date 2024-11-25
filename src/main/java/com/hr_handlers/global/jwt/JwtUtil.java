@@ -17,7 +17,6 @@ public class JwtUtil {
     private SecretKey secretKey;
 
     public JwtUtil(@Value("${jwt.secret}") String secret) {
-
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
                 Jwts.SIG.HS256.key().build().getAlgorithm());
     }
@@ -41,7 +40,7 @@ public class JwtUtil {
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
-                .signWith(secretKey)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 }

@@ -6,6 +6,7 @@ import com.hr_handlers.global.security.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,15 +21,11 @@ import java.util.Iterator;
 
 // JWT 인증 필터
 @Slf4j(topic = "인증 및 Jwt 발급")
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil){
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-    }
 
     // 로그인 요청 처리
     @Override
@@ -68,9 +65,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         GrantedAuthority auth = iterator.next();
 
         String role = auth.getAuthority();
-        String token = jwtUtil.createToken(empNo, role, 60*60*10L);
+        String token = jwtUtil.createToken(empNo, role, 10*60*60*1000L); // 시간 설정 필요
 
-        response.addHeader("Authorization", "Bearer" +token);
+        response.addHeader("Authorization", "Bearer " +token);
     }
 
     @Override
