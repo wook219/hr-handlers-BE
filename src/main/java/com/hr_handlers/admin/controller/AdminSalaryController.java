@@ -40,11 +40,7 @@ public class AdminSalaryController {
     }
 
     @PostMapping("/excel/upload")
-    public SuccessResponse excelUpload(MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            // todo: exception 따로처리
-            throw new IllegalArgumentException("파일이 비어 있습니다.");
-        }
+    public SuccessResponse excelUpload(@RequestPart(value = "file", required = true) MultipartFile file) throws IOException {
         List<AdminSalaryExcelUploadRequest> adminSalaryExcelUploadRequests = excelUploadUtils.parseExcelToObject(file, AdminSalaryExcelUploadRequest.class);
         return adminSalaryService.excelUploadSalary(adminSalaryExcelUploadRequests);
     }
