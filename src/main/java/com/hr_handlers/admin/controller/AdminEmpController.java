@@ -5,10 +5,7 @@ import com.hr_handlers.admin.service.AdminEmpService;
 import com.hr_handlers.global.dto.SuccessResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,9 +28,11 @@ public class AdminEmpController {
 
     // 사원 수정
 
-
-
     // 사원 삭제
+    @DeleteMapping("/{empNo}")
+    public SuccessResponse<Void> deleteEmp(@PathVariable("empNo") String empNo){
+        return adminEmpService.delete(empNo);
+    }
 
 
 }

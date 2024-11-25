@@ -32,4 +32,11 @@ public class AdminEmpService {
 
         return SuccessResponse.of("사원 등록 성공", "보낼 데이터 없음");
     }
+
+    public SuccessResponse<Void> delete(String empNo) {
+        Employee employee = empRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+        empRepository.delete(employee);
+        return SuccessResponse.of("사원 삭제 성공", null);
+    }
 }
