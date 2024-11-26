@@ -1,6 +1,8 @@
 package com.hr_handlers.admin.dto.salary.request;
 
+import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.utils.ExcelColumn;
+import com.hr_handlers.salary.entity.Salary;
 import lombok.Getter;
 import org.apache.poi.ss.usermodel.Row;
 
@@ -28,6 +30,16 @@ public class AdminSalaryExcelUploadRequest {
         this.deduction = (int) row.getCell(3).getNumericCellValue();
         this.netSalary = (int) row.getCell(4).getNumericCellValue();
         this.payDate = row.getCell(5).getLocalDateTimeCellValue().toLocalDate();
+    }
+
+    public Salary toCreateEntity(Employee employee) {
+        return Salary.builder()
+                .employee(employee)
+                .basicSalary(this.basicSalary)
+                .deduction(this.deduction)
+                .netSalary(this.netSalary)
+                .payDate(this.payDate)
+                .build();
     }
 
 }

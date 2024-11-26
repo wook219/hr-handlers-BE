@@ -2,8 +2,9 @@ package com.hr_handlers.admin.service;
 
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryCreateRequest;
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryExcelUploadRequest;
+import com.hr_handlers.admin.dto.salary.request.AdminSalaryUpdateRequest;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponse;
-import com.hr_handlers.admin.repository.AdminAdminSalaryRepository;
+import com.hr_handlers.admin.repository.AdminSalaryRepository;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
@@ -16,15 +17,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AdminSalaryService {
 
-    private final AdminAdminSalaryRepository adminSalaryRepository;
+    private final AdminSalaryRepository adminSalaryRepository;
     private final EmpRepository empRepository;
 
+    // 급여관리 전체 조회
     public SuccessResponse<List<AdminSalaryResponse>> getAllUserSalary() {
         List<AdminSalaryResponse> adminSalaryRespons = adminSalaryRepository.findAllSalary();
         return SuccessResponse.of(
@@ -32,25 +35,27 @@ public class AdminSalaryService {
                 adminSalaryRespons);
     }
 
+    // 급여관리 추가
     public SuccessResponse createSalary(AdminSalaryCreateRequest salaryCreateRequest) {
-        Employee employee = empRepository.findById(salaryCreateRequest.getEmployeeId())
-                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
-
-        Salary salaryEntity = Salary.builder()
-                .employee(employee)
-                .basicSalary(salaryCreateRequest.getBasicSalary())
-                .deduction(salaryCreateRequest.getDeduction())
-                .netSalary(salaryCreateRequest.getNetSalary())
-                .payDate(salaryCreateRequest.getPayDate())
-                .build();
-
+        Employee employee = empRepository.findById(salaryCreateRequest.getEmployeeId()).orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+        Salary salaryEntity = salaryCreateRequest.toCreateEntity(employee);
         adminSalaryRepository.save(salaryEntity);
-
         return SuccessResponse.of(
                 "급여가 등록 되었습니다.",
                 null);
     }
 
+    // 급여관리 수정
+    @Transactional
+    public SuccessResponse updateSalary(AdminSalaryUpdateRequest adminSalaryUpdateRequest) {
+        Salary salaryEntity = adminSalaryRepository.findById(adminSalaryUpdateRequest.getSalaryId()).orElseThrow(() -> new GlobalException(ErrorCode.SALARY_NOT_FOUND));
+        adminSalaryUpdateRequest.toUpdateEntity(salaryEntity);
+        return SuccessResponse.of(
+                "급여가 수정 되었습니다.",
+                null);
+    }
+
+    // 급여관리 삭제
     public SuccessResponse deleteSalary(List<Long> salaryIds) {
         adminSalaryRepository.deleteAllByIdInBatch(salaryIds);
         return SuccessResponse.of(
@@ -58,6 +63,7 @@ public class AdminSalaryService {
                 null);
     }
 
+    // 급여관리 엑셀 업로드
     @Transactional
     public SuccessResponse excelUploadSalary(List<AdminSalaryExcelUploadRequest> adminSalaryExcelUploadRequests) {
 
@@ -85,18 +91,9 @@ public class AdminSalaryService {
 
         List<Salary> salaries = adminSalaryExcelUploadRequests.stream()
                 .map(request -> {
-                    Employee employee = employeeMap.get(request.getEmployeeId());
-                    if (employee == null) {
-                        // todo: exception 따로처리
-                        throw new RuntimeException("Employee not found");
-                    }
-                    return Salary.builder()
-                            .employee(employee)
-                            .basicSalary(request.getBasicSalary())
-                            .deduction(request.getDeduction())
-                            .netSalary(request.getNetSalary())
-                            .payDate(request.getPayDate())
-                            .build();
+                    Employee employee = Optional.ofNullable(employeeMap.get(request.getEmployeeId()))
+                            .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+                    return request.toCreateEntity(employee);
                 })
                 .collect(Collectors.toList());
 

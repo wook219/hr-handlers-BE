@@ -1,21 +1,22 @@
 package com.hr_handlers.admin.dto.salary.request;
 
-import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.salary.entity.Salary;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Getter
-public class AdminSalaryCreateRequest {
+public class AdminSalaryUpdateRequest {
 
     // @NotNull로 유효성 검사 적용위해 (int -> integer)로 데이터 타입 설정
+    // 수정시 사원 정보관련 내용은 수정 안하도록 설정
+      // 만약 사원 정보관련 수정이 필요하다면 해당 row를 삭제하고 추가하는게 맞다고 생각
 
-
-    @NotNull(message = "사원 id가 없습니다.")
-    private Long employeeId;
+    @NotNull(message = "급여관리 id가 없습니다.")
+    private Long salaryId;
 
     @NotNull(message = "기본급이 없습니다.")
     @Positive(message = "기본급은 0보다 커야 합니다.")
@@ -32,13 +33,12 @@ public class AdminSalaryCreateRequest {
     @NotNull(message = "급여지급일이 없습니다.")
     private LocalDate payDate;
 
-    public Salary toCreateEntity(Employee employee) {
-        return Salary.builder()
-                .employee(employee)
-                .basicSalary(this.basicSalary)
-                .deduction(this.deduction)
-                .netSalary(this.netSalary)
-                .payDate(this.payDate)
-                .build();
+
+    public Salary toUpdateEntity(Salary entity) {
+        Optional.ofNullable(this.getBasicSalary()).ifPresent(entity::setBasicSalary);
+        Optional.ofNullable(this.getDeduction()).ifPresent(entity::setDeduction);
+        Optional.ofNullable(this.getNetSalary()).ifPresent(entity::setNetSalary);
+        Optional.of(this.getPayDate()).ifPresent(entity::setPayDate);
+        return entity;
     }
 }
