@@ -77,4 +77,30 @@ public class Employee extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = true)
     private Department department;
+
+    // Update 메서드
+    public void empUpdate(String email, String phone, String introduction, String profileImage) {
+        this.email = email;
+        this.phone = phone;
+        this.introduction = introduction;
+
+        if (profileImage != null) {
+            this.profileImage = ProfileImage.builder()
+                    .profileImageUrl(profileImage)
+                    .build();
+        }
+    }
+
+    public void adminUpdate(String empNo, String contractType, String position, Double leaveBalance, String departmentName) {
+        this.empNo = empNo;
+        this.contractType = ContractType.valueOf(contractType);
+        this.position = position;
+        this.leaveBalance = leaveBalance;
+
+        if (departmentName != null && this.department != null) {
+            this.department = Department.builder()
+                    .deptName(departmentName)
+                    .build();
+        }
+    }
 }

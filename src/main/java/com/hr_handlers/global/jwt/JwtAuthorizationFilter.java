@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,17 +18,14 @@ import java.io.IOException;
 
 // JWT 인가 필터
 @Slf4j(topic = "인가")
+@RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil){
-        this.jwtUtil = jwtUtil;
-    }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Authorization 헤더에서 JWT를 추출
+        // Authorization 헤더에서 JWT 추출
         String authorization = request.getHeader("Authorization");
 
         if(authorization == null || !authorization.startsWith("Bearer ")){
@@ -39,8 +37,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         log.info("authorization now");
 
+        // Bearer 토큰 분리
         String token = authorization.split(" ")[1];
 
+        // JWT 만료 확인
         if(jwtUtil.isExpired(token)){
             log.info("token expired");
             filterChain.doFilter(request, response);
@@ -53,7 +53,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         Employee employee = Employee.builder()
                 .empNo(empNo)
-                .password("temppassword")
+                .password("임시값") // 비밀번호는 임시로 설정
                 .role(Role.valueOf(role))
                 .build();
 

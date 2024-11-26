@@ -47,8 +47,6 @@ public class ChatService {
                 .employee(employee)
                 .build();
 
-        // userCount 증가
-        chatRoom.updateUserCount(chatRoom.getUserCount() + 1);  // 현재 userCount를 1 증가
         chatRoomRepository.save(chatRoom);
 
         Chat enteredChat = chatRepository.save(chat);
@@ -71,7 +69,6 @@ public class ChatService {
     }
 
     // 채팅방 탈퇴
-    // 탈퇴하면서 채팅방 참여 인원도 감소시킬 것
     public SuccessResponse<Long> exitChatRoom(Long chatRoomId, Long employeeId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_ROOM_NOT_FOUND));
@@ -85,13 +82,8 @@ public class ChatService {
         if (chat == null) {
             throw new GlobalException(ErrorCode.CHAT_NOT_FOUND); 
         }
-        else { // 객체가 있다면
-            // 참여 인원 감소
-            chatRoom.updateUserCount(chatRoom.getUserCount() - 1);
-            chatRoomRepository.save(chatRoom);
 
-            chatRepository.delete(chat);
-        }
+        chatRepository.delete(chat);
 
         return SuccessResponse.of("채팅방 퇴장에 성공했습니다.", chatRoomId);
     }
