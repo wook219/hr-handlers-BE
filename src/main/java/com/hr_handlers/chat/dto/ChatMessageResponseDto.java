@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class ChatMessageResponseDto {
-    private Long chatMessageId;
+    private Long messageId;
     private Long chatRoomId;
     private String employeeName;
     private String message;
