@@ -1,8 +1,7 @@
 package com.hr_handlers.board.service;
 
 
-import com.hr_handlers.board.dto.PostActionResponseDto;
-import com.hr_handlers.board.dto.PostRequestDto;
+import com.hr_handlers.board.dto.*;
 import com.hr_handlers.board.entity.HashTag;
 import com.hr_handlers.board.repository.PostRepository;
 import com.hr_handlers.employee.entity.Employee;
@@ -14,10 +13,10 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import com.hr_handlers.board.dto.PostResponseDto;
-import com.hr_handlers.board.dto.PostDetailResponseDto;
 import com.hr_handlers.board.mapper.PostMapper;
 import com.hr_handlers.board.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 
 import java.util.List;
@@ -37,18 +36,19 @@ public class PostService {
      * 회원 기능 추가 이후 사용자 구분 예정
      * **/
     // 게시글 목록 조회
-    public SuccessResponse<List<PostResponseDto>> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
+    public SuccessResponse<PostListResponseDto> getAllPosts(Pageable pageable) {
+        Page<Post> postsPage = postRepository.findAll(pageable);
 
-        if (posts.isEmpty()) {
+        if (postsPage.isEmpty()) {
             throw new GlobalException(ErrorCode.POSTS_NOT_FOUND);
         }
 
-        List<PostResponseDto> response = posts.stream()
+        List<PostResponseDto> response = postsPage.getContent().stream()
                 .map(postMapper::toPostResponseDto)
                 .toList();
 
-        return SuccessResponse.of("게시글 목록 조회 성공", response);
+        PostListResponseDto postListResponse = new PostListResponseDto(response, postsPage.getTotalElements());
+        return SuccessResponse.of("게시글 목록 조회 성공", postListResponse);
     }
 
     // 게시글 상세 조회
