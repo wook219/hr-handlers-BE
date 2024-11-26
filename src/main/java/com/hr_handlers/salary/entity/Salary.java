@@ -3,16 +3,14 @@ package com.hr_handlers.salary.entity;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Entity
 @Builder
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Salary extends BaseTimeEntity {

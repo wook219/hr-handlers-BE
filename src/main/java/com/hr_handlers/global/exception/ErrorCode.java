@@ -28,7 +28,7 @@ public enum ErrorCode {
     CHAT_MESSAGE_UPDATE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "CHAT_MESSAGE-02", "메시지 수정 권한이 없습니다."),
     CHAT_MESSAGE_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "CHAT_MESSAGE-03", "메시지 삭제 권한이 없습니다."),
     //급여
-
+    SALARY_NOT_FOUND(HttpStatus.NOT_FOUND, "SALARY-01", "해당 급여를 조회할 수 없습니다."),
     //사원
     EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "EMPLOYEE-01", "사원을 찾을 수 없습니다."),
     EMPLOYEE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"EMPLOYEE-02", "사원 번호가 이미 존재합니다."),
