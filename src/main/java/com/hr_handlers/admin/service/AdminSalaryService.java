@@ -3,7 +3,7 @@ package com.hr_handlers.admin.service;
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryCreateRequest;
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryExcelUploadRequest;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponse;
-import com.hr_handlers.admin.repository.AdminAdminSalaryRepository;
+import com.hr_handlers.admin.repository.AdminSalaryRepository;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminSalaryService {
 
-    private final AdminAdminSalaryRepository adminSalaryRepository;
+    private final AdminSalaryRepository adminSalaryRepository;
     private final EmpRepository empRepository;
 
     public SuccessResponse<List<AdminSalaryResponse>> getAllUserSalary() {

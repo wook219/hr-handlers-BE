@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface AdminAdminSalaryRepository extends JpaRepository<Salary, Long>, AdminSalaryRepositoryCustom {
+public interface AdminSalaryRepository extends JpaRepository<Salary, Long>, AdminSalaryRepositoryCustom {
 }
