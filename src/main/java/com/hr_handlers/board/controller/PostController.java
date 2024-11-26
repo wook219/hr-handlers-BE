@@ -1,13 +1,13 @@
 package com.hr_handlers.board.controller;
 
-import com.hr_handlers.board.dto.PostActionResponseDto;
-import com.hr_handlers.board.dto.PostDetailResponseDto;
-import com.hr_handlers.board.dto.PostRequestDto;
-import com.hr_handlers.board.dto.PostResponseDto;
+import com.hr_handlers.board.dto.*;
 import com.hr_handlers.board.service.PostService;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,8 +24,9 @@ public class PostController {
      * 회원 기능 추가 이후 사용자 구분 예정
      ***/
     @GetMapping
-    public SuccessResponse<List<PostResponseDto>> getAllPosts() {
-        return postService.getAllPosts();
+    public SuccessResponse<PostListResponseDto> getAllPosts(
+            @PageableDefault(size = 10) Pageable pageable) {
+        return postService.getAllPosts(pageable);
     }
 
     // 특정 게시글 상세 조회
