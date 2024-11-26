@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 public interface ChatMessageMapper {
 
     // Entity -> DTO
-    @Mapping(source = "id", target = "chatMessageId")  // id -> messageId
+    @Mapping(source = "id", target = "messageId")  // id -> messageId
     @Mapping(source = "chatRoom.id", target = "chatRoomId")  // chatRoom의 id -> chatRoomId
     @Mapping(source = "employee.name", target = "employeeName") // employee의 name -> employeeName
     @Mapping(source = "createdAt", target = "createdAt")

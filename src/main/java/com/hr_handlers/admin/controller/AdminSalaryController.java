@@ -3,6 +3,7 @@ package com.hr_handlers.admin.controller;
 
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryCreateRequest;
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryExcelUploadRequest;
+import com.hr_handlers.admin.dto.salary.request.AdminSalaryUpdateRequest;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponse;
 import com.hr_handlers.admin.service.AdminSalaryService;
 import com.hr_handlers.global.dto.SuccessResponse;
@@ -32,6 +33,11 @@ public class AdminSalaryController {
     @PostMapping()
     public SuccessResponse createSalary(@RequestBody @Validated AdminSalaryCreateRequest salaryCreateRequest) {
         return adminSalaryService.createSalary(salaryCreateRequest);
+    }
+
+    @PutMapping()
+    public SuccessResponse updateSalary(@RequestBody @Validated AdminSalaryUpdateRequest adminSalaryUpdateRequest) {
+        return adminSalaryService.updateSalary(adminSalaryUpdateRequest);
     }
 
     @DeleteMapping()

@@ -1,4 +1,4 @@
-package com.hr_handlers.employee.dto.response;
+package com.hr_handlers.admin.dto.employee.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @Builder
-public class EmpDetailResponseDto {
-    private Long id;
+public class AdminEmpResponseDto {
     private String empNo;
     private String name;
     private String email;
