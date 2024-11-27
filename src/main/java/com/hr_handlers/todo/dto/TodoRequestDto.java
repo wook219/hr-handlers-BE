@@ -1,6 +1,8 @@
 package com.hr_handlers.todo.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,10 +22,10 @@ public class TodoRequestDto {
     @Size(max = 200, message = "200자 이하로 입력해주세요.")
     private String content;
 
-    @NotEmpty(message = "시작 시간를 선택해주세요.")
+    @NotNull(message = "시작 시간를 선택해주세요.")
     private Timestamp startTime;
 
-    @NotEmpty(message = "종료 시간를 선택해주세요.")
+    @NotNull(message = "종료 시간를 선택해주세요.")
     private Timestamp endTime;
 
     private Long employeeId;
