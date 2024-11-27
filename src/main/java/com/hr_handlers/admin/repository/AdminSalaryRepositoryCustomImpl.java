@@ -1,6 +1,6 @@
 package com.hr_handlers.admin.repository;
 
-import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponse;
+import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponseDto;
 import com.hr_handlers.employee.entity.QEmployee;
 import com.hr_handlers.salary.entity.QSalary;
 import com.querydsl.core.types.Projections;
@@ -16,10 +16,10 @@ public class AdminSalaryRepositoryCustomImpl implements AdminSalaryRepositoryCus
     private final QEmployee employee = QEmployee.employee;
 
 
-    public List<AdminSalaryResponse> findAllSalary() {
+    public List<AdminSalaryResponseDto> findAllSalary() {
         return queryFactory
                 .select(Projections.constructor(
-                        AdminSalaryResponse.class,
+                        AdminSalaryResponseDto.class,
                         salary.id,
                         employee.id,
                         employee.department.deptName,

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Getter
-public class AdminSalaryUpdateRequest {
+public class AdminSalaryUpdateRequestDto {
 
     // @NotNull로 유효성 검사 적용위해 (int -> integer)로 데이터 타입 설정
     // 수정시 사원 정보관련 내용은 수정 안하도록 설정
