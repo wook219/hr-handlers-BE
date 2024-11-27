@@ -28,16 +28,16 @@ public class ChatService {
     private final ChatMapper chatMapper;
 
     // 채팅 참여 추가 -> ChatRoom에서 추가를 받을 것
-    public SuccessResponse<ChatResponseDto> enterChatRoom(Long chatRoomId, Long employeeId) {
+    public SuccessResponse<ChatResponseDto> enterChatRoom(Long chatRoomId, String empNo) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_ROOM_NOT_FOUND));
-        Employee employee = empRepository.findById(employeeId)
+        Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         // ChatId 객체 생성
         ChatId chatId = ChatId.builder()
-                .chatRoomId(chatRoomId)
-                .employeeId(employeeId)
+                .chatRoomId(chatRoom.getId())
+                .employeeId(employee.getId())
                 .build();
 
         // Chat 객체 생성
@@ -56,9 +56,10 @@ public class ChatService {
     }
     
     // 참여한 채팅 목록 조회
-    public SuccessResponse<List<ChatResponseDto>> getChats(Long employeeId) {
-
-        List<Chat> chats = chatRepository.findByEmployeeId(employeeId);
+    public SuccessResponse<List<ChatResponseDto>> getChats(String empNo) {
+        Employee employee = empRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+        List<Chat> chats = chatRepository.findByEmployeeId(employee.getId());
         List<ChatResponseDto> chatResponseDtos = new ArrayList<>();
 
         for (Chat chat : chats) {
@@ -69,10 +70,10 @@ public class ChatService {
     }
 
     // 채팅방 탈퇴
-    public SuccessResponse<Long> exitChatRoom(Long chatRoomId, Long employeeId) {
+    public SuccessResponse<Long> exitChatRoom(Long chatRoomId, String empNo) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_ROOM_NOT_FOUND));
-        Employee employee = empRepository.findById(employeeId)
+        Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         // Chat 객체 찾기

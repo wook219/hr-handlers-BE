@@ -28,11 +28,11 @@ public class ChatMessageService {
     private final EmpRepository empRepository;
 
     // 메시지 전송
-    public ChatMessageResponseDto sendMessage(Long chatRoomId, ChatMessageRequestDto chatMessageRequestDto) {
+    public ChatMessageResponseDto sendMessage(Long chatRoomId, ChatMessageRequestDto chatMessageRequestDto, String empNo) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_ROOM_NOT_FOUND));
 
-        Employee employee = empRepository.findById(chatMessageRequestDto.getEmployeeId())
+        Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         ChatMessage chatMessage = ChatMessage.builder()
@@ -61,11 +61,14 @@ public class ChatMessageService {
     }
 
     // 메시지 수정
-    public ChatMessageResponseDto updateMessage(Long chatMessageId, ChatMessageRequestDto chatMessageRequestDto) {
+    public ChatMessageResponseDto updateMessage(Long chatMessageId, ChatMessageRequestDto chatMessageRequestDto, String empNo) {
         ChatMessage chatMessage = chatMessageRepository.findById(chatMessageId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_MESSAGE_NOT_FOUND));
 
-        if (!chatMessage.getEmployee().getId().equals(chatMessageRequestDto.getEmployeeId())) {
+        Employee employee = empRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+
+        if (!chatMessage.getEmployee().getId().equals(employee.getId())) {
             throw new GlobalException(ErrorCode.CHAT_MESSAGE_UPDATE_UNAUTHORIZED);
         }
 
@@ -76,11 +79,14 @@ public class ChatMessageService {
     }
 
     // 메시지 삭제
-    public ChatMessageResponseDto deleteMessage(ChatMessageRequestDto chatMessageRequestDto) {
+    public ChatMessageResponseDto deleteMessage(ChatMessageRequestDto chatMessageRequestDto, String empNo) {
         ChatMessage chatMessage = chatMessageRepository.findById(chatMessageRequestDto.getMessageId())
                 .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_MESSAGE_NOT_FOUND));
 
-        if (!chatMessage.getEmployee().getId().equals(chatMessageRequestDto.getEmployeeId())) {
+        Employee employee = empRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+
+        if (!chatMessage.getEmployee().getId().equals(employee.getId())) {
             throw new GlobalException(ErrorCode.CHAT_MESSAGE_DELETE_UNAUTHORIZED);
         }
 
