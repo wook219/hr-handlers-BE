@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class ChatMessageRequestDto {
     private Long messageId;
     private Long chatRoomId;
-    private Long employeeId;
     private String message;
 
 }
