@@ -25,7 +25,7 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
 
     @Override
     public List<AllTodoResponseDto> findAllTodoByEmployeeId(
-            Long employeeId,
+            String empNo,
             Timestamp start,
             Timestamp end)
     {
@@ -42,7 +42,7 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
                 )
                 .from(todo)
                 .where(
-                        todo.employee.id.eq(employeeId),
+                        todo.employee.empNo.eq(empNo),
                         todo.startTime.goe(start),
                         todo.endTime.loe(end)
                 )
