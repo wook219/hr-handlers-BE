@@ -9,7 +9,7 @@ import org.apache.poi.ss.usermodel.Row;
 import java.time.LocalDate;
 
 @Getter
-public class AdminSalaryExcelUploadRequest {
+public class AdminSalaryExcelUploadRequestDto {
     @ExcelColumn(headerName = "사원Id", sort=1)
     private Long employeeId;
     @ExcelColumn(headerName = "이름", sort=2) // 실제로 db insert시 사용안하지만 확인용도

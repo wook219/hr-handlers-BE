@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class AdminSalaryCreateRequest {
+public class AdminSalaryCreateRequestDto {
 
     // @NotNull로 유효성 검사 적용위해 (int -> integer)로 데이터 타입 설정
 
