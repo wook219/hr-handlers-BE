@@ -11,7 +11,7 @@ public interface TodoCustomRepository {
 
     // 일정 전체 조회
     List<AllTodoResponseDto> findAllTodoByEmployeeId(
-            Long employeeId,
+            String empNo,
             Timestamp start,
             Timestamp end);
 
