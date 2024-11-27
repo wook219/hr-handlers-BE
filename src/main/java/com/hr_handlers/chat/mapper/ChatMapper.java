@@ -10,6 +10,7 @@ public interface ChatMapper {
 
     @Mapping(source = "employee.id", target = "employeeId")
     @Mapping(source = "chatRoom.id", target = "chatRoomId")
+    @Mapping(source = "chatRoom.title", target = "title")
     ChatResponseDto toChatResponseDto(Chat chat);
 
 }

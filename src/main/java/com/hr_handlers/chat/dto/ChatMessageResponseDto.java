@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 public class ChatMessageResponseDto {
     private Long messageId;
     private Long chatRoomId;
+    private String empNo;
     private String employeeName;
     private String message;
     private Timestamp createdAt;
