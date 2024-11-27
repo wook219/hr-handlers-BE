@@ -47,8 +47,8 @@ public class PostService {
                 .map(postMapper::toPostResponseDto)
                 .toList();
 
-        PostListResponseDto postListResponse = new PostListResponseDto(response, postsPage.getTotalElements());
-        return SuccessResponse.of("게시글 목록 조회 성공", postListResponse);
+        return SuccessResponse.of("게시글 목록 조회 성공",
+                new PostListResponseDto(response, postsPage.getTotalElements()));
     }
 
     // 게시글 상세 조회
@@ -56,53 +56,41 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
 
-        PostDetailResponseDto response = postMapper.toPostDetailResponseDto(post);
-        return SuccessResponse.of("게시글 상세 조회 성공", response);
+        return SuccessResponse.of("게시글 상세 조회 성공", postMapper.toPostDetailResponseDto(post));
     }
 
 
     // 게시글 생성
+    @Transactional
     public SuccessResponse<PostActionResponseDto> createPost(PostRequestDto request, String empNo) {
-        // 작성자(Employee) 정보 확인
         Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
-        try {
-            // 요청 DTO를 기반으로 Post 엔티티 생성
-            Post post = Post.builder()
-                    .title(request.getTitle())
-                    .content(request.getContent())
-                    .imageUrl(request.getImageUrl())
-                    .employee(employee)
-                    .isDelete("N") // 삭제 여부 기본값 설정
-                    .build();
+        Post post = Post.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .imageUrl(request.getImageUrl())
+                .employee(employee)
+                .isDelete("N")
+                .build();
 
-            if (request.getHashtagContent() != null && !request.getHashtagContent().isEmpty()) {
-                List<HashTag> hashTags = request.getHashtagContent().stream()
-                        .map(tagContent -> HashTag.builder()
-                                .hashtagContent(tagContent)
-                                .post(post)
-                                .build())
-                        .toList();
-                post.setHashtagContent(hashTags);
-            }
-
-            Post savedPost = postRepository.save(post);
-
-
-            // 생성된 게시글 정보를 Action Response로 변환
-            PostActionResponseDto responseDto = PostActionResponseDto.builder()
-                    .id(savedPost.getId())
-                    .timestamp(savedPost.getCreatedAt().toString()) // 생성 시간 반환
-                    .build();
-
-            return SuccessResponse.of("게시글 생성 성공", responseDto);
-        }catch (Exception e){
-            throw new GlobalException(ErrorCode.POST_CREATE_FAILED);
+        if (request.getHashtagContent() != null) {
+            post.setHashtagContent(request.getHashtagContent().stream()
+                    .map(tag -> HashTag.builder()
+                            .hashtagContent(tag)
+                            .post(post)
+                            .build())
+                    .toList());
         }
+
+        postRepository.save(post);
+
+        return SuccessResponse.of("게시글 생성 성공",
+                new PostActionResponseDto(post.getId(), post.getCreatedAt().toString()));
     }
 
-    // 게시글 수정
+    // 게시글 수정 (ver.1)
+    /*
     @Transactional
     public SuccessResponse<PostActionResponseDto> updatePost(Long postId, PostRequestDto dto) {
         Post post = postRepository.findById(postId)
@@ -149,7 +137,39 @@ public class PostService {
                 .build();
 
         return SuccessResponse.of("게시글이 성공적으로 수정되었습니다.", responseDto);
+    }*/
+
+    /**
+     * 게시글 수정
+     */
+    @Transactional
+    public SuccessResponse<PostActionResponseDto> updatePost(Long postId, PostRequestDto dto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
+
+        // 기존 해시태그 컬렉션을 비우고 새 값을 추가
+        List<HashTag> existingHashTags = post.getHashtagContent();
+        existingHashTags.clear();
+
+        if (dto.getHashtagContent() != null) {
+            List<HashTag> newHashTags = dto.getHashtagContent().stream()
+                    .map(tag -> HashTag.builder()
+                            .hashtagContent(tag)
+                            .post(post) // 부모 엔티티 지정
+                            .build())
+                    .toList();
+            existingHashTags.addAll(newHashTags);
+        }
+
+        post.setTitle(dto.getTitle());
+        post.setContent(dto.getContent());
+        post.setImageUrl(dto.getImageUrl());
+
+        // 컬렉션 수정 후 저장 없이 변경 사항 반영
+        return SuccessResponse.of("게시글 수정 성공",
+                new PostActionResponseDto(post.getId(), post.getUpdatedAt().toString()));
     }
+
 
 
     // 게시글 삭제
