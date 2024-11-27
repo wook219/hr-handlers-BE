@@ -15,7 +15,12 @@ import com.hr_handlers.todo.repository.TodoRepository;
 import com.hr_handlers.vacation.dto.VacationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -28,25 +33,28 @@ public class TodoService {
     private final EmpRepository empRepository;
 
     // 모든 일정 조회
-    public SuccessResponse<List<AllTodoResponse>> getAllTodo(Long employeeId){
-        List<AllTodoResponse> response = todoRepository.findAllTodoByEmployeeId(employeeId);
+    public SuccessResponse<List<AllTodoResponse>> getAllTodo(Long employeeId, String start, String end){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        Timestamp startDateTime = Timestamp.valueOf(LocalDate.parse(start, formatter).atStartOfDay());
+        Timestamp endDateTime = Timestamp.valueOf(LocalDate.parse(end, formatter).atTime(23, 59, 59));
 
         return SuccessResponse.of(
                 "전체 일정 조회 성공",
-                response
+                todoRepository.findAllTodoByEmployeeId(employeeId, startDateTime, endDateTime)
         );
     }
 
     // 일정 상세 조회
     public SuccessResponse<TodoResponse> getTodo(Long id){
+
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.TODO_NOT_FOUND));
 
-        TodoResponse response = todoMapper.toTodoResponse(todo);
-
         return SuccessResponse.of(
                 "일정 상세 조회 성공",
-                response
+                todoMapper.toTodoResponse(todo)
         );
     }
 
@@ -65,43 +73,31 @@ public class TodoService {
 
         todoRepository.save(todo);
 
-        TodoResponse response = todoMapper.toTodoResponse(todo);
-
         return SuccessResponse.of(
                 "일정 등록 성공",
-                response
+                todoMapper.toTodoResponse(todo)
         );
     }
 
     // 일정 수정
+    @Transactional
     public SuccessResponse<TodoResponse> modifyTodo(Long id, TodoModifyRequest request){
-        Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new GlobalException(ErrorCode.TODO_NOT_FOUND));
-
-        todo.modify(request);
-
-        todoRepository.save(todo);
-
-        TodoResponse response = todoMapper.toTodoResponse(todo);
 
         return SuccessResponse.of(
                 "일정 수정 성공",
-                response
+                todoRepository.modifyTodo(id, request)
         );
     }
 
     // 일정 삭제
-    public SuccessResponse<TodoResponse> deleteTodo(Long id){
-        Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new GlobalException(ErrorCode.TODO_NOT_FOUND));
+    @Transactional
+    public SuccessResponse<Boolean> deleteTodo(Long id){
 
-        todoRepository.delete(todo);
-
-        TodoResponse response = todoMapper.toTodoResponse(todo);
+        todoRepository.deleteTodo(id);
 
         return SuccessResponse.of(
                 "일정 삭제 성공",
-                response
+                Boolean.TRUE
         );
     }
 }
