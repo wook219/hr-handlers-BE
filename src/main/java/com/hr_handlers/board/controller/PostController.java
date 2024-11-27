@@ -39,8 +39,7 @@ public class PostController {
     // 게시글 생성
     @PostMapping
     public SuccessResponse<PostActionResponseDto> createPost(@RequestBody PostRequestDto request, Authentication authentication) {
-        String empNo = authentication.getName();
-        return postService.createPost(request, empNo);
+        return postService.createPost(request, authentication.getName());
     }
 
 
