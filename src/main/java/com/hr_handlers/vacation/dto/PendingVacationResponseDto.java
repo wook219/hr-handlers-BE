@@ -1,4 +1,4 @@
-package com.hr_handlers.todo.dto;
+package com.hr_handlers.vacation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,15 +11,10 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AllTodoResponse {
-
-    private Long id;
-
+public class PendingVacationResponseDto {
+    private String doc_num;
     private String title;
-
-    private Timestamp startTime;
-
-    private Timestamp endTime;
-
+    private Timestamp createdAt;
     private Long employeeId;
 }
+

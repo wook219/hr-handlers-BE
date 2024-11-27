@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CheckInResponse {
+public class CheckInResponseDto {
 
     private Long id;
 

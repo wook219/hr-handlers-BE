@@ -1,7 +1,7 @@
 package com.hr_handlers.attendance.mapper;
 
-import com.hr_handlers.attendance.dto.CheckInResponse;
-import com.hr_handlers.attendance.dto.CheckOutResponse;
+import com.hr_handlers.attendance.dto.CheckInResponseDto;
+import com.hr_handlers.attendance.dto.CheckOutResponseDto;
 import com.hr_handlers.attendance.entity.Attendance;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,8 +11,8 @@ import org.mapstruct.ReportingPolicy;
 public interface AttendanceMapper {
 
     @Mapping(source = "employee.id", target = "employeeId")
-    CheckInResponse toCheckInResponse(Attendance attendance);
+    CheckInResponseDto toCheckInResponse(Attendance attendance);
 
     @Mapping(source = "employee.id", target = "employeeId")
-    CheckOutResponse toCheckOutResponse(Attendance attendance);
+    CheckOutResponseDto toCheckOutResponse(Attendance attendance);
 }

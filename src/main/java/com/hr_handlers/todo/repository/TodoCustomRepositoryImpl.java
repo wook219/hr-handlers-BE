@@ -2,19 +2,16 @@ package com.hr_handlers.todo.repository;
 
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
-import com.hr_handlers.todo.dto.AllTodoResponse;
-import com.hr_handlers.todo.dto.TodoModifyRequest;
-import com.hr_handlers.todo.dto.TodoResponse;
-import com.hr_handlers.todo.entity.Todo;
+import com.hr_handlers.todo.dto.AllTodoResponseDto;
+import com.hr_handlers.todo.dto.TodoModifyRequestDto;
+import com.hr_handlers.todo.dto.TodoResponseDto;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.hr_handlers.todo.entity.QTodo.todo;
@@ -27,7 +24,7 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
     private final EntityManager entityManager;
 
     @Override
-    public List<AllTodoResponse> findAllTodoByEmployeeId(
+    public List<AllTodoResponseDto> findAllTodoByEmployeeId(
             Long employeeId,
             Timestamp start,
             Timestamp end)
@@ -35,7 +32,7 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                AllTodoResponse.class,
+                                AllTodoResponseDto.class,
                                 todo.id,
                                 todo.title,
                                 todo.startTime,
@@ -65,7 +62,7 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
     }
 
     @Override
-    public TodoResponse modifyTodo(Long id, TodoModifyRequest request) {
+    public TodoResponseDto modifyTodo(Long id, TodoModifyRequestDto request) {
 
         long updatedCount = jpaQueryFactory
                 .update(todo)
@@ -86,7 +83,7 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                TodoResponse.class,
+                                TodoResponseDto.class,
                                 todo.id,
                                 todo.title,
                                 todo.content,

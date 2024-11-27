@@ -3,18 +3,13 @@ package com.hr_handlers.todo.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.sql.Timestamp;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TodoResponse {
-
-
-    private Long id;
+public class TodoModifyRequestDto {
 
     private String title;
 
@@ -23,7 +18,4 @@ public class TodoResponse {
     private Timestamp startTime;
 
     private Timestamp endTime;
-
-    private Long employeeId;
-
 }

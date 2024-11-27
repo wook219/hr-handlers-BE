@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TodoRequest {
+public class TodoRequestDto {
 
     private String title;
 
