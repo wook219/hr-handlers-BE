@@ -83,12 +83,14 @@ public class PostService {
                     .toList());
         }
 
-        Post savedPost = postRepository.save(post);
+        postRepository.save(post);
+
         return SuccessResponse.of("게시글 생성 성공",
-                new PostActionResponseDto(savedPost.getId(), savedPost.getCreatedAt().toString()));
+                new PostActionResponseDto(post.getId(), post.getCreatedAt().toString()));
     }
 
-    // 게시글 수정
+    // 게시글 수정 (ver.1)
+    /*
     @Transactional
     public SuccessResponse<PostActionResponseDto> updatePost(Long postId, PostRequestDto dto) {
         Post post = postRepository.findById(postId)
@@ -135,7 +137,39 @@ public class PostService {
                 .build();
 
         return SuccessResponse.of("게시글이 성공적으로 수정되었습니다.", responseDto);
+    }*/
+
+    /**
+     * 게시글 수정
+     */
+    @Transactional
+    public SuccessResponse<PostActionResponseDto> updatePost(Long postId, PostRequestDto dto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
+
+        // 기존 해시태그 컬렉션을 비우고 새 값을 추가
+        List<HashTag> existingHashTags = post.getHashtagContent();
+        existingHashTags.clear();
+
+        if (dto.getHashtagContent() != null) {
+            List<HashTag> newHashTags = dto.getHashtagContent().stream()
+                    .map(tag -> HashTag.builder()
+                            .hashtagContent(tag)
+                            .post(post) // 부모 엔티티 지정
+                            .build())
+                    .toList();
+            existingHashTags.addAll(newHashTags);
+        }
+
+        post.setTitle(dto.getTitle());
+        post.setContent(dto.getContent());
+        post.setImageUrl(dto.getImageUrl());
+
+        // 컬렉션 수정 후 저장 없이 변경 사항 반영
+        return SuccessResponse.of("게시글 수정 성공",
+                new PostActionResponseDto(post.getId(), post.getUpdatedAt().toString()));
     }
+
 
 
     // 게시글 삭제
