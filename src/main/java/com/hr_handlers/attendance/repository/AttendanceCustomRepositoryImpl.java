@@ -1,6 +1,6 @@
 package com.hr_handlers.attendance.repository;
 
-import com.hr_handlers.attendance.dto.EmployeeAttendanceListResponse;
+import com.hr_handlers.attendance.dto.EmployeeAttendanceListResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -20,11 +20,11 @@ public class AttendanceCustomRepositoryImpl implements AttendanceCustomRepositor
 
 
     @Override
-    public List<EmployeeAttendanceListResponse> findAllAttendance() {
+    public List<EmployeeAttendanceListResponseDto> findAllAttendance() {
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                EmployeeAttendanceListResponse.class,
+                                EmployeeAttendanceListResponseDto.class,
                                 attendance.status,
                                 attendance.checkInTime,
                                 attendance.checkOutTime,

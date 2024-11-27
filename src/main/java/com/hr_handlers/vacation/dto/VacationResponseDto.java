@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VacationResponse {
+public class VacationResponseDto {
 
     private Long id;
     private String doc_num;

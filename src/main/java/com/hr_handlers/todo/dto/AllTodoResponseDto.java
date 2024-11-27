@@ -1,6 +1,5 @@
-package com.hr_handlers.attendance.dto;
+package com.hr_handlers.todo.dto;
 
-import com.hr_handlers.attendance.entity.AttendanceStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,15 +11,15 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeAttendanceResponse {
+public class AllTodoResponseDto {
 
     private Long id;
 
-    private AttendanceStatus status;
+    private String title;
 
-    private Timestamp checkInTime;
+    private Timestamp startTime;
 
-    private Timestamp checkOutTime;
+    private Timestamp endTime;
 
     private Long employeeId;
 }

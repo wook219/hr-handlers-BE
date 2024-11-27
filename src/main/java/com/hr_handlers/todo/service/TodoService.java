@@ -5,21 +5,19 @@ import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
-import com.hr_handlers.todo.dto.AllTodoResponse;
-import com.hr_handlers.todo.dto.TodoModifyRequest;
-import com.hr_handlers.todo.dto.TodoRequest;
-import com.hr_handlers.todo.dto.TodoResponse;
+import com.hr_handlers.todo.dto.AllTodoResponseDto;
+import com.hr_handlers.todo.dto.TodoModifyRequestDto;
+import com.hr_handlers.todo.dto.TodoRequestDto;
+import com.hr_handlers.todo.dto.TodoResponseDto;
 import com.hr_handlers.todo.entity.Todo;
 import com.hr_handlers.todo.mapper.TodoMapper;
 import com.hr_handlers.todo.repository.TodoRepository;
-import com.hr_handlers.vacation.dto.VacationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -33,7 +31,7 @@ public class TodoService {
     private final EmpRepository empRepository;
 
     // 모든 일정 조회
-    public SuccessResponse<List<AllTodoResponse>> getAllTodo(Long employeeId, String start, String end){
+    public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(Long employeeId, String start, String end){
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -47,7 +45,7 @@ public class TodoService {
     }
 
     // 일정 상세 조회
-    public SuccessResponse<TodoResponse> getTodo(Long id){
+    public SuccessResponse<TodoResponseDto> getTodo(Long id){
 
         Todo todo = todoRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.TODO_NOT_FOUND));
@@ -59,7 +57,7 @@ public class TodoService {
     }
 
     // 일정 등록
-    public SuccessResponse<TodoResponse> enrollTodo(TodoRequest request){
+    public SuccessResponse<TodoResponseDto> enrollTodo(TodoRequestDto request){
         Employee employee = empRepository.findById(request.getEmployeeId())
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
@@ -81,7 +79,7 @@ public class TodoService {
 
     // 일정 수정
     @Transactional
-    public SuccessResponse<TodoResponse> modifyTodo(Long id, TodoModifyRequest request){
+    public SuccessResponse<TodoResponseDto> modifyTodo(Long id, TodoModifyRequestDto request){
 
         return SuccessResponse.of(
                 "일정 수정 성공",

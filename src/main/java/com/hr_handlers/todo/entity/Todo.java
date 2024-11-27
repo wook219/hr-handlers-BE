@@ -1,8 +1,7 @@
 package com.hr_handlers.todo.entity;
 
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.todo.dto.TodoModifyRequest;
-import com.hr_handlers.vacation.dto.VacationModifyRequest;
+import com.hr_handlers.todo.dto.TodoModifyRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -42,7 +41,7 @@ public class Todo {
     @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
     private Employee employee;
 
-    public void modify(TodoModifyRequest request){
+    public void modify(TodoModifyRequestDto request){
         this.title = request.getTitle();
         this.content = request.getContent();
         this.startTime = request.getStartTime();

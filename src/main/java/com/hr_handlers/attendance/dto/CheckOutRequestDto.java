@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CheckInRequest {
-    private Long employeeId;
+public class CheckOutRequestDto {
+    private Long attendanceId;
 }
