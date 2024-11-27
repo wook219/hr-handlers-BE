@@ -5,6 +5,7 @@ import com.hr_handlers.board.service.PostService;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -37,8 +38,9 @@ public class PostController {
 
     // 게시글 생성
     @PostMapping
-    public SuccessResponse<PostActionResponseDto> createPost(@RequestBody PostRequestDto request) {
-        return postService.createPost(request);
+    public SuccessResponse<PostActionResponseDto> createPost(@RequestBody PostRequestDto request, Authentication authentication) {
+        String empNo = authentication.getName();
+        return postService.createPost(request, empNo);
     }
 
 

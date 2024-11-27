@@ -62,9 +62,9 @@ public class PostService {
 
 
     // 게시글 생성
-    public SuccessResponse<PostActionResponseDto> createPost(PostRequestDto request) {
+    public SuccessResponse<PostActionResponseDto> createPost(PostRequestDto request, String empNo) {
         // 작성자(Employee) 정보 확인
-        Employee employee = empRepository.findById(request.getEmployeeId())
+        Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         try {
