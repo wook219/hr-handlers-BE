@@ -1,6 +1,5 @@
 package com.hr_handlers.chat.controller;
 
-import com.hr_handlers.chat.dto.ChatRequestDto;
 import com.hr_handlers.chat.dto.ChatResponseDto;
 import com.hr_handlers.chat.service.ChatService;
 import com.hr_handlers.global.dto.SuccessResponse;
