@@ -22,25 +22,43 @@ public class JwtUtil {
                 Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    public String getUsername(String token){
+    public String getUsername(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("empNo", String.class);
     }
 
-    public String getRole(String token){
+    public String getRole(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
 
-    public Boolean isExpired(String token){
+    public String getCategory(String token){
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
+    }
+
+
+    public Boolean isExpired(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    public String createToken(String empNo, String role, Long expiredMs) {
+
+    public String createToken(String category, String empNo, String role, Long expiredMs) {
         return Jwts.builder()
+                .claim("category", category) // access. refresh 구분
                 .claim("empNo", empNo)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis())) // 발급 시간
                 .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 만료 시간
                 .signWith(secretKey, SignatureAlgorithm.HS256) // secretKey를 이용해 서명
                 .compact();
+    }
+
+    // validateToken 토큰 검증
+    public Boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("Invalid JWT token: {}", e.getMessage());
+            return false;
+        }
     }
 }
