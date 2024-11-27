@@ -1,5 +1,6 @@
 package com.hr_handlers.vacation.dto;
 
+import com.hr_handlers.vacation.entity.VacationType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +12,11 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ApprovedVacationResponse {
-    private String doc_num;
+public class VacationDetailResponseDto {
+    private Long id;
     private String title;
-    private Timestamp updatedAt;
-    private Timestamp approvedAt;
-    private String approver;
-    private Long employeeId;
+    private VacationType type;
+    private Timestamp startDate;
+    private Timestamp endDate;
+    private String reason;
 }

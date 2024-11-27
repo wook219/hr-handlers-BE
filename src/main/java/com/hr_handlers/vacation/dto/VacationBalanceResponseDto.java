@@ -1,4 +1,4 @@
-package com.hr_handlers.attendance.dto;
+package com.hr_handlers.vacation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CheckOutRequest {
-    private Long attendanceId;
+public class VacationBalanceResponseDto {
+    private Double leaveBalance;
 }

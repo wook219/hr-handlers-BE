@@ -12,7 +12,9 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeAttendanceListResponse {
+public class EmployeeAttendanceResponseDto {
+
+    private Long id;
 
     private AttendanceStatus status;
 
@@ -20,5 +22,5 @@ public class EmployeeAttendanceListResponse {
 
     private Timestamp checkOutTime;
 
-    private String employeeName;
+    private Long employeeId;
 }

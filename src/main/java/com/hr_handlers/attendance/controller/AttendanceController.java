@@ -16,17 +16,17 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     @GetMapping
-    public SuccessResponse<List<EmployeeAttendanceListResponse>> getAllAttendance(){
+    public SuccessResponse<List<EmployeeAttendanceListResponseDto>> getAllAttendance(){
         return attendanceService.getAllAttendance();
     }
 
     @PostMapping
-    public SuccessResponse<CheckInResponse> checkIn(@RequestBody CheckInRequest request){
+    public SuccessResponse<CheckInResponseDto> checkIn(@RequestBody CheckInRequestDto request){
         return attendanceService.checkIn(request);
     }
 
     @PutMapping("/{attendanceId}")
-    public SuccessResponse<CheckOutResponse> checkOut(@PathVariable("attendanceId") Long id){
+    public SuccessResponse<CheckOutResponseDto> checkOut(@PathVariable("attendanceId") Long id){
         return attendanceService.checkOut(id);
     }
 }

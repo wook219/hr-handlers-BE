@@ -11,10 +11,11 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PendingVacationResponse {
+public class ApprovedVacationResponseDto {
     private String doc_num;
     private String title;
-    private Timestamp createdAt;
+    private Timestamp updatedAt;
+    private Timestamp approvedAt;
+    private String approver;
     private Long employeeId;
 }
-

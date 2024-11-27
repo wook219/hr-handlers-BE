@@ -28,8 +28,8 @@ public class AttendanceService {
 
     Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
 
-    public SuccessResponse<List<EmployeeAttendanceListResponse>> getAllAttendance(){
-        List<EmployeeAttendanceListResponse> response = attendanceRepository.findAllAttendance();
+    public SuccessResponse<List<EmployeeAttendanceListResponseDto>> getAllAttendance(){
+        List<EmployeeAttendanceListResponseDto> response = attendanceRepository.findAllAttendance();
 
         return SuccessResponse.of(
                 "전직원 출퇴근 조회 성공",
@@ -37,7 +37,7 @@ public class AttendanceService {
         );
     }
 
-    public SuccessResponse<CheckInResponse> checkIn(CheckInRequest request){
+    public SuccessResponse<CheckInResponseDto> checkIn(CheckInRequestDto request){
         Employee employee = empRepository.findById(request.getEmployeeId())
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
@@ -49,7 +49,7 @@ public class AttendanceService {
 
         attendanceRepository.save(attendance);
 
-        CheckInResponse response = attendanceMapper.toCheckInResponse(attendance);
+        CheckInResponseDto response = attendanceMapper.toCheckInResponse(attendance);
 
         return SuccessResponse.of(
                 "출근 성공",
@@ -57,7 +57,7 @@ public class AttendanceService {
         );
     }
 
-    public SuccessResponse<CheckOutResponse> checkOut(Long id){
+    public SuccessResponse<CheckOutResponseDto> checkOut(Long id){
         Attendance attendance = attendanceRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.ATTENDANCE_NOT_FOUND));
 
@@ -65,7 +65,7 @@ public class AttendanceService {
 
         attendanceRepository.save(attendance);
 
-        CheckOutResponse response = attendanceMapper.toCheckOutResponse(attendance);
+        CheckOutResponseDto response = attendanceMapper.toCheckOutResponse(attendance);
 
         return SuccessResponse.of(
                 "퇴근 성공",

@@ -1,9 +1,8 @@
 package com.hr_handlers.vacation.repository;
 
-import com.hr_handlers.vacation.dto.ApprovedVacationResponse;
-import com.hr_handlers.vacation.dto.PendingVacationResponse;
-import com.hr_handlers.vacation.dto.VacationDetailResponse;
-import com.hr_handlers.vacation.entity.Vacation;
+import com.hr_handlers.vacation.dto.ApprovedVacationResponseDto;
+import com.hr_handlers.vacation.dto.PendingVacationResponseDto;
+import com.hr_handlers.vacation.dto.VacationDetailResponseDto;
 import com.hr_handlers.vacation.entity.VacationStatus;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -24,11 +23,11 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
     }
 
     @Override
-    public VacationDetailResponse findVacationDetailById(Long id) {
+    public VacationDetailResponseDto findVacationDetailById(Long id) {
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                VacationDetailResponse.class,
+                                VacationDetailResponseDto.class,
                                 vacation.id,
                                 vacation.title,
                                 vacation.type,
@@ -45,11 +44,11 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
     }
 
     @Override
-    public List<PendingVacationResponse> findPendingVacations(Long employeeId) {
+    public List<PendingVacationResponseDto> findPendingVacations(Long employeeId) {
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                PendingVacationResponse.class,
+                                PendingVacationResponseDto.class,
                                 vacation.docNum,
                                 vacation.title,
                                 vacation.updatedAt,
@@ -65,11 +64,11 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
     }
 
     @Override
-    public List<ApprovedVacationResponse> findApprovedVacations(Long employeeId) {
+    public List<ApprovedVacationResponseDto> findApprovedVacations(Long employeeId) {
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
-                                ApprovedVacationResponse.class,
+                                ApprovedVacationResponseDto.class,
                                 vacation.docNum,
                                 vacation.title,
                                 vacation.updatedAt,

@@ -1,8 +1,6 @@
 package com.hr_handlers.attendance.entity;
 
-import com.hr_handlers.attendance.dto.CheckOutRequest;
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.todo.dto.TodoModifyRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
