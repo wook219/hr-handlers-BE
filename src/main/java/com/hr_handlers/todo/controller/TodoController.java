@@ -6,6 +6,7 @@ import com.hr_handlers.todo.dto.TodoModifyRequestDto;
 import com.hr_handlers.todo.dto.TodoRequestDto;
 import com.hr_handlers.todo.dto.TodoResponseDto;
 import com.hr_handlers.todo.service.TodoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,13 +36,13 @@ public class TodoController {
     }
 
     @PostMapping
-    public SuccessResponse<TodoResponseDto> enrollTodo(@RequestBody TodoRequestDto request){
+    public SuccessResponse<TodoResponseDto> enrollTodo(@Valid @RequestBody TodoRequestDto request){
         return todoService.enrollTodo(request);
     }
 
     @PutMapping("/{todoId}")
     public SuccessResponse<TodoResponseDto> modifyTodo(@PathVariable("todoId") Long id,
-                                                       @RequestBody TodoModifyRequestDto request){
+                                                       @Valid @RequestBody TodoModifyRequestDto request){
         return todoService.modifyTodo(id, request);
     }
 
