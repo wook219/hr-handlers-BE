@@ -8,9 +8,9 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-public class AdminSalaryResponse {
+public class AdminSalaryResponseDto {
 
-    private Long salayId;
+    private Long salaryId;
     private Long employeeId;
     private String deptName;
     private String position;
