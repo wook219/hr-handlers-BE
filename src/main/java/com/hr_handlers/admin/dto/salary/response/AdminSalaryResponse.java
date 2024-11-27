@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AdminSalaryResponse {
 
-    private Long salayId;
+    private Long salaryId;
     private Long employeeId;
     private String deptName;
     private String position;

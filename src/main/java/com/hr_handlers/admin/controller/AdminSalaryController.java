@@ -31,22 +31,22 @@ public class AdminSalaryController {
     }
 
     @PostMapping()
-    public SuccessResponse createSalary(@RequestBody @Validated AdminSalaryCreateRequest salaryCreateRequest) {
+    public SuccessResponse<Boolean> createSalary(@RequestBody @Validated AdminSalaryCreateRequest salaryCreateRequest) {
         return adminSalaryService.createSalary(salaryCreateRequest);
     }
 
     @PutMapping()
-    public SuccessResponse updateSalary(@RequestBody @Validated AdminSalaryUpdateRequest adminSalaryUpdateRequest) {
+    public SuccessResponse<Boolean> updateSalary(@RequestBody @Validated AdminSalaryUpdateRequest adminSalaryUpdateRequest) {
         return adminSalaryService.updateSalary(adminSalaryUpdateRequest);
     }
 
     @DeleteMapping()
-    public SuccessResponse deleteSalary(@RequestBody List<Long> salaryIds) {
+    public SuccessResponse<Boolean> deleteSalary(@RequestBody List<Long> salaryIds) {
         return adminSalaryService.deleteSalary(salaryIds);
     }
 
     @PostMapping("/excel/upload")
-    public SuccessResponse excelUpload(@RequestPart(value = "file", required = true) MultipartFile file) throws IOException {
+    public SuccessResponse<Boolean> excelUpload(@RequestPart(value = "file", required = true) MultipartFile file) throws IOException {
         List<AdminSalaryExcelUploadRequest> adminSalaryExcelUploadRequests = excelUploadUtils.parseExcelToObject(file, AdminSalaryExcelUploadRequest.class);
         return adminSalaryService.excelUploadSalary(adminSalaryExcelUploadRequests);
     }

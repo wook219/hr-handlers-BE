@@ -29,43 +29,34 @@ public class AdminSalaryService {
 
     // 급여관리 전체 조회
     public SuccessResponse<List<AdminSalaryResponse>> getAllUserSalary() {
-        List<AdminSalaryResponse> adminSalaryRespons = adminSalaryRepository.findAllSalary();
-        return SuccessResponse.of(
-                "급여 관리 조회 성공",
-                adminSalaryRespons);
+        return SuccessResponse.of("급여 관리 조회 성공", adminSalaryRepository.findAllSalary());
     }
 
     // 급여관리 추가
-    public SuccessResponse createSalary(AdminSalaryCreateRequest salaryCreateRequest) {
+    public SuccessResponse<Boolean> createSalary(AdminSalaryCreateRequest salaryCreateRequest) {
         Employee employee = empRepository.findById(salaryCreateRequest.getEmployeeId()).orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
         Salary salaryEntity = salaryCreateRequest.toCreateEntity(employee);
         adminSalaryRepository.save(salaryEntity);
-        return SuccessResponse.of(
-                "급여가 등록 되었습니다.",
-                null);
+        return SuccessResponse.of("급여가 등록 되었습니다.", true);
     }
 
     // 급여관리 수정
     @Transactional
-    public SuccessResponse updateSalary(AdminSalaryUpdateRequest adminSalaryUpdateRequest) {
+    public SuccessResponse<Boolean> updateSalary(AdminSalaryUpdateRequest adminSalaryUpdateRequest) {
         Salary salaryEntity = adminSalaryRepository.findById(adminSalaryUpdateRequest.getSalaryId()).orElseThrow(() -> new GlobalException(ErrorCode.SALARY_NOT_FOUND));
         adminSalaryUpdateRequest.toUpdateEntity(salaryEntity);
-        return SuccessResponse.of(
-                "급여가 수정 되었습니다.",
-                null);
+        return SuccessResponse.of("급여가 수정 되었습니다.", true);
     }
 
     // 급여관리 삭제
-    public SuccessResponse deleteSalary(List<Long> salaryIds) {
+    public SuccessResponse<Boolean> deleteSalary(List<Long> salaryIds) {
         adminSalaryRepository.deleteAllByIdInBatch(salaryIds);
-        return SuccessResponse.of(
-                "급여가 삭제 되었습니다.",
-                null);
+        return SuccessResponse.of("급여가 삭제 되었습니다.", true);
     }
 
     // 급여관리 엑셀 업로드
     @Transactional
-    public SuccessResponse excelUploadSalary(List<AdminSalaryExcelUploadRequest> adminSalaryExcelUploadRequests) {
+    public SuccessResponse<Boolean> excelUploadSalary(List<AdminSalaryExcelUploadRequest> adminSalaryExcelUploadRequests) {
 
         // todo : 엑셀dto에서 a사원의 2024-11-13 row가 2개 이상일 경우 유효성 검사 어떻게 처리할지??
         // todo : 엑셀에 빈 행이 있을경우 유효성 검사??
@@ -99,8 +90,6 @@ public class AdminSalaryService {
 
         adminSalaryRepository.saveAll(salaries);
 
-        return SuccessResponse.of(
-                "급여가 등록 되었습니다.",
-                null);
+        return SuccessResponse.of("급여가 등록 되었습니다.", true);
     }
 }
