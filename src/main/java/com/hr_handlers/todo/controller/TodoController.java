@@ -20,8 +20,12 @@ public class TodoController {
 
     // 모든 일정 조회
     @GetMapping("/{employeeId}")
-    public SuccessResponse<List<AllTodoResponse>> getAllTodo(@PathVariable("employeeId") Long employeeId){
-        return todoService.getAllTodo(employeeId);
+    public SuccessResponse<List<AllTodoResponse>> getAllTodo(
+            @PathVariable("employeeId") Long employeeId,
+            @RequestParam("start") String start,
+            @RequestParam("end") String end)
+    {
+        return todoService.getAllTodo(employeeId, start, end);
     }
 
     // 일정 상세 조회
@@ -42,7 +46,7 @@ public class TodoController {
     }
 
     @DeleteMapping("/{todoId}")
-    public SuccessResponse<TodoResponse> deleteTodo(@PathVariable("todoId") Long id){
+    public SuccessResponse<Boolean> deleteTodo(@PathVariable("todoId") Long id){
         return todoService.deleteTodo(id);
     }
 }
