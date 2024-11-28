@@ -61,8 +61,8 @@ public class ChatMessageService {
     }
 
     // 메시지 수정
-    public ChatMessageResponseDto updateMessage(Long chatMessageId, ChatMessageRequestDto chatMessageRequestDto, String empNo) {
-        ChatMessage chatMessage = chatMessageRepository.findById(chatMessageId)
+    public ChatMessageResponseDto updateMessage(ChatMessageRequestDto chatMessageRequestDto, String empNo) {
+        ChatMessage chatMessage = chatMessageRepository.findById(chatMessageRequestDto.getMessageId())
                 .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_MESSAGE_NOT_FOUND));
 
         Employee employee = empRepository.findByEmpNo(empNo)

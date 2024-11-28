@@ -40,7 +40,7 @@ public class ChatMessageController {
                               @Payload ChatMessageRequestDto chatMessageRequestDto,
                               @Header("simpUser") Principal principal) {
         String empNo = principal.getName();
-        ChatMessageResponseDto chatMessageResponseDto = chatMessageService.updateMessage(chatRoomId, chatMessageRequestDto, empNo);
+        ChatMessageResponseDto chatMessageResponseDto = chatMessageService.updateMessage(chatMessageRequestDto, empNo);
         messagingTemplate.convertAndSend("/topic/message/update/" + chatRoomId, chatMessageResponseDto);
     }
 
