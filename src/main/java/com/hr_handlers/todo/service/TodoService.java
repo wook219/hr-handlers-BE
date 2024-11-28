@@ -31,7 +31,7 @@ public class TodoService {
     private final EmpRepository empRepository;
 
     // 모든 일정 조회
-    public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(Long employeeId, String start, String end){
+    public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(String empNo, String start, String end){
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -40,7 +40,7 @@ public class TodoService {
 
         return SuccessResponse.of(
                 "전체 일정 조회 성공",
-                todoRepository.findAllTodoByEmployeeId(employeeId, startDateTime, endDateTime)
+                todoRepository.findAllTodoByEmployeeId(empNo, startDateTime, endDateTime)
         );
     }
 
@@ -58,7 +58,7 @@ public class TodoService {
 
     // 일정 등록
     public SuccessResponse<TodoResponseDto> enrollTodo(TodoRequestDto request){
-        Employee employee = empRepository.findById(request.getEmployeeId())
+        Employee employee = empRepository.findByEmpNo(request.getEmpNo())
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         Todo todo = Todo.builder()

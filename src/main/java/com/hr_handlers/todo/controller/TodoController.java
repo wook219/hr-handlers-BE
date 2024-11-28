@@ -20,13 +20,13 @@ public class TodoController {
     private final TodoService todoService;
 
     // 모든 일정 조회
-    @GetMapping("/{employeeId}")
+    @GetMapping("/{empNo}")
     public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(
-            @PathVariable("employeeId") Long employeeId,
+            @PathVariable("empNo") String empNo,
             @RequestParam("start") String start,
             @RequestParam("end") String end)
     {
-        return todoService.getAllTodo(employeeId, start, end);
+        return todoService.getAllTodo(empNo, start, end);
     }
 
     // 일정 상세 조회
