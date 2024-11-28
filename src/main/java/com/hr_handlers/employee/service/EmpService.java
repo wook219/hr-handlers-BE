@@ -10,7 +10,6 @@ import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,17 +18,13 @@ public class EmpService {
     private final EmpRepository empRepository;
 
     // 사원 상세 조회
-    @Transactional(readOnly = true)
     public SuccessResponse<EmpDetailResponseDto> getEmpDetail(String empNo){
         Employee employee = findEmployeeByEmpNo(empNo);
 
-        EmpDetailResponseDto response = EmpMapper.toEmpDetailResponseDto(employee);
-
-        return SuccessResponse.of("사원 상세 조회 성공", response);
+        return SuccessResponse.of("사원 상세 조회 성공", EmpMapper.toEmpDetailResponseDto(employee));
     }
 
     // 사원 수정
-    @Transactional
     public SuccessResponse<Void> updateEmpDetail(String empNo, EmpUpdateRequestDto updateRequest) {
         Employee employee = findEmployeeByEmpNo(empNo);
 
