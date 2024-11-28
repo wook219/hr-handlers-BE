@@ -34,21 +34,15 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
                     String token = accessor.getFirstNativeHeader("Authorization");
                     if (token != null && token.startsWith("Bearer ")) {
-                        token = token.substring(7);
-                        try {
-                            // 토큰 만료 여부 확인
-                            if (!jwtUtil.isExpired(token)) {
-                                String empNo = jwtUtil.getUsername(token); // 사원 번호 찾기
-                                accessor.setUser(new Principal() {
-                                    @Override
-                                    public String getName() {
-                                        return empNo;
-                                    }
-                                });
+                        token = token.replace("Bearer ", "");
+                        // 사원 번호 찾기
+                        String empNo = jwtUtil.getUsername(token);
+                        accessor.setUser(new Principal() {
+                            @Override
+                            public String getName() {
+                                return empNo;
                             }
-                        } catch (ExpiredJwtException e) {
-                            // 토큰 만료
-                        }
+                        });
                     }
                 }
                 return message;
