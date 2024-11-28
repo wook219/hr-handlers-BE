@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class EmpDetailResponseDto {
-    private Long id;
     private String empNo;
     private String name;
     private String email;
@@ -22,5 +21,5 @@ public class EmpDetailResponseDto {
     private String introduction;
     private Double leaveBalance;
     private String profileImageUrl;
-    private String departmentName;
+    private String deptName;
 }
