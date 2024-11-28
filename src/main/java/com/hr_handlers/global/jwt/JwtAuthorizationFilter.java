@@ -25,6 +25,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
+    // HTTP 요청에서 JWT를 추출 및 토큰 검증
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("authorization now");
@@ -35,7 +36,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         // 토큰이 없다면 다음 필터로 넘김
         if(accessToken == null){
             filterChain.doFilter(request, response);
-
             return;
         }
 
@@ -53,16 +53,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Authorization 헤더에서 JWT 추출
-        String authorization = request.getHeader("Authorization");
-
-        if(authorization == null || !authorization.startsWith("Bearer ")){
-            log.info("token null");
-            filterChain.doFilter(request, response);
-
-            return;
-        }
-
         // 토큰이 access인지 확인
         String category = jwtUtil.getCategory(accessToken);
 
@@ -77,6 +67,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
+        // 토큰에서 사용자 정보 추춯
         String empNo = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
@@ -84,9 +75,16 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 .empNo(empNo)
                 .role(Role.valueOf(role))
                 .build();
+
+        // 사용자 정보 객체 생성
         UserDetailsImpl userDetails = new UserDetailsImpl(employee);
 
-        Authentication authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        // 인증 토큰 생성
+        Authentication authToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);

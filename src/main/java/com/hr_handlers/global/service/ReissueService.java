@@ -42,9 +42,11 @@ public class ReissueService {
         String empNo = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
         String newAccessToken = jwtUtil.createToken("access", empNo, role, 600000L);
+        String newRefreshToken = jwtUtil.createToken("refresh", empNo, role,864000000L);
 
         // Response 헤더에 새로운 Access Token 설정
         response.setHeader("access", newAccessToken);
+        response.addCookie(createCookie("refresh", newRefreshToken));
 
         return newAccessToken;
     }
@@ -60,5 +62,15 @@ public class ReissueService {
             }
         }
         return null;
+    }
+
+    private Cookie createCookie(String key, String value){
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24*60*60);
+        // cookie.setSecure(true);
+        // cookie.setPath("/");
+        cookie.setHttpOnly(true);
+
+        return cookie;
     }
 }

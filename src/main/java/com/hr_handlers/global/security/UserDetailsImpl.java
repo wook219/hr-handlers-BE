@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
+// 사용자 인증 정보 관리
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 

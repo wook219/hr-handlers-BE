@@ -26,11 +26,11 @@ public class AdminEmpService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // 사원 등록
-    @Transactional
     public SuccessResponse<String> register(EmpRegisterDto registerRequest){
         if (empRepository.findByEmpNo(registerRequest.getEmpNo()).isPresent()) {
             throw new GlobalException(ErrorCode.EMPLOYEE_ALREADY_EXISTS);
         }
+
         String encodedPassword = bCryptPasswordEncoder.encode(registerRequest.getPassword());
 
         Employee newEmployee = EmpMapper.toEmployeeEntity(registerRequest, encodedPassword);
@@ -41,9 +41,9 @@ public class AdminEmpService {
     }
 
     // 사원 삭제
-    @Transactional
     public SuccessResponse<Void> delete(String empNo) {
-        Employee employee = findEmployeeByEmpNo(empNo);
+        Employee employee = empRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         empRepository.delete(employee);
 
@@ -51,7 +51,6 @@ public class AdminEmpService {
     }
 
     // 사원 수정
-    @Transactional
     public SuccessResponse<Void> updateEmpDetail(String empNo, AdminEmpUpdateRequestDto updateRequest) {
         Employee employee = findEmployeeByEmpNo(empNo);
 
@@ -60,7 +59,7 @@ public class AdminEmpService {
                 updateRequest.getContractType(),
                 updateRequest.getPosition(),
                 updateRequest.getLeaveBalance(),
-                updateRequest.getDepartmentName()
+                updateRequest.getDeptName()
         );
         empRepository.save(employee);
 
@@ -68,7 +67,6 @@ public class AdminEmpService {
     }
 
     // 사원 전체 조회
-    @Transactional(readOnly = true)
     public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(
             int page, int size, String sortField, String sortDir, String keyword) {
 
