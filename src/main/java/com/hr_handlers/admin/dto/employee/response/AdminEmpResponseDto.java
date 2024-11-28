@@ -21,5 +21,5 @@ public class AdminEmpResponseDto {
     private String introduction;
     private Double leaveBalance;
     private String profileImageUrl;
-    private String departmentName;
+    private String deptName;
 }

@@ -45,38 +45,23 @@ public class SecurityConfig {
                 .csrf((csrf) -> csrf.disable())
                 .cors((cors) -> cors
                         .configurationSource(request -> {
-
                             CorsConfiguration configuration = new CorsConfiguration();
-
-                            // 3000번 포트 허용
                             configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-
-                            // 모든 메서드 허용
                             configuration.setAllowedMethods(Collections.singletonList("*"));
-
                             configuration.setAllowCredentials(true);
-
-                            // 허용할 헤더
                             configuration.setAllowedHeaders(Collections.singletonList("*"));
-
-                            // 허용 시간
-                            configuration.setMaxAge(3600L);
-
-                            // Authorization 헤더 노출
-                            configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-
+                            // configuration.setMaxAge(3600L);
+                            configuration.setExposedHeaders(Collections.singletonList("*"));
+                            configuration.addExposedHeader("access");
                             return configuration;
-                        }));
-        http
-                .formLogin((auth) -> auth.disable());
-
-        http
+                        }))
+                .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable());
 
         // 경로별 접근 제어
         http.authorizeHttpRequests((request) ->
                 request
-                        .requestMatchers("/login", "/emp/**").permitAll()
+                        .requestMatchers("/login", "/emp/**", "/reissue").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // Swagger 문서 관련 경로 전체 접근 허용
                         // .requestMatchers("/swagger-ui/**").permitAll()

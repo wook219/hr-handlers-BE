@@ -19,8 +19,7 @@ public class EmpController {
     // 사원 조회
     @GetMapping
     public SuccessResponse<EmpDetailResponseDto> getEmpDetail(Authentication authentication){
-        String empNo = authentication.getName();
-        return empService.getEmpDetail(empNo);
+        return empService.getEmpDetail(authentication.getName());
     }
 
     // 사원 수정

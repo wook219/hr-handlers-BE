@@ -22,5 +22,5 @@ public class AdminEmpUpdateRequestDto {
     @Size(min = 0, max = 20, message = "휴가 잔여일수는 0 이상이어야 합니다.")
     private Double leaveBalance;
 
-    private String departmentName;
+    private String deptName;
 }

@@ -30,15 +30,16 @@ public class EmpSearchRepositoryImpl implements EmpSearchRepository {
                 ? employee.name.containsIgnoreCase(keyword)
                 : null;
 
+        // 사원 목록 검색 쿼리
         List<Employee> results = queryFactory
                 .selectFrom(employee)
                 .where(condition)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(employee.createdAt.desc())
+                .offset(pageable.getOffset()) // 페이징 시작 위치
+                .limit(pageable.getPageSize()) // 페이징 개수 제한
+                .orderBy(employee.createdAt.desc()) // 내림차순 정렬
                 .fetch();
 
-        // 개수 조회
+        // 페이징을 위한 개수 조회 -> 쿼리 생성
         long total = queryFactory
                 .select(employee.count())
                 .from(employee)

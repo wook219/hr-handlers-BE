@@ -49,7 +49,7 @@ public class EmpMapper {
                 .introduction(employee.getIntroduction())
                 .leaveBalance(employee.getLeaveBalance())
                 .profileImageUrl(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null)
-                .departmentName(employee.getDepartment() != null ? employee.getDepartment().getDeptName() : null)
+                .deptName(employee.getDepartment() != null ? employee.getDepartment().getDeptName() : null)
                 .build();
     }
 }
