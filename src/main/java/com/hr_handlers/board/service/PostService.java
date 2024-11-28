@@ -37,7 +37,8 @@ public class PostService {
      * **/
     // 게시글 목록 조회
     public SuccessResponse<PostListResponseDto> getAllPosts(Pageable pageable) {
-        Page<Post> postsPage = postRepository.findAll(pageable);
+        // 활성화된 게시글만 조회
+        Page<Post> postsPage = postRepository.findActivePosts(pageable);
 
         if (postsPage.isEmpty()) {
             throw new GlobalException(ErrorCode.POSTS_NOT_FOUND);
