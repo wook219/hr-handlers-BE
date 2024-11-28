@@ -3,8 +3,10 @@ package com.hr_handlers.admin.service;
 import com.hr_handlers.admin.dto.employee.request.EmpRegisterDto;
 import com.hr_handlers.admin.dto.employee.request.AdminEmpUpdateRequestDto;
 import com.hr_handlers.admin.dto.employee.response.AdminEmpResponseDto;
+import com.hr_handlers.employee.entity.Department;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.mapper.EmpMapper;
+import com.hr_handlers.employee.repository.DeptRepository;
 import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
@@ -24,6 +26,7 @@ public class AdminEmpService {
 
     private final EmpRepository empRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final DeptRepository deptRepository;
 
     // 사원 등록
     public SuccessResponse<String> register(EmpRegisterDto registerRequest){
@@ -33,7 +36,15 @@ public class AdminEmpService {
 
         String encodedPassword = bCryptPasswordEncoder.encode(registerRequest.getPassword());
 
-        Employee newEmployee = EmpMapper.toEmployeeEntity(registerRequest, encodedPassword);
+        Department department = deptRepository.findByDeptName(registerRequest.getDeptName())
+                .orElseGet(() -> {
+                    Department newDepartment = Department.builder()
+                            .deptName(registerRequest.getDeptName())
+                            .build();
+                    return deptRepository.save(newDepartment); // 새 부서 저장
+                });
+
+        Employee newEmployee = EmpMapper.toEmployeeEntity(registerRequest, encodedPassword, department);
 
         empRepository.save(newEmployee);
 
