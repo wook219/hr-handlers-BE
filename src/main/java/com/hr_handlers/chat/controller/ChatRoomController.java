@@ -46,8 +46,7 @@ public class ChatRoomController {
             @PathVariable("chatRoomId") Long chatRoomId,
             Authentication authentication
     ) {
-        String empNo = authentication.getName();
-        return chatService.enterChatRoom(chatRoomId, empNo);
+        return chatService.enterChatRoom(chatRoomId, authentication.getName());
     }
 
     // 채팅방 삭제
