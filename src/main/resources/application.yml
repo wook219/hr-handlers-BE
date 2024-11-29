@@ -17,6 +17,10 @@ spring:
   jwt:
     secret: ${JWT_SECRET}
 
+  holiday:
+    service:
+      key: ${HOLIDAY_API_KEY}
+
 aws:
   s3:
     bucket:
