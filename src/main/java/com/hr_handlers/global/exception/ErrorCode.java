@@ -15,6 +15,8 @@ public enum ErrorCode {
     ATTENDANCE_NOT_FOUND(HttpStatus.NOT_FOUND, "ATTENDANCE-01", "해당 출근 기록을 찾을 수 없습니다."),
     //일정
     TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO-01", "해당 일정을 찾을 수 없습니다."),
+    HOLIDAY_API_ERROR(HttpStatus.BAD_REQUEST, "TODO-02", "잘못된 API 요청입니다."),
+    HOLIDAY_PARSE_ERROR(HttpStatus.BAD_REQUEST, "TODO-03", "XML 파싱 에러가 발생했습니다."),
     //게시판
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST-01", "해당 게시글을 찾을 수 없습니다."),
     POSTS_NOT_FOUND(HttpStatus.NOT_FOUND, "POST-02", "전체 게시글을 조회할 수 없습니다."),

@@ -5,21 +5,23 @@ import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
-import com.hr_handlers.todo.dto.AllTodoResponseDto;
-import com.hr_handlers.todo.dto.TodoModifyRequestDto;
-import com.hr_handlers.todo.dto.TodoRequestDto;
-import com.hr_handlers.todo.dto.TodoResponseDto;
+import com.hr_handlers.todo.dto.*;
 import com.hr_handlers.todo.entity.Todo;
 import com.hr_handlers.todo.mapper.TodoMapper;
 import com.hr_handlers.todo.repository.TodoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,9 @@ public class TodoService {
     private final EmpRepository empRepository;
 
     // 모든 일정 조회
-    public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(String empNo, String start, String end){
+    public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(String empNo,
+                                                                String start,
+                                                                String end){
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
