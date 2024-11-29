@@ -20,7 +20,7 @@ public class Employee extends BaseTimeEntity {
     @Column(updatable = false)
     private Long id;
 
-    @Column(name = "emp_no", nullable = false)
+    @Column(name = "emp_no", nullable = false, unique = true)
     @Comment(value = "사원 번호(아이디)")
     private String empNo;
 
@@ -70,12 +70,12 @@ public class Employee extends BaseTimeEntity {
     @Comment(value = "권한")
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_image_id")
     private ProfileImage profileImage;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = true)
+    @JoinColumn(name = "department_id")
     private Department department;
 
     // Update 메서드
