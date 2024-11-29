@@ -1,12 +1,15 @@
 package com.hr_handlers.employee.mapper;
 
-import com.hr_handlers.admin.dto.employee.EmpRegisterDto;
+import com.hr_handlers.admin.dto.employee.request.EmpRegisterDto;
+import com.hr_handlers.admin.dto.employee.response.AdminEmpResponseDto;
+import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
+import com.hr_handlers.employee.entity.Department;
 import com.hr_handlers.employee.entity.Employee;
 
 public class EmpMapper {
 
     // EmpRegisterDto -> Employee
-    public static Employee toEmployeeEntity(EmpRegisterDto registerRequest, String encodedPassword) {
+    public static Employee toEmployeeEntity(EmpRegisterDto registerRequest, String encodedPassword, Department department) {
         return Employee.builder()
                 .empNo(registerRequest.getEmpNo())
                 .password(encodedPassword) // 암호화된 비밀번호
@@ -19,6 +22,44 @@ public class EmpMapper {
                 .email(registerRequest.getEmail())
                 .phone(registerRequest.getPhone())
                 .birthDate(registerRequest.getBirthDate())
+                .department(department)
+                .build();
+    }
+
+    // Employee -> EmpDetailResponseDto
+    public static EmpDetailResponseDto toEmpDetailResponseDto(Employee employee) {
+        return EmpDetailResponseDto.builder()
+                .empNo(employee.getEmpNo())
+                .email(employee.getEmail())
+                .name(employee.getName())
+                .position(employee.getPosition())
+                // TODO : .password(employee.getPassword())
+                .phone(employee.getPhone())
+                .birthDate(employee.getBirthDate())
+                .deptName(employee.getDepartment() != null ? employee.getDepartment().getDeptName() : null)
+                .contractType(String.valueOf(employee.getContractType()))
+                .leaveBalance(employee.getLeaveBalance())
+                .joinDate(employee.getJoinDate())
+                .introduction(employee.getIntroduction())
+                .profileImageUrl(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null)
+                .build();
+    }
+
+    // Employee -> EmpListResponseDto
+    public static AdminEmpResponseDto toEmpListResponseDto(Employee employee) {
+        return AdminEmpResponseDto.builder()
+                .empNo(employee.getEmpNo())
+                .name(employee.getName())
+                .email(employee.getEmail())
+                .phone(employee.getPhone())
+                .position(employee.getPosition())
+                .birthDate(employee.getBirthDate())
+                .contractType(employee.getContractType() != null ? employee.getContractType().name() : null)
+                .joinDate(employee.getJoinDate())
+                .introduction(employee.getIntroduction())
+                .leaveBalance(employee.getLeaveBalance())
+                .profileImageUrl(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null)
+                .deptName(employee.getDepartment() != null ? employee.getDepartment().getDeptName() : null)
                 .build();
     }
 }

@@ -20,7 +20,7 @@ public class Employee extends BaseTimeEntity {
     @Column(updatable = false)
     private Long id;
 
-    @Column(name = "emp_no", nullable = false)
+    @Column(name = "emp_no", nullable = false, unique = true)
     @Comment(value = "사원 번호(아이디)")
     private String empNo;
 
@@ -61,20 +61,46 @@ public class Employee extends BaseTimeEntity {
     @Comment(value = "자기소개")
     private String introduction;
 
-    @Column(name = "leave_balance", nullable = false, columnDefinition = "DECIMAL(2,1)")
+    @Column(name = "leave_balance", nullable = false, columnDefinition = "DECIMAL(4,1)")
     @Comment(value = "휴가잔여일수")
-    private double leaveBalance;
+    private Double leaveBalance;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     @Comment(value = "권한")
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_image_id")
     private ProfileImage profileImage;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = true)
+    @JoinColumn(name = "department_id")
     private Department department;
+
+    // Update 메서드
+    public void empUpdate(String email, String phone, String introduction, String profileImage) {
+        this.email = email;
+        this.phone = phone;
+        this.introduction = introduction;
+
+        if (profileImage != null) {
+            this.profileImage = ProfileImage.builder()
+                    .profileImageUrl(profileImage)
+                    .build();
+        }
+    }
+
+    public void adminUpdate(String empNo, String contractType, String position, Double leaveBalance, String departmentName) {
+        this.empNo = empNo;
+        this.contractType = ContractType.valueOf(contractType);
+        this.position = position;
+        this.leaveBalance = leaveBalance;
+
+        if (departmentName != null && this.department != null) {
+            this.department = Department.builder()
+                    .deptName(departmentName)
+                    .build();
+        }
+    }
 }
