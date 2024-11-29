@@ -24,9 +24,8 @@ public class EmpController {
 
     // 사원 수정
     @PatchMapping
-    public SuccessResponse<Void> updateEmpDetail(Authentication authentication,
+    public SuccessResponse<Boolean> updateEmpDetail(Authentication authentication,
                                                  @RequestBody EmpUpdateRequestDto updateRequest){
-        String empNo = authentication.getName();
-        return empService.updateEmpDetail(empNo, updateRequest);
+        return empService.updateEmpDetail(authentication.getName(), updateRequest);
     }
 }

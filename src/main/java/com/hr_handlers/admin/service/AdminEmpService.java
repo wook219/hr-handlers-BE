@@ -2,15 +2,14 @@ package com.hr_handlers.admin.service;
 
 import com.hr_handlers.admin.dto.employee.request.EmpRegisterDto;
 import com.hr_handlers.admin.dto.employee.request.AdminEmpUpdateRequestDto;
+import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.admin.dto.employee.response.AdminEmpResponseDto;
+import com.hr_handlers.admin.repository.employee.AdminEmpRepository;
 import com.hr_handlers.employee.entity.Department;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.mapper.EmpMapper;
 import com.hr_handlers.employee.repository.DeptRepository;
-import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
-import com.hr_handlers.global.exception.ErrorCode;
-import com.hr_handlers.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,84 +17,52 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class AdminEmpService {
 
-    private final EmpRepository empRepository;
+    private final AdminEmpRepository empRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final DeptRepository deptRepository;
 
     // 사원 등록
     public SuccessResponse<String> register(EmpRegisterDto registerRequest){
-        if (empRepository.findByEmpNo(registerRequest.getEmpNo()).isPresent()) {
-            throw new GlobalException(ErrorCode.EMPLOYEE_ALREADY_EXISTS);
-        }
-
-        String encodedPassword = bCryptPasswordEncoder.encode(registerRequest.getPassword());
-
+        // 없는 부서면 저장
         Department department = deptRepository.findByDeptName(registerRequest.getDeptName())
-                .orElseGet(() -> {
-                    Department newDepartment = Department.builder()
-                            .deptName(registerRequest.getDeptName())
-                            .build();
-                    return deptRepository.save(newDepartment); // 새 부서 저장
-                });
+                .orElseGet(() -> deptRepository.save(
+                        Department.builder().deptName(registerRequest.getDeptName()).build()
+                ));
 
-        Employee newEmployee = EmpMapper.toEmployeeEntity(registerRequest, encodedPassword, department);
+        empRepository.save(EmpMapper.toEmployeeEntity(registerRequest,
+                bCryptPasswordEncoder.encode(registerRequest.getPassword()),
+                department));
 
-        empRepository.save(newEmployee);
-
-        return SuccessResponse.of("사원 등록 성공", null);
+        return SuccessResponse.of("사원 등록 성공", "사원이 등록되었습니다.");
     }
 
     // 사원 삭제
-    public SuccessResponse<Void> delete(String empNo) {
-        Employee employee = empRepository.findByEmpNo(empNo)
-                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
-
-        empRepository.delete(employee);
-
-        return SuccessResponse.of("사원 삭제 성공", null);
+    public SuccessResponse<Boolean> delete(String empNo) {
+        empRepository.deleteEmp(empNo);
+        return SuccessResponse.of("사원 삭제 성공", true);
     }
 
     // 사원 수정
-    public SuccessResponse<Void> updateEmpDetail(String empNo, AdminEmpUpdateRequestDto updateRequest) {
-        Employee employee = findEmployeeByEmpNo(empNo);
-
-        employee.adminUpdate(
-                updateRequest.getEmpNo(),
-                updateRequest.getContractType(),
-                updateRequest.getPosition(),
-                updateRequest.getLeaveBalance(),
-                updateRequest.getDeptName()
-        );
-        empRepository.save(employee);
-
-        return SuccessResponse.of("사원 정보 수정", null);
+    public SuccessResponse<Boolean> updateEmpDetail(String empNo, AdminEmpUpdateRequestDto updateRequest) {
+        empRepository.updateEmp(empNo, updateRequest);
+        return SuccessResponse.of("사원 정보 수정", true);
     }
 
     // 사원 전체 조회
-    public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(
-            int page, int size, String sortField, String sortDir, String keyword) {
+    public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(SearchRequestDto requestDto) {
+        Pageable pageable = PageRequest.of(
+                requestDto.getPage(),
+                requestDto.getSize(),
+                Sort.by(Sort.Direction.fromString(requestDto.getSortDir()), requestDto.getSortField())
+        );
+        // 검색 조건에 따른 데이터 조회
+        Page<Employee> employees = empRepository.findEmpByName(requestDto.getKeyword(), pageable);
 
-        Sort sort = Sort.by(sortField);
-        sort = sortDir.equalsIgnoreCase("asc") ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(page, size, sort);
-
-        Page<Employee> employees = (keyword != null && !keyword.isEmpty())
-                ? empRepository.findEmpByName(keyword, pageable)
-                : empRepository.findAll(pageable);
-
-        Page<AdminEmpResponseDto> response = employees.map(EmpMapper::toEmpListResponseDto);
-
-        return SuccessResponse.of("사원 전체 조회 성공", response);
-    }
-
-    private Employee findEmployeeByEmpNo(String empNo) {
-        return empRepository.findByEmpNo(empNo)
-                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+        return SuccessResponse.of("사원 전체 조회 성공", employees.map(EmpMapper::toEmpListResponseDto));
     }
 }

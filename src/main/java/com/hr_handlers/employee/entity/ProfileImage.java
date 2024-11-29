@@ -16,7 +16,7 @@ public class ProfileImage extends BaseTimeEntity {
     @Column(updatable = false)
     private Long id;
 
-    @Column(name = "profile_image_url", nullable = false, length = 1000)
+    @Column(name = "profile_image_url", length = 1000)
     @Comment(value = "프로필 이미지 URL")
     private String profileImageUrl;
 
