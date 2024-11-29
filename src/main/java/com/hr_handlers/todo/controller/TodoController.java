@@ -1,10 +1,8 @@
 package com.hr_handlers.todo.controller;
 
 import com.hr_handlers.global.dto.SuccessResponse;
-import com.hr_handlers.todo.dto.AllTodoResponseDto;
-import com.hr_handlers.todo.dto.TodoModifyRequestDto;
-import com.hr_handlers.todo.dto.TodoRequestDto;
-import com.hr_handlers.todo.dto.TodoResponseDto;
+import com.hr_handlers.todo.dto.*;
+import com.hr_handlers.todo.service.HolidayService;
 import com.hr_handlers.todo.service.TodoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +16,9 @@ import java.util.List;
 public class TodoController {
 
     private final TodoService todoService;
+    private final HolidayService holidayService;
 
-    // 모든 일정 조회
+    // 월별 일정 조회
     @GetMapping("/{empNo}")
     public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(
             @PathVariable("empNo") String empNo,
@@ -27,6 +26,15 @@ public class TodoController {
             @RequestParam("end") String end)
     {
         return todoService.getAllTodo(empNo, start, end);
+    }
+
+    // 월별 공휴일 조회
+    @GetMapping("/holidays/{year}/{month}")
+    public SuccessResponse<List<HolidayResponseDto>> getHolidays(
+            @PathVariable("year") int year,
+            @PathVariable("month") int month
+    ){
+        return holidayService.getHolidays(year, month);
     }
 
     // 일정 상세 조회
