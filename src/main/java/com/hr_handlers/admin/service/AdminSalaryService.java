@@ -2,6 +2,7 @@ package com.hr_handlers.admin.service;
 
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryCreateRequestDto;
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryExcelUploadRequestDto;
+import com.hr_handlers.admin.dto.salary.request.AdminSalarySearchRequestDto;
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryUpdateRequestDto;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponseDto;
 import com.hr_handlers.admin.repository.AdminSalaryRepository;
@@ -13,6 +14,8 @@ import com.hr_handlers.global.exception.GlobalException;
 import com.hr_handlers.salary.entity.Salary;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +33,11 @@ public class AdminSalaryService {
     // 급여관리 전체 조회
     public SuccessResponse<List<AdminSalaryResponseDto>> getAllUserSalary() {
         return SuccessResponse.of("급여 관리 조회 성공", adminSalaryRepository.findAllSalary());
+    }
+
+    // 급여관리 조건 조회
+    public SuccessResponse<Page<AdminSalaryResponseDto>> searchSalary(Pageable pageable, AdminSalarySearchRequestDto adminSalarySearchRequestDto) {
+        return SuccessResponse.of("급여 관리 조회 성공", adminSalaryRepository.searchSalaryByFilter(pageable, adminSalarySearchRequestDto));
     }
 
     // 급여관리 추가
@@ -60,9 +68,6 @@ public class AdminSalaryService {
 
         // todo : 엑셀dto에서 a사원의 2024-11-13 row가 2개 이상일 경우 유효성 검사 어떻게 처리할지??
         // todo : 엑셀에 빈 행이 있을경우 유효성 검사??
-        // todo : 이미 DB에 a사원의 2024-11-13 데이터가 있을때 엑셀에도 동일한 급여 지급일에 데이터가 있을경우
-        //        -> 사용자의 의도 일수있으니 insert한다??
-        //        -> 예외 처리한다??
 
         // 엑셀 dto에서 Employee ID 목록 뽑아내기
         List<Long> employeeIds = adminSalaryExcelUploadRequestDtos.stream()
