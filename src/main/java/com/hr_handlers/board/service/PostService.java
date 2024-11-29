@@ -9,6 +9,7 @@ import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
+import com.hr_handlers.global.s3bucket.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +18,13 @@ import com.hr_handlers.board.mapper.PostMapper;
 import com.hr_handlers.board.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final EmpRepository empRepository;
+
+    private final S3Service s3Service;
 
     /**
      * 회원 기능 추가 이후 사용자 구분 예정
@@ -174,6 +178,7 @@ public class PostService {
 
 
     // 게시글 삭제
+    /*
     public SuccessResponse<String> deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
@@ -184,5 +189,42 @@ public class PostService {
         } catch (Exception e) {
             throw new GlobalException(ErrorCode.POST_DELETE_FAILED);
         }
+    }*/
+
+    @Transactional
+    public SuccessResponse<String> deletePost(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
+        try {
+            // content에서 이미지 URL 추출
+            if (post.getContent() != null && !post.getContent().isEmpty()) {
+                extractImageUrlsFromContent(post.getContent()).forEach(s3Service::deleteFile);
+            }
+
+            // 게시글 논리 삭제
+            post.setIsDelete("Y");
+            postRepository.save(post);
+
+            return SuccessResponse.of("게시글 삭제 성공", "게시글이 삭제되었습니다.");
+        } catch (Exception e) {
+            log.error("게시글 삭제 실패: ", e);
+            throw new GlobalException(ErrorCode.POST_DELETE_FAILED);
+        }
     }
+
+    // content에서 이미지 URL 추출 메서드
+    private List<String> extractImageUrlsFromContent(String content) {
+        List<String> imageUrls = new ArrayList<>();
+        Document document = Jsoup.parse(content); // HTML 파싱
+        Elements imgElements = document.select("figure img"); // 모든 <figure> 내부의 <img> 태그 선택
+
+        for (Element img : imgElements) {
+            String src = img.attr("src"); // src 속성 값 추출
+            if (src != null && !src.isEmpty()) {
+                imageUrls.add(src);
+            }
+        }
+        return imageUrls;
+    }
+
 }
