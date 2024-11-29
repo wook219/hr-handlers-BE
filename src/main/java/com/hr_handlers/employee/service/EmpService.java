@@ -19,28 +19,14 @@ public class EmpService {
 
     // 사원 상세 조회
     public SuccessResponse<EmpDetailResponseDto> getEmpDetail(String empNo){
-        Employee employee = findEmployeeByEmpNo(empNo);
-
+        Employee employee =  empRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
         return SuccessResponse.of("사원 상세 조회 성공", EmpMapper.toEmpDetailResponseDto(employee));
     }
 
     // 사원 수정
-    public SuccessResponse<Void> updateEmpDetail(String empNo, EmpUpdateRequestDto updateRequest) {
-        Employee employee = findEmployeeByEmpNo(empNo);
-
-        employee.empUpdate(
-                updateRequest.getEmail(),
-                updateRequest.getPhone(),
-                updateRequest.getIntroduction(),
-                updateRequest.getProfileImageUrl()
-        );
-        empRepository.save(employee);
-
-        return SuccessResponse.of("사원 정보 수정", null);
-    }
-
-    private Employee findEmployeeByEmpNo(String empNo) {
-        return empRepository.findByEmpNo(empNo)
-                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+    public SuccessResponse<Boolean> updateEmpDetail(String empNo, EmpUpdateRequestDto updateRequest) {
+        empRepository.updateEmp(empNo, updateRequest);
+        return SuccessResponse.of("사원 정보 수정", true);
     }
 }
