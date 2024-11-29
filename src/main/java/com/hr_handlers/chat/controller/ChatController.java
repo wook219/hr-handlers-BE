@@ -19,16 +19,14 @@ public class ChatController {
     // 참여한 채팅 목록 조회
     @GetMapping
     public SuccessResponse<List<ChatResponseDto>> getChats(Authentication authentication) {
-        String empNo = authentication.getName();
-        return chatService.getChats(empNo);
+        return chatService.getChats(authentication.getName());
     }
 
     // 채팅방 퇴장
     @DeleteMapping("/{chatRoomId}")
     public SuccessResponse<Long> deleteChat(@PathVariable("chatRoomId") Long chatRoomId,
                                             Authentication authentication) {
-        String empNo = authentication.getName();
-        return chatService.exitChatRoom(chatRoomId, empNo);
+        return chatService.exitChatRoom(chatRoomId, authentication.getName());
     }
 
 }
