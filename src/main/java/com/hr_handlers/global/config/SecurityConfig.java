@@ -65,8 +65,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         // Swagger 문서 관련 경로 전체 접근 허용
                         // .requestMatchers("/swagger-ui/**").permitAll()
-                        // .anyRequest().permitAll());          // 전체 허용(임시)
-                        .anyRequest().authenticated());
+                         .anyRequest().permitAll());          // 전체 허용(임시)
+                        //.anyRequest().authenticated());
         http
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), JwtAuthenticationFilter.class);
 
