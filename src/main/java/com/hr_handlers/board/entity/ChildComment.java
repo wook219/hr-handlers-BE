@@ -31,4 +31,5 @@ public class ChildComment extends BaseTimeEntity {
 
     @Column(name = "is_delete", length = 1, nullable = false)
     private String isDelete;
+
 }

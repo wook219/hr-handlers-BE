@@ -1,9 +1,6 @@
 package com.hr_handlers.admin.service;
 
-import com.hr_handlers.admin.dto.salary.request.AdminSalaryCreateRequestDto;
-import com.hr_handlers.admin.dto.salary.request.AdminSalaryExcelUploadRequestDto;
-import com.hr_handlers.admin.dto.salary.request.AdminSalarySearchRequestDto;
-import com.hr_handlers.admin.dto.salary.request.AdminSalaryUpdateRequestDto;
+import com.hr_handlers.admin.dto.salary.request.*;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponseDto;
 import com.hr_handlers.admin.repository.AdminSalaryRepository;
 import com.hr_handlers.employee.entity.Employee;
@@ -11,6 +8,7 @@ import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
+import com.hr_handlers.global.utils.ExcelUploadUtils;
 import com.hr_handlers.salary.entity.Salary;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,6 +29,7 @@ public class AdminSalaryService {
 
     private final AdminSalaryRepository adminSalaryRepository;
     private final EmpRepository empRepository;
+    private final ExcelUploadUtils excelUploadUtils;
 
     // 급여관리 전체 조회
     public SuccessResponse<List<AdminSalaryResponseDto>> getAllUserSalary() {
@@ -96,5 +97,11 @@ public class AdminSalaryService {
         adminSalaryRepository.saveAll(salaries);
 
         return SuccessResponse.of("급여가 등록 되었습니다.", true);
+    }
+
+    public SuccessResponse<Boolean> excelDownloadSalary(OutputStream stream, AdminSalarySearchRequestDto adminSalarySearchRequestDto) throws IOException, IllegalAccessException {
+        List<AdminSalaryExcelDownloadRequestDto> adminSalaryResponseDtos = adminSalaryRepository.searchSalaryForExcel(adminSalarySearchRequestDto);
+        excelUploadUtils.renderObjectToExcel(stream, adminSalaryResponseDtos, AdminSalaryExcelDownloadRequestDto.class);
+        return SuccessResponse.of("성공적으로 다운로드 되었습니다.", true);
     }
 }

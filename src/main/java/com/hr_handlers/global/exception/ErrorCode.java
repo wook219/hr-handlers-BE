@@ -23,6 +23,15 @@ public enum ErrorCode {
     POST_CREATE_FAILED(HttpStatus.NOT_FOUND, "POST-03", "게시글 생성에 실패했습니다."),
     POST_UPDATE_FAILED(HttpStatus.NOT_FOUND, "POST-04", "게시글 수정에 실패했습니다."),
     POST_DELETE_FAILED(HttpStatus.NOT_FOUND, "POST-05", "게시글 삭제에 실패했습니다."),
+
+    // 댓글
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-01", "댓글을 찾을 수 없습니다."),
+    COMMENT_UPDATE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "COMMENT-02", "댓글 수정 권한이 없습니다."),
+    COMMENT_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "COMMENT-03", "댓글 삭제 권한이 없습니다."),
+    REPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-04", "대댓글을 찾을 수 없습니다."),
+    REPLY_UPDATE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "COMMENT-05", "대댓글 수정 권한이 없습니다."),
+    REPLY_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "COMMENT-06", "대댓글 삭제 권한이 없습니다."),
+
     //채팅
     CHAT_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT-01", "참여한 채팅방을 찾을 수 없습니다."),
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "CHAT_ROOM-01", "해당 채팅방을 찾을 수 없습니다."),
@@ -31,6 +40,8 @@ public enum ErrorCode {
     CHAT_MESSAGE_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "CHAT_MESSAGE-03", "메시지 삭제 권한이 없습니다."),
     //급여
     SALARY_NOT_FOUND(HttpStatus.NOT_FOUND, "SALARY-01", "해당 급여를 조회할 수 없습니다."),
+    // 엑셀
+    EXCEL_HEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "EXCEL_HEADER_01", "엑셀 헤더 생성 중에 문제가 발생했습니다."),
     //사원
     EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "EMPLOYEE-01", "사원을 찾을 수 없습니다."),
     EMPLOYEE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"EMPLOYEE-02", "사원 번호가 이미 존재합니다."),

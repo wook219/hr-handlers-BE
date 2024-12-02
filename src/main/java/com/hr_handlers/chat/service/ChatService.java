@@ -34,25 +34,28 @@ public class ChatService {
         Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
-        // ChatId 객체 생성
-        ChatId chatId = ChatId.builder()
-                .chatRoomId(chatRoom.getId())
-                .employeeId(employee.getId())
-                .build();
+        Chat existingChat = chatRepository.findByChatId(chatRoom.getId(), employee.getId());
 
-        // Chat 객체 생성
-        Chat chat = Chat.builder()
-                .id(chatId)
-                .chatRoom(chatRoom)
-                .employee(employee)
-                .build();
+        if (existingChat == null) {
+            // ChatId 객체 생성
+            ChatId chatId = ChatId.builder()
+                    .chatRoomId(chatRoom.getId())
+                    .employeeId(employee.getId())
+                    .build();
 
-        chatRoomRepository.save(chatRoom);
+            // Chat 객체 생성
+            Chat chat = Chat.builder()
+                    .id(chatId)
+                    .chatRoom(chatRoom)
+                    .employee(employee)
+                    .build();
 
-        Chat enteredChat = chatRepository.save(chat);
-        ChatResponseDto chatResponseDto = chatMapper.toChatResponseDto(enteredChat);
-
-        return SuccessResponse.of("채팅 참여에 성공했습니다.", chatResponseDto);
+            Chat enteredChat = chatRepository.save(chat);
+            return SuccessResponse.of("채팅 참여에 성공했습니다.", chatMapper.toChatResponseDto(enteredChat));
+        } else {
+            // 이미 참여 중인 채팅방인 경우
+            return SuccessResponse.of("이미 이 채팅방에 참여 중입니다.", chatMapper.toChatResponseDto(existingChat));
+        }
     }
     
     // 참여한 채팅 목록 조회
