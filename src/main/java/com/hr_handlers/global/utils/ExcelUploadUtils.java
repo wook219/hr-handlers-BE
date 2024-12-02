@@ -1,13 +1,14 @@
 package com.hr_handlers.global.utils;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import com.hr_handlers.global.exception.ErrorCode;
+import com.hr_handlers.global.exception.GlobalException;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.util.*;
 
 @Component
@@ -69,5 +70,58 @@ public class ExcelUploadUtils implements ExcelUtilMethodFactory {
             throw new RuntimeException("Excel 데이터 변환 중 오류가 발생했습니다.", e);
         }
         return objects;
+    }
+
+    public <T> void renderObjectToExcel(OutputStream stream, List<T> data, Class<T> clazz) throws IOException, IllegalAccessException {
+        /* create workbook & sheet */
+        Workbook workbook = WorkbookFactory.create(true);
+        Sheet sheet = workbook.createSheet();
+
+        /* render header & body */
+        renderHeader(sheet, clazz);
+        renderBody(sheet, data, clazz);
+
+        /* close stream */
+        workbook.write(stream);
+        workbook.close();
+    }
+
+    public <T> void renderHeader(Sheet sheet, Class<T> clazz) {
+        int headerStartRowToRender = 0;
+        int startColToRender = 0;
+
+        Row row = sheet.createRow(headerStartRowToRender);
+        int colIdx = startColToRender;
+
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(ExcelColumn.class)) {
+                String headerName = field.getAnnotation(ExcelColumn.class).headerName();
+                row.createCell(colIdx, CellType.STRING).setCellValue(
+                        headerName.equals("") ? field.getName() : headerName
+                );
+                colIdx++;
+            }
+        }
+
+        // ExcelDownloaddto에 ExcelColumn이 없을때 예외처리
+        if (colIdx == startColToRender) {
+            throw new GlobalException(ErrorCode.EXCEL_HEADER_NOT_FOUND);
+        }
+    }
+
+    public <T> void renderBody(Sheet sheet, List<T> data, Class<T> clazz) throws IllegalAccessException {
+        int rowIdx = 1;
+        int startColToRender = 0;
+
+        for (T datum : data) {
+            Row row = sheet.createRow(rowIdx);
+            int colIdx = startColToRender;
+            for (Field field : clazz.getDeclaredFields()) {
+                field.setAccessible(true); // private 필드에 접근하기 위해
+                row.createCell(colIdx, CellType.STRING).setCellValue(String.valueOf(field.get(datum)));
+                colIdx++;
+            }
+            rowIdx++;
+        }
     }
 }

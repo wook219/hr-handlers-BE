@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 @RestController
@@ -71,5 +72,11 @@ public class AdminSalaryController {
     @PostMapping("/excel/upload")
     public SuccessResponse<Boolean> excelUpload(@RequestPart(value = "file", required = true) MultipartFile file) throws IOException {
         return adminSalaryService.excelUploadSalary(excelUploadUtils.parseExcelToObject(file, AdminSalaryExcelUploadRequestDto.class));
+    }
+
+    // 급여관리 다운로드
+    @PostMapping("/excel/download")
+    public SuccessResponse<Boolean> excelDownload(OutputStream stream, @RequestBody @Validated AdminSalarySearchRequestDto adminSalarySearchRequestDto) throws IOException, IllegalAccessException {
+        return adminSalaryService.excelDownloadSalary(stream, adminSalarySearchRequestDto);
     }
 }
