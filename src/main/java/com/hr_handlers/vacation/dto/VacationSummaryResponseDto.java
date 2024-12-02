@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VacationBalanceResponseDto {
-    private Double leaveBalance;
+public class VacationSummaryResponseDto {
+    private Double remaining;
+    private Double used;
+    private Double pending;
 }
