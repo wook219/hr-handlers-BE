@@ -55,6 +55,8 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
                         )
                 )
                 .from(chat)
+                .join(chat.chatRoom)
+                .join(chat.employee)
                 .where(
                         chat.chatRoom.id.eq(chatRoomId)
                 )
