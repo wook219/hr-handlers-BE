@@ -5,6 +5,7 @@ import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,8 +39,17 @@ public class Post extends BaseTimeEntity {
     private String isDelete;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ParentComment> parentComments;
+    private List<Comment> comments;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HashTag> hashtagContent;
+
+    // 편의 메소드 추가
+    public void addComment(Comment comment) {
+        if (this.comments == null) {
+            this.comments = new ArrayList<>();
+        }
+        this.comments.add(comment);
+        comment.setPost(this);
+    }
 }
