@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,4 +20,10 @@ public class CommentResponseDto {
     private Long employeeId;
     private String employeeName;
     private Timestamp createdAt;
+    private Long parentId;
+    private Integer level;
+
+    @Builder.Default
+    private List<CommentResponseDto> replies = new ArrayList<>();
+
 }
