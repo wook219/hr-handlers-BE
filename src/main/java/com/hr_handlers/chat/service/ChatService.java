@@ -69,7 +69,18 @@ public class ChatService {
             chatResponseDtos.add(chatMapper.toChatResponseDto(chat));
         }
 
-        return SuccessResponse.of("참여한 채팅 목록 조회에 성공했습니다.", chatResponseDtos);
+        return SuccessResponse.of(
+                "참여한 채팅 목록 조회에 성공했습니다.",
+                chatResponseDtos
+        );
+    }
+
+    // 채팅방 참여인원 조회
+    public SuccessResponse<List<ChatResponseDto>> getJoinedEmployees(Long chatRoomId) {
+        return SuccessResponse.of(
+                "채팅방에 참여한 사원 목록 조회에 성공했습니다.",
+                chatRepository.findJoinedEmployees(chatRoomId)
+        );
     }
 
     // 채팅방 탈퇴
@@ -89,6 +100,9 @@ public class ChatService {
 
         chatRepository.delete(chat);
 
-        return SuccessResponse.of("채팅방 퇴장에 성공했습니다.", chatRoomId);
+        return SuccessResponse.of(
+                "채팅방 퇴장에 성공했습니다.",
+                chatRoomId
+        );
     }
 }
