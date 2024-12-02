@@ -97,7 +97,7 @@ public class AdminSalaryRepositoryCustomImpl implements AdminSalaryRepositoryCus
     }
 
     private BooleanExpression likeName(String name) {
-        return StringUtils.hasText(name) ? employee.name.like("%" + name + "%") : null;
+        return StringUtils.hasText(name) ? employee.name.like("%%%s%%".formatted(name)) : null;
     }
 
     private BooleanExpression eqPosition(String position) {
