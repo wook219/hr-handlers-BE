@@ -1,7 +1,9 @@
 package com.hr_handlers.chat.repository;
 
+import com.hr_handlers.chat.dto.ChatResponseDto;
 import com.hr_handlers.chat.entity.Chat;
 import com.hr_handlers.chat.entity.ChatRoom;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -35,5 +37,29 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
                             .and(chat.employee.id.eq(employeeId))
                 )
                 .fetchOne();
+    }
+
+    @Override
+    public List<ChatResponseDto> findJoinedEmployees(Long chatRoomId) {
+        return jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                ChatResponseDto.class,
+                                chat.employee.id,
+                                chat.chatRoom.id,
+                                chat.chatRoom.title,
+                                chat.employee.empNo,
+                                chat.employee.name,
+                                chat.employee.position,
+                                chat.employee.department.deptName
+                        )
+                )
+                .from(chat)
+                .join(chat.chatRoom)
+                .join(chat.employee)
+                .where(
+                        chat.chatRoom.id.eq(chatRoomId)
+                )
+                .fetch();
     }
 }
