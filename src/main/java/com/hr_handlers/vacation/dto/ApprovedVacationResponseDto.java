@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApprovedVacationResponseDto {
-    private String doc_num;
+    private String docNum;
     private String title;
     private Timestamp updatedAt;
     private Timestamp approvedAt;

@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class PendingVacationResponseDto {
     private Long id;
-    private String doc_num;
+    private String docNum;
     private String title;
     private VacationType type;
     private Timestamp createdAt;
