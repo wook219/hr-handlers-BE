@@ -33,6 +33,8 @@ public class CommentController {
         return commentService.createComment(post_id, request, authentication.getName());
     }
 
+    /*
+
     // 특정 댓글 수정
     @PutMapping("/comment/{id}")
     public SuccessResponse<CommentActionResponseDto> updateComment(
@@ -65,4 +67,6 @@ public class CommentController {
     ) {
         return commentService.createReply(pcomment_id, request, authentication.getName());
     }
+
+    */
 }

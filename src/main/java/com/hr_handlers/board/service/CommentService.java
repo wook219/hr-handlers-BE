@@ -67,6 +67,7 @@ public class CommentService {
                         .build());
     }
 
+    /*
     // 댓글 수정
     @Transactional
     public SuccessResponse<CommentActionResponseDto> updateComment(Long commentId, CommentRequestDto request, String empNo) {
@@ -143,6 +144,8 @@ public class CommentService {
                         .timestamp(childComment.getCreatedAt().toString())
                         .build());
     }
+
+     */
 
     private CommentResponseDto mapParentCommentToDto(ParentComment parentComment) {
         return CommentResponseDto.builder()
