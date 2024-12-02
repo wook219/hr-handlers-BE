@@ -9,14 +9,11 @@ import com.hr_handlers.vacation.dto.*;
 import com.hr_handlers.vacation.entity.Vacation;
 import com.hr_handlers.vacation.entity.VacationStatus;
 import com.hr_handlers.vacation.mapper.VacationMapper;
-import com.hr_handlers.vacation.repository.VacationCustomRepository;
 import com.hr_handlers.vacation.repository.VacationRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,8 +27,8 @@ public class VacationService {
     private final EmpRepository empRepository;
 
     //휴가 상세 조회
-    public SuccessResponse<VacationDetailResponse> getVacationDetail(Long id){
-        VacationDetailResponse response = vacationRepository.findVacationDetailById(id);
+    public SuccessResponse<VacationDetailResponseDto> getVacationDetail(Long id){
+        VacationDetailResponseDto response = vacationRepository.findVacationDetailById(id);
 
         return SuccessResponse.of(
                 "휴가 상세 조회 성공",
@@ -39,8 +36,8 @@ public class VacationService {
     }
 
     // 휴가 승인 대기 목록 조회
-    public SuccessResponse<List<PendingVacationResponse>> getPendingVacations(Long employeeId){
-        List<PendingVacationResponse> response = vacationRepository.findPendingVacations(employeeId);
+    public SuccessResponse<List<PendingVacationResponseDto>> getPendingVacations(Long employeeId){
+        List<PendingVacationResponseDto> response = vacationRepository.findPendingVacations(employeeId);
 
         return SuccessResponse.of(
                 "승인 대기 휴가 목록 조회 성공",
@@ -48,8 +45,8 @@ public class VacationService {
     }
 
     // 휴가 승인 확정 목록 조회
-    public SuccessResponse<List<ApprovedVacationResponse>> getApprovedVacations(Long employeeId){
-        List<ApprovedVacationResponse> response = vacationRepository.findApprovedVacations(employeeId);
+    public SuccessResponse<List<ApprovedVacationResponseDto>> getApprovedVacations(Long employeeId){
+        List<ApprovedVacationResponseDto> response = vacationRepository.findApprovedVacations(employeeId);
 
         return SuccessResponse.of(
                 "승인 확정 휴가 목록 조회 성공",
@@ -57,7 +54,7 @@ public class VacationService {
     }
 
     // 휴가 등록
-    public SuccessResponse<VacationResponse> enrollVacation(VacationRequest request){
+    public SuccessResponse<VacationResponseDto> enrollVacation(VacationRequestDto request){
         Employee employee = empRepository.findById(request.getEmployeeId())
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
@@ -74,7 +71,7 @@ public class VacationService {
 
         vacationRepository.save(vacation);
 
-        VacationResponse response = vacationMapper.toVacationResponse(vacation);
+        VacationResponseDto response = vacationMapper.toVacationResponse(vacation);
 
         return SuccessResponse.of(
                 "휴가 등록 성공",
@@ -89,7 +86,7 @@ public class VacationService {
     }
 
     // 휴가 수정
-    public SuccessResponse<VacationResponse> modifyVacation(Long id, VacationModifyRequest request){
+    public SuccessResponse<VacationResponseDto> modifyVacation(Long id, VacationModifyRequestDto request){
         Vacation vacation = vacationRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
 
@@ -97,7 +94,7 @@ public class VacationService {
 
         vacationRepository.save(vacation);
 
-        VacationResponse response = vacationMapper.toVacationResponse(vacation);
+        VacationResponseDto response = vacationMapper.toVacationResponse(vacation);
 
         return SuccessResponse.of(
                 "휴가 수정 성공",
@@ -105,13 +102,13 @@ public class VacationService {
     }
 
     // 휴가 삭제
-    public SuccessResponse<VacationResponse> deleteVacation(Long id){
+    public SuccessResponse<VacationResponseDto> deleteVacation(Long id){
         Vacation vacation = vacationRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
 
         vacationRepository.delete(vacation);
 
-        VacationResponse response = vacationMapper.toVacationResponse(vacation);
+        VacationResponseDto response = vacationMapper.toVacationResponse(vacation);
 
         return SuccessResponse.of(
                 "휴가 삭제 성공",
@@ -119,10 +116,10 @@ public class VacationService {
     }
 
     // 잔여 휴가 일수 조회
-    public SuccessResponse<VacationBalanceResponse> getBalance(Long employeeId){
-        Long balance = vacationRepository.findEmployeeVacationBalanceById(employeeId);
+    public SuccessResponse<VacationBalanceResponseDto> getBalance(Long employeeId){
+        Double balance = vacationRepository.findEmployeeVacationBalanceById(employeeId);
 
-        VacationBalanceResponse response = new VacationBalanceResponse(balance);
+        VacationBalanceResponseDto response = new VacationBalanceResponseDto(balance);
 
         return  SuccessResponse.of(
                 "잔여 휴가 조회 성공",

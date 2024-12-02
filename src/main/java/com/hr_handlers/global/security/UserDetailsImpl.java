@@ -8,11 +8,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 
+// 사용자 인증 정보 관리
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
     private final Employee employee;
 
+    // 사용자의 권한(Role) 정보를 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 

@@ -12,4 +12,5 @@ import lombok.Setter;
 public class ChatResponseDto {
     private Long employeeId;
     private Long chatRoomId;
+    private String title;
 }

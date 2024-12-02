@@ -12,9 +12,11 @@ public enum ErrorCode {
     VACATION_NOT_FOUND(HttpStatus.NOT_FOUND, "VACATION-01", "해당 휴가를 조회할 수 없습니다."),
 
     //근태
-
+    ATTENDANCE_NOT_FOUND(HttpStatus.NOT_FOUND, "ATTENDANCE-01", "해당 출근 기록을 찾을 수 없습니다."),
     //일정
-
+    TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "TODO-01", "해당 일정을 찾을 수 없습니다."),
+    HOLIDAY_API_ERROR(HttpStatus.BAD_REQUEST, "TODO-02", "잘못된 API 요청입니다."),
+    HOLIDAY_PARSE_ERROR(HttpStatus.BAD_REQUEST, "TODO-03", "XML 파싱 에러가 발생했습니다."),
     //게시판
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST-01", "해당 게시글을 찾을 수 없습니다."),
     POSTS_NOT_FOUND(HttpStatus.NOT_FOUND, "POST-02", "전체 게시글을 조회할 수 없습니다."),
@@ -28,7 +30,7 @@ public enum ErrorCode {
     CHAT_MESSAGE_UPDATE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "CHAT_MESSAGE-02", "메시지 수정 권한이 없습니다."),
     CHAT_MESSAGE_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "CHAT_MESSAGE-03", "메시지 삭제 권한이 없습니다."),
     //급여
-
+    SALARY_NOT_FOUND(HttpStatus.NOT_FOUND, "SALARY-01", "해당 급여를 조회할 수 없습니다."),
     //사원
     EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "EMPLOYEE-01", "사원을 찾을 수 없습니다."),
     EMPLOYEE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"EMPLOYEE-02", "사원 번호가 이미 존재합니다."),

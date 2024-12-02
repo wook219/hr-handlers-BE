@@ -1,5 +1,6 @@
 package com.hr_handlers.attendance.entity;
 
+import com.hr_handlers.employee.entity.Employee;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -30,10 +32,11 @@ public class Attendance {
     @Column(name = "check_out_time")
     private Timestamp checkOutTime;
 
-    @Column(name = "employee_id", nullable = false)
-    private Long employee_id;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
+    private Employee employee;
 
-//    @ManyToOne
-//    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
-//    private User user;
+    public void modify(){
+        this.checkOutTime = Timestamp.valueOf(LocalDateTime.now());
+    }
 }

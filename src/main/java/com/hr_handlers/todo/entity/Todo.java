@@ -1,5 +1,7 @@
 package com.hr_handlers.todo.entity;
 
+import com.hr_handlers.employee.entity.Employee;
+import com.hr_handlers.todo.dto.TodoModifyRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -35,10 +37,14 @@ public class Todo {
     @Column(name = "end_time", nullable = false)
     private Timestamp endTime;
 
-    @Column(name = "employee_id", nullable = false)
-    private Long employeeId;
+    @ManyToOne
+    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
+    private Employee employee;
 
-//    @ManyToOne
-//    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
-//    private User user;
+    public void modify(TodoModifyRequestDto request){
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.startTime = request.getStartTime();
+        this.endTime = request.getEndTime();
+    }
 }

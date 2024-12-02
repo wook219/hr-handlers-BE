@@ -1,8 +1,7 @@
 package com.hr_handlers.board.service;
 
 
-import com.hr_handlers.board.dto.PostActionResponseDto;
-import com.hr_handlers.board.dto.PostRequestDto;
+import com.hr_handlers.board.dto.*;
 import com.hr_handlers.board.entity.HashTag;
 import com.hr_handlers.board.repository.PostRepository;
 import com.hr_handlers.employee.entity.Employee;
@@ -10,20 +9,22 @@ import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
+import com.hr_handlers.global.s3bucket.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import com.hr_handlers.board.dto.PostResponseDto;
-import com.hr_handlers.board.dto.PostDetailResponseDto;
 import com.hr_handlers.board.mapper.PostMapper;
 import com.hr_handlers.board.entity.Post;
-
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,22 +34,26 @@ public class PostService {
     private final PostMapper postMapper;
     private final EmpRepository empRepository;
 
+    private final S3Service s3Service;
+
     /**
      * 회원 기능 추가 이후 사용자 구분 예정
      * **/
     // 게시글 목록 조회
-    public SuccessResponse<List<PostResponseDto>> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
+    public SuccessResponse<PostListResponseDto> getAllPosts(Pageable pageable) {
+        // 활성화된 게시글만 조회
+        Page<Post> postsPage = postRepository.findActivePosts(pageable);
 
-        if (posts.isEmpty()) {
+        if (postsPage.isEmpty()) {
             throw new GlobalException(ErrorCode.POSTS_NOT_FOUND);
         }
 
-        List<PostResponseDto> response = posts.stream()
+        List<PostResponseDto> response = postsPage.getContent().stream()
                 .map(postMapper::toPostResponseDto)
                 .toList();
 
-        return SuccessResponse.of("게시글 목록 조회 성공", response);
+        return SuccessResponse.of("게시글 목록 조회 성공",
+                new PostListResponseDto(response, postsPage.getTotalElements()));
     }
 
     // 게시글 상세 조회
@@ -56,53 +61,41 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
 
-        PostDetailResponseDto response = postMapper.toPostDetailResponseDto(post);
-        return SuccessResponse.of("게시글 상세 조회 성공", response);
+        return SuccessResponse.of("게시글 상세 조회 성공", postMapper.toPostDetailResponseDto(post));
     }
 
 
     // 게시글 생성
-    public SuccessResponse<PostActionResponseDto> createPost(PostRequestDto request) {
-        // 작성자(Employee) 정보 확인
-        Employee employee = empRepository.findById(request.getEmployeeId())
+    @Transactional
+    public SuccessResponse<PostActionResponseDto> createPost(PostRequestDto request, String empNo) {
+        Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
-        try {
-            // 요청 DTO를 기반으로 Post 엔티티 생성
-            Post post = Post.builder()
-                    .title(request.getTitle())
-                    .content(request.getContent())
-                    .imageUrl(request.getImageUrl())
-                    .employee(employee)
-                    .isDelete("N") // 삭제 여부 기본값 설정
-                    .build();
+        Post post = Post.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .imageUrl(request.getImageUrl())
+                .employee(employee)
+                .isDelete("N")
+                .build();
 
-            if (request.getHashtagContent() != null && !request.getHashtagContent().isEmpty()) {
-                List<HashTag> hashTags = request.getHashtagContent().stream()
-                        .map(tagContent -> HashTag.builder()
-                                .hashtagContent(tagContent)
-                                .post(post)
-                                .build())
-                        .toList();
-                post.setHashtagContent(hashTags);
-            }
-
-            Post savedPost = postRepository.save(post);
-
-
-            // 생성된 게시글 정보를 Action Response로 변환
-            PostActionResponseDto responseDto = PostActionResponseDto.builder()
-                    .id(savedPost.getId())
-                    .timestamp(savedPost.getCreatedAt().toString()) // 생성 시간 반환
-                    .build();
-
-            return SuccessResponse.of("게시글 생성 성공", responseDto);
-        }catch (Exception e){
-            throw new GlobalException(ErrorCode.POST_CREATE_FAILED);
+        if (request.getHashtagContent() != null) {
+            post.setHashtagContent(request.getHashtagContent().stream()
+                    .map(tag -> HashTag.builder()
+                            .hashtagContent(tag)
+                            .post(post)
+                            .build())
+                    .toList());
         }
+
+        postRepository.save(post);
+
+        return SuccessResponse.of("게시글 생성 성공",
+                new PostActionResponseDto(post.getId(), post.getCreatedAt().toString()));
     }
 
-    // 게시글 수정
+    // 게시글 수정 (ver.1)
+    /*
     @Transactional
     public SuccessResponse<PostActionResponseDto> updatePost(Long postId, PostRequestDto dto) {
         Post post = postRepository.findById(postId)
@@ -149,10 +142,43 @@ public class PostService {
                 .build();
 
         return SuccessResponse.of("게시글이 성공적으로 수정되었습니다.", responseDto);
+    }*/
+
+    /**
+     * 게시글 수정
+     */
+    @Transactional
+    public SuccessResponse<PostActionResponseDto> updatePost(Long postId, PostRequestDto dto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
+
+        // 기존 해시태그 컬렉션을 비우고 새 값을 추가
+        List<HashTag> existingHashTags = post.getHashtagContent();
+        existingHashTags.clear();
+
+        if (dto.getHashtagContent() != null) {
+            List<HashTag> newHashTags = dto.getHashtagContent().stream()
+                    .map(tag -> HashTag.builder()
+                            .hashtagContent(tag)
+                            .post(post) // 부모 엔티티 지정
+                            .build())
+                    .toList();
+            existingHashTags.addAll(newHashTags);
+        }
+
+        post.setTitle(dto.getTitle());
+        post.setContent(dto.getContent());
+        post.setImageUrl(dto.getImageUrl());
+
+        // 컬렉션 수정 후 저장 없이 변경 사항 반영
+        return SuccessResponse.of("게시글 수정 성공",
+                new PostActionResponseDto(post.getId(), post.getUpdatedAt().toString()));
     }
 
 
+
     // 게시글 삭제
+    /*
     public SuccessResponse<String> deletePost(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
@@ -163,5 +189,42 @@ public class PostService {
         } catch (Exception e) {
             throw new GlobalException(ErrorCode.POST_DELETE_FAILED);
         }
+    }*/
+
+    @Transactional
+    public SuccessResponse<String> deletePost(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
+        try {
+            // content에서 이미지 URL 추출
+            if (post.getContent() != null && !post.getContent().isEmpty()) {
+                extractImageUrlsFromContent(post.getContent()).forEach(s3Service::deleteFile);
+            }
+
+            // 게시글 논리 삭제
+            post.setIsDelete("Y");
+            postRepository.save(post);
+
+            return SuccessResponse.of("게시글 삭제 성공", "게시글이 삭제되었습니다.");
+        } catch (Exception e) {
+            log.error("게시글 삭제 실패: ", e);
+            throw new GlobalException(ErrorCode.POST_DELETE_FAILED);
+        }
     }
+
+    // content에서 이미지 URL 추출 메서드
+    private List<String> extractImageUrlsFromContent(String content) {
+        List<String> imageUrls = new ArrayList<>();
+        Document document = Jsoup.parse(content); // HTML 파싱
+        Elements imgElements = document.select("figure img"); // 모든 <figure> 내부의 <img> 태그 선택
+
+        for (Element img : imgElements) {
+            String src = img.attr("src"); // src 속성 값 추출
+            if (src != null && !src.isEmpty()) {
+                imageUrls.add(src);
+            }
+        }
+        return imageUrls;
+    }
+
 }

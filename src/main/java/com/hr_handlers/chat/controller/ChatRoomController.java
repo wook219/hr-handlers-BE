@@ -7,6 +7,7 @@ import com.hr_handlers.chat.service.ChatService;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class ChatRoomController {
     // 채팅방 목록 조회
     @GetMapping
     public SuccessResponse<List<ChatRoomResponseDto>> getChatRooms() {
+
         return chatRoomService.getChatRooms();
     }
     
@@ -40,8 +42,11 @@ public class ChatRoomController {
 
     // 채팅방 참여
     @PostMapping("/{chatRoomId}")
-    public SuccessResponse<ChatResponseDto> enterChat(@PathVariable("chatRoomId") Long chatRoomId, @RequestBody ChatRequestDto chatRequestDto) {
-        return chatService.enterChatRoom(chatRoomId, chatRequestDto.getEmployeeId());
+    public SuccessResponse<ChatResponseDto> enterChat(
+            @PathVariable("chatRoomId") Long chatRoomId,
+            Authentication authentication
+    ) {
+        return chatService.enterChatRoom(chatRoomId, authentication.getName());
     }
 
     // 채팅방 삭제
