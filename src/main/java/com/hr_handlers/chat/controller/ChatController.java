@@ -22,6 +22,12 @@ public class ChatController {
         return chatService.getChats(authentication.getName());
     }
 
+    // 채팅방 참여인원 조회
+    @GetMapping("/{chatRoomId}")
+    public SuccessResponse<List<ChatResponseDto>> getJoinedEmployees(@PathVariable("chatRoomId") Long chatRoomId) {
+        return chatService.getJoinedEmployees(chatRoomId);
+    }
+
     // 채팅방 퇴장
     @DeleteMapping("/{chatRoomId}")
     public SuccessResponse<Long> deleteChat(@PathVariable("chatRoomId") Long chatRoomId,

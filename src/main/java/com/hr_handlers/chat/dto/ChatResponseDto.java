@@ -13,4 +13,8 @@ public class ChatResponseDto {
     private Long employeeId;
     private Long chatRoomId;
     private String title;
+    private String empNo;
+    private String empName;
+    private String empPosition;
+    private String deptName;
 }
