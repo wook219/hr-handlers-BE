@@ -23,15 +23,15 @@ public class VacationController {
     }
 
     // 휴가 승인 대기 목록 조회
-    @GetMapping("/pending/{employeeId}")
-    public SuccessResponse<List<PendingVacationResponseDto>> getPendingVacations(@PathVariable("employeeId") Long employeeId){
-        return vacationService.getPendingVacations(employeeId);
+    @GetMapping("/pending/{empNo}")
+    public SuccessResponse<List<PendingVacationResponseDto>> getPendingVacations(@PathVariable("empNo") String empNo){
+        return vacationService.getPendingVacations(empNo);
     }
 
     // 휴가 승인 확정 목록 조회
-    @GetMapping("/approved/{employeeId}")
-    public SuccessResponse<List<ApprovedVacationResponseDto>> getApprovedVacations(@PathVariable ("employeeId") Long employeeId){
-        return vacationService.getApprovedVacations(employeeId);
+    @GetMapping("/approved/{empNo}")
+    public SuccessResponse<List<ApprovedVacationResponseDto>> getApprovedVacations(@PathVariable ("empNo") String empNo){
+        return vacationService.getApprovedVacations(empNo);
     }
 
     // 휴가 등록
@@ -53,9 +53,9 @@ public class VacationController {
         return vacationService.deleteVacation(id);
     }
 
-    // 잔여 휴가 조회
-    @GetMapping("/balance/{employeeId}")
-    public SuccessResponse<VacationBalanceResponseDto> getBalance(@PathVariable("employeeId") Long employeeId){
-        return vacationService.getBalance(employeeId);
+    // 휴가 일수 정보 조회
+    @GetMapping("/summary/{empNo}")
+    public SuccessResponse<VacationSummaryResponseDto> getBalance(@PathVariable("empNo") String empNo){
+        return vacationService.getBalance(empNo);
     }
 }
