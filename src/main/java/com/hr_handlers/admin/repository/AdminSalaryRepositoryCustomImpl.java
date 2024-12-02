@@ -1,5 +1,6 @@
 package com.hr_handlers.admin.repository;
 
+import com.hr_handlers.admin.dto.salary.request.AdminSalaryExcelDownloadRequestDto;
 import com.hr_handlers.admin.dto.salary.request.AdminSalarySearchRequestDto;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponseDto;
 import com.hr_handlers.employee.entity.QEmployee;
@@ -94,6 +95,30 @@ public class AdminSalaryRepositoryCustomImpl implements AdminSalaryRepositoryCus
                 .fetchOne();
 
         return new PageImpl<>(results, pageable, totalCount);
+    }
+
+    public List<AdminSalaryExcelDownloadRequestDto> searchSalaryForExcel(AdminSalarySearchRequestDto search) {
+        return queryFactory
+                .select(Projections.constructor(
+                        AdminSalaryExcelDownloadRequestDto.class,
+                        employee.department.deptName,
+                        employee.position,
+                        employee.name,
+                        salary.basicSalary,
+                        salary.deduction,
+                        salary.netSalary,
+                        salary.payDate
+                ))
+                .from(salary)
+                .leftJoin(employee).on(salary.employee.id.eq(employee.id)).fetchJoin()
+                .where(
+                        eqPosition(search.getPosition()),
+                        likeName(search.getName()),
+                        eqDeptName(search.getDeptName()),
+                        betweenPayDate(search.getStartDate(), search.getEndDate())
+                )
+                .orderBy(employee.name.asc(), salary.payDate.asc())
+                .fetch();
     }
 
     private BooleanExpression likeName(String name) {
