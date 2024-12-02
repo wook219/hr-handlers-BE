@@ -1,5 +1,6 @@
 package com.hr_handlers.vacation.dto;
 
+import com.hr_handlers.vacation.entity.VacationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ public class ApprovedVacationResponseDto {
     private String title;
     private Timestamp updatedAt;
     private Timestamp approvedAt;
+    private VacationStatus status;
     private String approver;
     private Long employeeId;
 }

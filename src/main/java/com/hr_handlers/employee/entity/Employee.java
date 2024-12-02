@@ -103,4 +103,8 @@ public class Employee extends BaseTimeEntity {
                     .build();
         }
     }
+
+    public void leaveBalanceUpdate(Double deductionDays){
+        this.leaveBalance -= deductionDays;
+    }
 }

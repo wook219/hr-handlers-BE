@@ -10,7 +10,7 @@ public enum ErrorCode {
 
     //휴가
     VACATION_NOT_FOUND(HttpStatus.NOT_FOUND, "VACATION-01", "해당 휴가를 조회할 수 없습니다."),
-
+    INSUFFICIENT_LEAVE_BALANCE(HttpStatus.NOT_FOUND, "VACATION-02", "잔여 휴가 일수가 부족합니다."),
     //근태
     ATTENDANCE_NOT_FOUND(HttpStatus.NOT_FOUND, "ATTENDANCE-01", "해당 출근 기록을 찾을 수 없습니다."),
     //일정
