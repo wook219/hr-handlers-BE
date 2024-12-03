@@ -6,6 +6,7 @@ import com.hr_handlers.todo.service.HolidayService;
 import com.hr_handlers.todo.service.TodoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,13 +20,13 @@ public class TodoController {
     private final HolidayService holidayService;
 
     // 월별 일정 조회
-    @GetMapping("/{empNo}")
+    @GetMapping()
     public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(
-            @PathVariable("empNo") String empNo,
+            Authentication authentication,
             @RequestParam("start") String start,
             @RequestParam("end") String end)
     {
-        return todoService.getAllTodo(empNo, start, end);
+        return todoService.getAllTodo(authentication.getName(), start, end);
     }
 
     // 월별 공휴일 조회
@@ -43,17 +44,26 @@ public class TodoController {
         return todoService.getTodo(id);
     }
 
+    // 일정 등록
     @PostMapping
-    public SuccessResponse<TodoResponseDto> enrollTodo(@Valid @RequestBody TodoRequestDto request){
-        return todoService.enrollTodo(request);
+    public SuccessResponse<TodoResponseDto> enrollTodo(
+            @Valid @RequestBody TodoRequestDto request,
+            Authentication authentication)
+    {
+        return todoService.enrollTodo(request, authentication.getName());
     }
 
+    // 일정 수정
     @PutMapping("/{todoId}")
-    public SuccessResponse<TodoResponseDto> modifyTodo(@PathVariable("todoId") Long id,
-                                                       @Valid @RequestBody TodoModifyRequestDto request){
+    public SuccessResponse<TodoResponseDto> modifyTodo(
+            @PathVariable("todoId") Long id,
+            @Valid @RequestBody TodoModifyRequestDto request
+    )
+    {
         return todoService.modifyTodo(id, request);
     }
 
+    // 일정 삭제
     @DeleteMapping("/{todoId}")
     public SuccessResponse<Boolean> deleteTodo(@PathVariable("todoId") Long id){
         return todoService.deleteTodo(id);
