@@ -73,4 +73,16 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
                 )
                 .execute();
     }
+
+    // 채팅 참여 인원 확인
+    @Override
+    public Long countChatByChatRoomId(Long chatRoomId) {
+        return jpaQueryFactory
+                .select(chat.count())
+                .from(chat)
+                .where(
+                        chat.chatRoom.id.eq(chatRoomId)
+                )
+                .fetchOne();
+    }
 }

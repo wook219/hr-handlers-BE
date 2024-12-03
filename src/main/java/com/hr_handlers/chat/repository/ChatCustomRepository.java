@@ -18,4 +18,7 @@ public interface ChatCustomRepository {
 
     // 채팅 참여 삭제
     void deleteChatByChatRoomId(Long chatRoomId);
+
+    // 채팅 참여 인원 조회
+    Long countChatByChatRoomId(Long chatRoomId);
 }
