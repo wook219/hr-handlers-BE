@@ -22,4 +22,5 @@ public class EmpDetailResponseDto {
     private Double leaveBalance;
     private String profileImageUrl;
     private String deptName;
+    private String password;
 }

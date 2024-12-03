@@ -45,11 +45,17 @@ public enum ErrorCode {
     //사원
     EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "EMPLOYEE-01", "사원을 찾을 수 없습니다."),
     EMPLOYEE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"EMPLOYEE-02", "사원 번호가 이미 존재합니다."),
+    EMPLOYEE_EMAIL_MISMATCH(HttpStatus.BAD_REQUEST, "EMPLOYEE-03", "사원번호와 이메일이 일치하지 않습니다."),
+    //부서
+    DEPARTMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "DEPARTMENT-01", "부서를 찾을 수 없습니다."),
 
-    // 로그인
+    //로그인
     INVALID_LOGIN_REQUEST(HttpStatus.BAD_REQUEST, "LOGIN-01", "잘못된 로그인 요청입니다."),
+    TEMP_PASSWORD_GENERATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "EMPLOYEE-02", "임시 비밀번호 생성 실패"),
+    EMAIL_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "EMPLOYEE-03", "메일 전송 실패"),
+    INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "EMPLOYEE-04", "잘못된 이메일 형식입니다."),
 
-    // JWT
+    //JWT
     INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "JWT-01", "유효하지 않은 Access Token입니다.");
 
     private final HttpStatus httpStatus;
