@@ -7,8 +7,11 @@ import com.hr_handlers.vacation.dto.VacationSummaryResponseDto;
 import com.hr_handlers.vacation.entity.VacationStatus;
 import com.hr_handlers.vacation.entity.VacationType;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -95,39 +98,67 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
                 .fetch();
     }
 
+
     @Override
     public VacationSummaryResponseDto findEmployeeVacationBalanceById(String empNo) {
+        // DATEDIFF 함수 정의
+        NumberTemplate<Double> dateDiff = Expressions.numberTemplate(
+                Double.class,
+                "DATEDIFF({0}, {1})",
+                vacation.startDate,
+                vacation.endDate
+        );
+
+        // 승인된 휴가 일수 서브쿼리
+        SubQueryExpression<Double> approvedSum = JPAExpressions
+                .select(
+                        new CaseBuilder()
+                                .when(vacation.type.eq(VacationType.HALF))
+                                .then(0.5)
+                                .when(vacation.type.eq(VacationType.PUBLIC))
+                                .then(0.0)
+                                .otherwise(dateDiff.multiply(-1).add(1.0))
+                                .sum()
+                )
+                .from(vacation)
+                .where(
+                        vacation.employee.empNo.eq(empNo)
+                                .and(vacation.status.eq(VacationStatus.APPROVED))
+                );
+
+        // 승인 대기 휴가 일수 서브쿼리
+        SubQueryExpression<Double> pendingSum = JPAExpressions
+                .select(
+                        new CaseBuilder()
+                                .when(vacation.type.eq(VacationType.HALF))
+                                .then(0.5)
+                                .when(vacation.type.eq(VacationType.PUBLIC))
+                                .then(0.0)
+                                .otherwise(dateDiff.multiply(-1).add(1.0))
+                                .sum()
+                )
+                .from(vacation)
+                .where(
+                        vacation.employee.empNo.eq(empNo)
+                                .and(vacation.status.eq(VacationStatus.PENDING))
+                );
+
+        // 최종 조회
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
                                 VacationSummaryResponseDto.class,
                                 employee.leaveBalance,
-                                JPAExpressions
-                                        .select(
-                                                new CaseBuilder()
-                                                        .when(vacation.type.eq(VacationType.HALF))
-                                                        .then(0.5)
-                                                        .otherwise(1.0)
-                                                        .sum()
-                                        )
-                                        .from(vacation)
-                                        .where(
-                                                vacation.employee.empNo.eq(empNo)
-                                                        .and(vacation.status.eq(VacationStatus.APPROVED))
-                                        ),
-                                JPAExpressions
-                                        .select(
-                                                new CaseBuilder()
-                                                        .when(vacation.type.eq(VacationType.HALF))
-                                                        .then(0.5)
-                                                        .otherwise(1.0)
-                                                        .sum()
-                                        )
-                                        .from(vacation)
-                                        .where(
-                                                vacation.employee.empNo.eq(empNo)
-                                                        .and(vacation.status.eq(VacationStatus.PENDING))
-                                        )
+                                Expressions.numberTemplate(
+                                        Double.class,
+                                        "COALESCE({0}, 0.0)",
+                                        approvedSum
+                                ),
+                                Expressions.numberTemplate(
+                                        Double.class,
+                                        "COALESCE({0}, 0.0)",
+                                        pendingSum
+                                )
                         )
                 )
                 .from(employee)

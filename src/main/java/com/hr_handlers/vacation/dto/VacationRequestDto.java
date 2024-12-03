@@ -22,11 +22,11 @@ public class VacationRequestDto {
     private VacationType type;
 
     @NotNull(message = "시작 일자를 선택해주세요.")
-    @Future
+    @Future(message = "시작일은 현재 시간 이후여야 합니다.")
     private Timestamp startDate;
 
     @NotNull(message = "종료 일자를 선택해주세요.")
-    @Future
+    @Future(message = "종료일은 현재 시간 이후여야 합니다.")
     private Timestamp endDate;
 
     @NotEmpty(message = "휴가 사유를 입력해주세요")

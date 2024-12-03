@@ -27,6 +27,7 @@ public class VacationService {
 
     private final VacationRepository vacationRepository;
     private final VacationMapper vacationMapper;
+    private final VacationHandler vacationHandler;
 
     private final EmpRepository empRepository;
 
@@ -59,18 +60,22 @@ public class VacationService {
         Employee employee = empRepository.findByEmpNo(request.getEmpNo())
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
-        // 휴가 일수 계산
-        double deductionDays = calculateVacationDays(
+        // 휴가 일수 계산 및 검증
+        vacationHandler.validateVacationDays(
+                employee,
                 request.getType(),
                 request.getStartDate(),
                 request.getEndDate()
         );
 
-        // 잔여 휴가 일수 체크
-        checkBalance(request, employee, deductionDays);
-
-        // 휴가 차감
-        employee.leaveBalanceUpdate(deductionDays);
+        // 휴가 일수 차감
+        vacationHandler.processVacationDays(
+                employee,
+                request.getType(),
+                request.getStartDate(),
+                request.getEndDate(),
+                false
+        );
 
         Vacation vacation = Vacation.builder()
                 .docNum(generateDocNum())
@@ -92,31 +97,30 @@ public class VacationService {
 
     // 휴가 수정
     @Transactional
-    public SuccessResponse<VacationResponseDto> modifyVacation(Long id, VacationModifyRequestDto request){
+    public SuccessResponse<VacationResponseDto> modifyVacation(Long id, VacationRequestDto request){
         Vacation vacation = vacationRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
-        Employee employee = vacation.getEmployee();
 
         // 기존 휴가 일수 복구
-        processVacationDays(
-                employee,
+        vacationHandler.processVacationDays(
+                vacation.getEmployee(),
                 vacation.getType(),
                 vacation.getStartDate(),
                 vacation.getEndDate(),
                 true
         );
 
-        // 새로운 휴가 일수 유효성 검사
-        validateNewVacationDays(
-                employee,
+        // 새로운 휴가 일수 검증
+        vacationHandler.validateVacationDays(
+                vacation.getEmployee(),
                 request.getType(),
                 request.getStartDate(),
                 request.getEndDate()
         );
 
         // 새로운 휴가 일수 차감
-        processVacationDays(
-                employee,
+        vacationHandler.processVacationDays(
+                vacation.getEmployee(),
                 request.getType(),
                 request.getStartDate(),
                 request.getEndDate(),
@@ -125,8 +129,6 @@ public class VacationService {
 
         vacation.modify(request);
 
-        vacationRepository.save(vacation);
-
         return SuccessResponse.of(
                 "휴가 수정 성공",
                 vacationMapper.toVacationResponse(vacation));
@@ -134,12 +136,14 @@ public class VacationService {
 
     // 휴가 삭제
     @Transactional
-    public SuccessResponse<VacationResponseDto> deleteVacation(Long id){
+    public SuccessResponse<Boolean> deleteVacation(Long id){
         Vacation vacation = vacationRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
 
-        // 휴가 일수 복구
-        processVacationDays(
+        vacationRepository.delete(vacation);
+
+        // 기존 휴가 일수 복구
+        vacationHandler.processVacationDays(
                 vacation.getEmployee(),
                 vacation.getType(),
                 vacation.getStartDate(),
@@ -147,11 +151,9 @@ public class VacationService {
                 true
         );
 
-        vacationRepository.delete(vacation);
-
         return SuccessResponse.of(
                 "휴가 삭제 성공",
-                vacationMapper.toVacationResponse(vacation));
+                Boolean.TRUE);
     }
 
     // 휴가 일수 정보 조회
@@ -165,18 +167,6 @@ public class VacationService {
 
 
 
-    // 잔여 휴가 일수 체크 로직(공가는 체크하지 않음)
-    private void checkBalance(VacationRequestDto request,
-                              Employee employee,
-                              double deductionDays)
-    {
-        if (request.getType() != VacationType.PUBLIC) {
-            if (employee.getLeaveBalance() < deductionDays) {
-                throw new GlobalException(ErrorCode.INSUFFICIENT_LEAVE_BALANCE);
-            }
-        }
-    }
-
     // 문서 번호 생성 로직
     private String generateDocNum() {
         String year = String.valueOf(LocalDate.now().getYear()); // 현재 연도 가져오기
@@ -188,38 +178,5 @@ public class VacationService {
         return year + randomPart;
     }
 
-    // 휴가 일수 계산 로직
-    private double calculateVacationDays(VacationType type,
-                                         Timestamp startDate,
-                                         Timestamp endDate)
-    {
-        // 고정 일수가 있는 타입(반차, 공가)인 경우
-        if (type.getFixedDays() != null) {
-            return type.getFixedDays();
-        }
 
-        // 연차, 병가의 경우 시작일과 종료일의 차이 계산
-        long diff = endDate.getTime() - startDate.getTime();
-        // 시작일도 포함해야 하므로 +1
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + 1;
-    }
-
-    // 휴가 일수 처리 메서드
-    private void processVacationDays(Employee employee, VacationType type, Timestamp startDate, Timestamp endDate, boolean isRestore) {
-        if (type != VacationType.PUBLIC) {
-            double days = calculateVacationDays(type, startDate, endDate);
-            // 복구면 음수(더하기), 차감이면 양수(빼기)
-            employee.leaveBalanceUpdate(isRestore ? -days : days);
-        }
-    }
-
-    // 새로운 휴가 일수 유효성 검사
-    private void validateNewVacationDays(Employee employee, VacationType type, Timestamp startDate, Timestamp endDate) {
-        if (type != VacationType.PUBLIC) {
-            double newDays = calculateVacationDays(type, startDate, endDate);
-            if (employee.getLeaveBalance() < newDays) {
-                throw new GlobalException(ErrorCode.INSUFFICIENT_LEAVE_BALANCE);
-            }
-        }
-    }
 }
