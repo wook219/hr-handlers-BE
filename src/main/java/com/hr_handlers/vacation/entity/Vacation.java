@@ -2,7 +2,7 @@ package com.hr_handlers.vacation.entity;
 
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
-import com.hr_handlers.vacation.dto.VacationModifyRequestDto;
+import com.hr_handlers.vacation.dto.VacationRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -57,7 +57,7 @@ public class Vacation extends BaseTimeEntity {
     private Employee employee;
 
 
-    public void modify(VacationModifyRequestDto request){
+    public void modify(VacationRequestDto request){
         this.title = request.getTitle();
         this.type = request.getType();
         this.startDate = request.getStartDate();
