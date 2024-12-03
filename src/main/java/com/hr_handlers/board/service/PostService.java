@@ -23,6 +23,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -36,19 +37,15 @@ public class PostService {
 
     private final S3Service s3Service;
 
-    /**
-     * 회원 기능 추가 이후 사용자 구분 예정
-     * **/
     // 게시글 목록 조회
     public SuccessResponse<PostListResponseDto> getAllPosts(Pageable pageable) {
         // 활성화된 게시글만 조회
         Page<Post> postsPage = postRepository.findActivePosts(pageable);
 
-        if (postsPage.isEmpty()) {
-            throw new GlobalException(ErrorCode.POSTS_NOT_FOUND);
-        }
-
-        List<PostResponseDto> response = postsPage.getContent().stream()
+        // 게시글이 없으면 빈 리스트를 반환
+        List<PostResponseDto> response = postsPage.isEmpty()
+                ? Collections.emptyList() // 빈 리스트
+                : postsPage.getContent().stream()
                 .map(postMapper::toPostResponseDto)
                 .toList();
 
