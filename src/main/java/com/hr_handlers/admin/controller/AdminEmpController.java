@@ -2,6 +2,7 @@ package com.hr_handlers.admin.controller;
 
 import com.hr_handlers.admin.dto.employee.request.EmpRegisterDto;
 import com.hr_handlers.admin.dto.employee.request.AdminEmpUpdateRequestDto;
+import com.hr_handlers.employee.repository.DeptRepository;
 import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.admin.dto.employee.response.AdminEmpResponseDto;
 import com.hr_handlers.admin.service.AdminEmpService;
@@ -28,8 +29,7 @@ public class AdminEmpController {
 
     // 사원 전체 조회
     @GetMapping
-    public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(
-            @RequestBody SearchRequestDto requestDto) {
+    public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(SearchRequestDto requestDto) {
         return adminEmpService.getAllEmp(requestDto);
     }
 
@@ -45,4 +45,11 @@ public class AdminEmpController {
     public SuccessResponse<Boolean> deleteEmp(@PathVariable("empNo") String empNo){
         return adminEmpService.delete(empNo);
     }
+
+    // 부서 등록
+//    @PostMapping("/dept")
+//    public SuccessResponse<String> registerDept(@RequestParam String deptName){
+//       // return adminEmpService.register(deptName);
+//        return null;
+//    }
 }

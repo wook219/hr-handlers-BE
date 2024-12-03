@@ -27,6 +27,7 @@ public class EmpRegisterDto {
     @DecimalMax(value = "20.0", inclusive = true, message = "휴가 잔여일수는 20 이하이어야 합니다.")
     private Double leaveBalance;
 
+    @NotNull(message = "권한은 필수입니다.")
     private Role role;
 
     @NotNull(message = "계약 형태는 필수입니다.")
