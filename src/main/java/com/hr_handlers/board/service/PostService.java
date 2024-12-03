@@ -42,7 +42,6 @@ public class PostService {
         // 활성화된 게시글만 조회
         Page<Post> postsPage = postRepository.findActivePosts(pageable);
 
-        // 게시글이 없으면 빈 리스트를 반환
         List<PostResponseDto> response = postsPage.isEmpty()
                 ? Collections.emptyList() // 빈 리스트
                 : postsPage.getContent().stream()
