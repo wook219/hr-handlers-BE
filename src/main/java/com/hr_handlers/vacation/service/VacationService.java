@@ -56,8 +56,8 @@ public class VacationService {
     }
 
     // 휴가 등록
-    public SuccessResponse<VacationResponseDto> enrollVacation(VacationRequestDto request){
-        Employee employee = empRepository.findByEmpNo(request.getEmpNo())
+    public SuccessResponse<VacationResponseDto> enrollVacation(VacationRequestDto request, String empNo){
+        Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         // 휴가 일수 계산 및 검증

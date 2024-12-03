@@ -32,5 +32,4 @@ public class VacationRequestDto {
     @NotEmpty(message = "휴가 사유를 입력해주세요")
     private String reason;
 
-    private String empNo;
 }
