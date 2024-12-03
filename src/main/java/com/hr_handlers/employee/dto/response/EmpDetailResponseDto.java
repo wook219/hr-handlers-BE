@@ -1,5 +1,6 @@
 package com.hr_handlers.employee.dto.response;
 
+import com.hr_handlers.employee.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,7 @@ public class EmpDetailResponseDto {
     private String email;
     private String phone;
     private String position;
+    private Role role;
     private LocalDate birthDate;
     private String contractType;
     private LocalDate joinDate;
