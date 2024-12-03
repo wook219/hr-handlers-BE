@@ -5,6 +5,7 @@ import com.hr_handlers.chat.entity.Chat;
 import com.hr_handlers.chat.entity.ChatId;
 import com.hr_handlers.chat.entity.ChatRoom;
 import com.hr_handlers.chat.mapper.ChatMapper;
+import com.hr_handlers.chat.repository.ChatMessageRepository;
 import com.hr_handlers.chat.repository.ChatRepository;
 import com.hr_handlers.chat.repository.ChatRoomRepository;
 import com.hr_handlers.employee.entity.Employee;
@@ -14,6 +15,7 @@ import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final EmpRepository empRepository;
     private final ChatMapper chatMapper;
 
@@ -84,6 +87,7 @@ public class ChatService {
     }
 
     // 채팅방 탈퇴
+    @Transactional
     public SuccessResponse<Long> exitChatRoom(Long chatRoomId, String empNo) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_ROOM_NOT_FOUND));
@@ -99,6 +103,13 @@ public class ChatService {
         }
 
         chatRepository.delete(chat);
+
+        // 채팅방 인원이 0명이면 채팅방 삭제
+        if (chatRepository.countChatByChatRoomId(chatRoomId) == 0) {
+            chatMessageRepository.deleteChatMessagesByChatRoomId(chatRoomId); // 채팅방 삭제 전 메시지 모두 삭제
+            chatRepository.deleteChatByChatRoomId(chatRoomId); // 채팅 참여 삭제
+            chatRoomRepository.deleteById(chatRoomId); // 채팅방 삭제
+        }
 
         return SuccessResponse.of(
                 "채팅방 퇴장에 성공했습니다.",
