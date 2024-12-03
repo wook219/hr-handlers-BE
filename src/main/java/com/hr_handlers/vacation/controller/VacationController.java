@@ -43,13 +43,13 @@ public class VacationController {
     // 휴가 수정
     @PutMapping("/{vacationId}")
     public SuccessResponse<VacationResponseDto> modifyVacation(@PathVariable("vacationId") Long id,
-                                                               @RequestBody VacationModifyRequestDto request){
+                                                               @RequestBody VacationRequestDto request){
         return vacationService.modifyVacation(id, request);
     }
 
     // 휴가 삭제
     @DeleteMapping("/{vacationId}")
-    public SuccessResponse<VacationResponseDto> deleteVacation(@PathVariable("vacationId") Long id){
+    public SuccessResponse<Boolean> deleteVacation(@PathVariable("vacationId") Long id){
         return vacationService.deleteVacation(id);
     }
 
