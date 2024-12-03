@@ -62,4 +62,15 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
                 )
                 .fetch();
     }
+
+    // 채팅 참여 삭제
+    @Override
+    public void deleteChatByChatRoomId(Long chatRoomId) {
+        jpaQueryFactory
+                .delete(chat)
+                .where(
+                        chat.chatRoom.id.eq(chatRoomId)
+                )
+                .execute();
+    }
 }
