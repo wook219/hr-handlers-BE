@@ -20,7 +20,7 @@ public class Employee extends BaseTimeEntity {
     @Column(updatable = false)
     private Long id;
 
-    @Column(name = "emp_no", nullable = false, unique = true)
+    @Column(name = "employee_number", nullable = false, unique = true)
     @Comment(value = "사원 번호(아이디)")
     private String empNo;
 
@@ -49,7 +49,7 @@ public class Employee extends BaseTimeEntity {
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "contract_type", nullable = true)
+    @Column(name = "contract_type", nullable = false)
     @Comment(value = "계약형태")
     private ContractType contractType;
 
@@ -72,36 +72,15 @@ public class Employee extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_image_id")
-    private ProfileImage profileImage;
+    private ProfileImage profileImage; // TODO: 사원 삭제 시 프로필 삭제
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
 
-    // Update 메서드
-    public void empUpdate(String email, String phone, String introduction, String profileImage) {
-        this.email = email;
-        this.phone = phone;
-        this.introduction = introduction;
-
-        if (profileImage != null) {
-            this.profileImage = ProfileImage.builder()
-                    .profileImageUrl(profileImage)
-                    .build();
-        }
-    }
-
-    public void adminUpdate(String empNo, String contractType, String position, Double leaveBalance, String departmentName) {
-        this.empNo = empNo;
-        this.contractType = ContractType.valueOf(contractType);
-        this.position = position;
-        this.leaveBalance = leaveBalance;
-
-        if (departmentName != null && this.department != null) {
-            this.department = Department.builder()
-                    .deptName(departmentName)
-                    .build();
-        }
+    // 비밀번호 업데이트 메서드
+    public void updatePassword(String encryptedPassword) {
+        this.password = encryptedPassword;
     }
 
     public void leaveBalanceUpdate(Double deductionDays){
