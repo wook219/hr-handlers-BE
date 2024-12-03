@@ -33,6 +33,7 @@ public class EmpMapper {
                 .email(employee.getEmail())
                 .name(employee.getName())
                 .position(employee.getPosition())
+                .role(employee.getRole())
                 // TODO : .password(employee.getPassword())
                 .phone(employee.getPhone())
                 .birthDate(employee.getBirthDate())
