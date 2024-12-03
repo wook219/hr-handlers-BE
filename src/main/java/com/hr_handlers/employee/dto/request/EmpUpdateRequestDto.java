@@ -12,8 +12,6 @@ public class EmpUpdateRequestDto {
     private String phone;
     private String introduction;
     private String profileImageUrl;
-
-    public String getProfileImageUrl() {
-        return profileImageUrl != null ? profileImageUrl : "http://default-image-url.com/default.jpg";
-    }
+    private String password; // 새 비밀번호
+    private String currentPassword;
 }

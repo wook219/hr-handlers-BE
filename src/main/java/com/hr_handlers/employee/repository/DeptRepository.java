@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface DeptRepository extends JpaRepository<Department, Long> {
     Optional<Department> findByDeptName(String deptName);
+
+   // SuccessResponse<String> register(String deptName);
 }

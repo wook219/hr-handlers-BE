@@ -61,7 +61,7 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
     @Transactional
     public void updateEmp(String empNo, AdminEmpUpdateRequestDto updateRequest) {
 
-        // TODO: 커넥션 줄이기
+        // TODO: 부서 관련
         // 새로운 Department 객체 생성
         Department newDepartment = Department.builder()
                 .deptName(updateRequest.getDeptName())
