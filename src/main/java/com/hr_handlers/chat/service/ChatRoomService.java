@@ -7,6 +7,7 @@ import com.hr_handlers.chat.mapper.ChatRoomMapper;
 import com.hr_handlers.chat.repository.ChatMessageRepository;
 import com.hr_handlers.chat.repository.ChatRepository;
 import com.hr_handlers.chat.repository.ChatRoomRepository;
+import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +22,8 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRepository chatRepository;
+    private final EmpRepository empRepository;
     private final ChatRoomMapper chatRoomMapper;
-
-    private final ChatService chatService;
 
     // 채팅방 생성
     public SuccessResponse<ChatRoomResponseDto> createChatRoom(ChatRoomRequestDto chatRoomRequestDto, String empNo) {
@@ -35,9 +35,8 @@ public class ChatRoomService {
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
         ChatRoomResponseDto chatRoomResponseDto = chatRoomMapper.toChatRoomResponseDto(savedChatRoom);
 
-        if (chatRoomRequestDto.getIsSecret().equals("Y")) {
-            chatService.enterChatRoom(chatRoomResponseDto.getChatRoomId(), empNo);
-        }
+        chatRepository.insertChat(chatRoomResponseDto.getChatRoomId(), empRepository.findByEmpNo(empNo).get().getId());
+
         return SuccessResponse.of("채팅방 생성 성공", chatRoomResponseDto);
     }
 
