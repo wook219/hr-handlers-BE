@@ -79,6 +79,32 @@ public class CommentService {
                         .build());
     }
 
+    //댓글 수정
+    @Transactional
+    public SuccessResponse<CommentActionResponseDto> updateComment(Long commentId, CommentRequestDto request, String empNo) {
+        Employee employee = empRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
+
+        // 댓글 작성자가 아닌 경우 권한 없음 예외 발생
+        if (!comment.getEmployee().equals(employee)) {
+            throw new GlobalException(ErrorCode.COMMENT_UPDATE_UNAUTHORIZED);
+        }
+
+        // 댓글 내용 수정
+        comment.setCommentContent(request.getContent());
+        commentRepository.save(comment);
+
+        return SuccessResponse.of("댓글 수정 성공",
+                CommentActionResponseDto.builder()
+                        .id(comment.getId())
+                        .timestamp(comment.getUpdatedAt().toString())
+                        .build());
+    }
+
+
     // 댓글 삭제
     @Transactional
     public void deleteComment(Long commentId, String empNo) {
