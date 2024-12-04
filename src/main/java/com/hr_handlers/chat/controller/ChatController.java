@@ -28,6 +28,13 @@ public class ChatController {
         return chatService.getJoinedEmployees(chatRoomId);
     }
 
+    // 비공개 채팅방 초대
+    @PostMapping("/{chatRoomId}/invite")
+    public SuccessResponse<ChatResponseDto> inviteSecretChat(@PathVariable("chatRoomId") Long chatRoomId,
+                                                             Authentication authentication) {
+        return chatService.inviteSecretChat(chatRoomId, authentication.getName());
+    }
+
     // 채팅방 퇴장
     @DeleteMapping("/{chatRoomId}")
     public SuccessResponse<Long> deleteChat(@PathVariable("chatRoomId") Long chatRoomId,
