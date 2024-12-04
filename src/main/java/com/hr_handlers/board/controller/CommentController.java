@@ -38,6 +38,18 @@ public class CommentController {
         return commentService.createComment(post_id, request, authentication.getName());
     }
 
+
+    // 댓글/대댓글 수정
+    @PutMapping("/comment/{id}")
+    public SuccessResponse<CommentActionResponseDto> updateComment(
+            @PathVariable Long id,
+            @RequestBody CommentRequestDto request,
+            Authentication authentication
+    ) {
+        return commentService.updateComment(id, request, authentication.getName());
+    }
+
+
     // 댓글/대댓글 삭제
     @DeleteMapping("/comment/{id}")
     public SuccessResponse<String> deleteComment(
