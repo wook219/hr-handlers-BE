@@ -10,6 +10,7 @@ import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -62,23 +63,29 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
     public void updateEmp(String empNo, AdminEmpUpdateRequestDto updateRequest) {
 
         // TODO: 부서 관련
-        // 새로운 Department 객체 생성
-        Department newDepartment = Department.builder()
-                .deptName(updateRequest.getDeptName())
-                .build();
-
-        // DB에 저장 (이미 존재하는 부서는 가져오고, 없으면 새로 생성)
         Department department = deptRepository.findByDeptName(updateRequest.getDeptName())
-                .orElseGet(() -> deptRepository.save(newDepartment));
+                .orElseGet(() -> deptRepository.save(Department.builder()
+                        .deptName(updateRequest.getDeptName())
+                        .build()));
 
-        long updatedCount = queryFactory
-                .update(employee)
-                .where(employee.empNo.eq(empNo))
-                .set(employee.position, updateRequest.getPosition())
-                .set(employee.contractType, ContractType.valueOf(updateRequest.getContractType()))
-                .set(employee.leaveBalance, updateRequest.getLeaveBalance())
-                .set(employee.department, department) // 부서를 새로운 객체로 교체
-                .execute();
+        JPAUpdateClause updateClause = queryFactory.update(employee)
+                .where(employee.empNo.eq(empNo));
+
+        // 조건에 따라 set 호출
+        if (updateRequest.getPosition() != null) {
+            updateClause.set(employee.position, updateRequest.getPosition());
+        }
+        if (updateRequest.getContractType() != null) {
+            updateClause.set(employee.contractType, ContractType.valueOf(updateRequest.getContractType()));
+        }
+        if (updateRequest.getLeaveBalance() != null) {
+            updateClause.set(employee.leaveBalance, updateRequest.getLeaveBalance());
+        }
+        if (updateRequest.getDeptName() != null) {
+            updateClause.set(employee.department, department);
+        }
+
+        long updatedCount = updateClause.execute();
 
         entityManager.flush();
         entityManager.clear();

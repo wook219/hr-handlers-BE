@@ -39,8 +39,7 @@ public class EmpController {
 
     // 메일 전송
     @PostMapping("/send/mail")
-    public SuccessResponse<Boolean> sendResetPassword(@RequestBody PasswordRecoveryRequestDto requestDto){
-        MailDto mail = empService.sendResetPassword(requestDto.getEmpNo(), requestDto.getEmail());
-        return empService.sendMail(mail);
+    public SuccessResponse<Boolean> sendResetPassword(@RequestBody PasswordRecoveryRequestDto requestDto) {
+        return empService.resetPasswordAndSendMail(requestDto.getEmpNo(), requestDto.getEmail());
     }
 }

@@ -16,7 +16,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @RequiredArgsConstructor
 public class EmpService {
@@ -25,7 +24,6 @@ public class EmpService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
     private static final String FROM_ADDRESS = "hth130598@gmail.com";
-
 
     // 사원 상세 조회
     public SuccessResponse<EmpDetailResponseDto> getEmpDetail(String empNo){
@@ -49,6 +47,7 @@ public class EmpService {
         return SuccessResponse.of("사원번호 이메일 일치", true);
     }
 
+    // 임시 비밀번호
     public MailDto sendResetPassword(String empNo, String email) {
 
         // 사원번호와 이메일 확인
@@ -66,16 +65,17 @@ public class EmpService {
         empRepository.save(employee);
 
         // 메일 데이터 생성
-        return new MailDto(
-                email,
-                employee.getName() + "님의 임시 비밀번호 안내 메일입니다.",
-                "안녕하세요.\n\n임시 비밀번호 안내 메일입니다.\n\n" +
+        return MailDto.builder()
+                .address(email)
+                .title(employee.getName() + "님의 임시 비밀번호 안내 메일입니다.")
+                .message("안녕하세요.\n\n임시 비밀번호 안내 메일입니다.\n\n" +
                         "임시 비밀번호는 다음과 같습니다:\n" +
                         tempPassword +
-                        "\n\n로그인 후 반드시 비밀번호를 변경해주세요."
-        );
+                        "\n\n로그인 후 반드시 비밀번호를 변경해주세요.")
+                .build();
     }
 
+    // 이메일 형식 체크
     private boolean isValidEmail(String email) {
         String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
         return email.matches(emailRegex);
@@ -115,7 +115,11 @@ public class EmpService {
             int randomIndex = (int) (Math.random() * charPool.length());
             password.append(charPool.charAt(randomIndex));
         }
-
         return password.toString();
+    }
+
+    public SuccessResponse<Boolean> resetPasswordAndSendMail(String empNo, String email) {
+        MailDto mailDto = sendResetPassword(empNo, email); // 임시 비밀번호 생성
+        return sendMail(mailDto); // 이메일 전송
     }
 }
