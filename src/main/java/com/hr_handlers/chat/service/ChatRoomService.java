@@ -23,14 +23,21 @@ public class ChatRoomService {
     private final ChatRepository chatRepository;
     private final ChatRoomMapper chatRoomMapper;
 
+    private final ChatService chatService;
+
     // 채팅방 생성
-    public SuccessResponse<ChatRoomResponseDto> createChatRoom(ChatRoomRequestDto chatRoomRequestDto) {
+    public SuccessResponse<ChatRoomResponseDto> createChatRoom(ChatRoomRequestDto chatRoomRequestDto, String empNo) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .title(chatRoomRequestDto.getTitle())
+                .isSecret(chatRoomRequestDto.getIsSecret())
                 .build();
 
         ChatRoom savedChatRoom = chatRoomRepository.save(chatRoom);
         ChatRoomResponseDto chatRoomResponseDto = chatRoomMapper.toChatRoomResponseDto(savedChatRoom);
+
+        if (chatRoomRequestDto.getIsSecret().equals("Y")) {
+            chatService.enterChatRoom(chatRoomResponseDto.getChatRoomId(), empNo);
+        }
         return SuccessResponse.of("채팅방 생성 성공", chatRoomResponseDto);
     }
 

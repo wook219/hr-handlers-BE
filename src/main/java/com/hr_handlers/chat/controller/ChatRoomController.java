@@ -23,8 +23,9 @@ public class ChatRoomController {
 
     // 채팅방 생성
     @PostMapping
-    public SuccessResponse<ChatRoomResponseDto> createChatRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto) {
-        return chatRoomService.createChatRoom(chatRoomRequestDto);
+    public SuccessResponse<ChatRoomResponseDto> createChatRoom(@RequestBody ChatRoomRequestDto chatRoomRequestDto,
+                                                               Authentication authentication) {
+        return chatRoomService.createChatRoom(chatRoomRequestDto, authentication.getName());
     }
 
     // 채팅방 목록 조회
