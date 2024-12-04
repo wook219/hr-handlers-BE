@@ -15,6 +15,10 @@ import com.hr_handlers.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,18 +31,20 @@ public class CommentService {
     private final EmpRepository empRepository;
 
     // 댓글 조회
-    public SuccessResponse<List<CommentResponseDto>> getCommentsByPost(Long postId) {
+    public SuccessResponse<Page<CommentResponseDto>> getCommentsByPost(Long postId, int page, int size) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
 
-        // 최상위 댓글만 조회하고 대댓글은 재귀적으로 매핑
-        List<CommentResponseDto> comments = commentRepository
-                .findByPostAndParentIsNullAndIsDelete(post, "N")
-                .stream()
-                .map(comment -> mapToDto(comment, 0))  // level 0부터 시작
-                .collect(Collectors.toList());
+        // Pageable 객체 생성
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        return SuccessResponse.of("댓글 조회 성공", comments);
+        // Repository에서 페이지네이션 처리된 데이터 가져오기
+        Page<Comment> commentPage = commentRepository.findByPostAndParentIsNullAndIsDelete(post, "N", pageable);
+
+        // Entity -> DTO 매핑
+        Page<CommentResponseDto> commentResponsePage = commentPage.map(comment -> mapToDto(comment, 0)); // Page 단위로 매핑
+
+        return SuccessResponse.of("댓글 조회 성공", commentResponsePage);
     }
 
     // 댓글 작성
