@@ -18,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AdminEmpService {
@@ -64,5 +66,13 @@ public class AdminEmpService {
         Page<Employee> employees = empRepository.findEmpByName(requestDto.getKeyword(), pageable);
 
         return SuccessResponse.of("사원 전체 조회 성공", employees.map(EmpMapper::toEmpListResponseDto));
+    }
+
+    public SuccessResponse<List<AdminEmpResponseDto>> searchEmp(String position, String deptName) {
+        List<Employee> employeeEntity = empRepository.findByPositionAndDepartmentDeptName(position, deptName);
+        List<AdminEmpResponseDto> employeeResponse  = employeeEntity.stream()
+                .map(EmpMapper::toEmpListResponseDto)
+                .toList();
+        return SuccessResponse.of("사원 조회 성공", employeeResponse);
     }
 }
