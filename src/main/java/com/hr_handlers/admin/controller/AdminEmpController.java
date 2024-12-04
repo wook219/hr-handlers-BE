@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/emp")
@@ -44,6 +46,15 @@ public class AdminEmpController {
     @DeleteMapping("/{empNo}")
     public SuccessResponse<Boolean> deleteEmp(@PathVariable("empNo") String empNo){
         return adminEmpService.delete(empNo);
+    }
+
+    // 사원 검색
+    @GetMapping("search")
+    public SuccessResponse<List<AdminEmpResponseDto>> searchEmp(
+            @RequestParam("position") String position,
+            @RequestParam("deptName") String deptName
+            ) {
+        return adminEmpService.searchEmp(position, deptName);
     }
 
     // 부서 등록
