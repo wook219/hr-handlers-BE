@@ -3,6 +3,7 @@ package com.hr_handlers.board.service;
 
 import com.hr_handlers.board.dto.*;
 import com.hr_handlers.board.entity.HashTag;
+import com.hr_handlers.board.enums.PostType;
 import com.hr_handlers.board.repository.PostRepository;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.repository.EmpRepository;
@@ -67,12 +68,15 @@ public class PostService {
         Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
+        log.info("Received Post Request: {}", request); // 요청 값 출력
+
         Post post = Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .imageUrl(request.getImageUrl())
                 .employee(employee)
                 .isDelete("N")
+                .postType(request.getPostType()) // POST 또는 NOTICE 설정
                 .build();
 
         if (request.getHashtagContent() != null) {
@@ -174,19 +178,6 @@ public class PostService {
 
 
     // 게시글 삭제
-    /*
-    public SuccessResponse<String> deletePost(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
-        try {
-            post.setIsDelete("Y");
-            postRepository.save(post);
-            return SuccessResponse.of("게시글 삭제 성공", "게시글이 삭제되었습니다.");
-        } catch (Exception e) {
-            throw new GlobalException(ErrorCode.POST_DELETE_FAILED);
-        }
-    }*/
-
     @Transactional
     public SuccessResponse<String> deletePost(Long id) {
         Post post = postRepository.findById(id)
@@ -207,6 +198,20 @@ public class PostService {
             throw new GlobalException(ErrorCode.POST_DELETE_FAILED);
         }
     }
+
+    public SuccessResponse<PostListResponseDto> getAllNotices(Pageable pageable) {
+        Page<Post> noticesPage = postRepository.findPostsByPostType(PostType.NOTICE, pageable);
+
+        List<PostResponseDto> response = noticesPage.isEmpty()
+                ? Collections.emptyList()
+                : noticesPage.getContent().stream()
+                .map(postMapper::toPostResponseDto)
+                .toList();
+
+        return SuccessResponse.of("공지사항 조회 성공",
+                new PostListResponseDto(response, noticesPage.getTotalElements()));
+    }
+
 
     // content에서 이미지 URL 추출 메서드
     private List<String> extractImageUrlsFromContent(String content) {
