@@ -15,7 +15,7 @@ public class AdminSalaryCreateRequestDto {
 
 
     @NotNull(message = "사원 id가 없습니다.")
-    private Long employeeId;
+    private String employeeId;
 
     @NotNull(message = "기본급이 없습니다.")
     @Positive(message = "기본급은 0보다 커야 합니다.")

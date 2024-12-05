@@ -43,7 +43,7 @@ public class AdminSalaryService {
 
     // 급여관리 추가
     public SuccessResponse<Boolean> createSalary(AdminSalaryCreateRequestDto salaryCreateRequest) {
-        Employee employee = empRepository.findById(salaryCreateRequest.getEmployeeId()).orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+        Employee employee = empRepository.findByEmpNo(salaryCreateRequest.getEmployeeId()).orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
         Salary salaryEntity = salaryCreateRequest.toCreateEntity(employee);
         adminSalaryRepository.save(salaryEntity);
         return SuccessResponse.of("급여가 등록 되었습니다.", true);
@@ -71,14 +71,14 @@ public class AdminSalaryService {
         // todo : 엑셀에 빈 행이 있을경우 유효성 검사??
 
         // 엑셀 dto에서 Employee ID 목록 뽑아내기
-        List<Long> employeeIds = adminSalaryExcelUploadRequestDtos.stream()
+        List<String> employeeIds = adminSalaryExcelUploadRequestDtos.stream()
                 .map(AdminSalaryExcelUploadRequestDto::getEmployeeId)
                 .distinct()  // 중복되는 Employee ID를 제외
                 .collect(Collectors.toList());
 
         // Employee ID 목록을 받아서 한 번에 Employee 객체들을 조회
-        Map<Long, Employee> employeeMap = empRepository.findAllById(employeeIds).stream()
-                .collect(Collectors.toMap(Employee::getId, e -> e));
+        Map<String, Employee> employeeMap = empRepository.findAllByEmpNoIn(employeeIds).stream()
+                .collect(Collectors.toMap(Employee::getEmpNo, e -> e));
 
         // todo :
 //        select
