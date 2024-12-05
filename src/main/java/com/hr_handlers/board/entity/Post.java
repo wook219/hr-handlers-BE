@@ -1,5 +1,6 @@
 package com.hr_handlers.board.entity;
 
+import com.hr_handlers.board.enums.PostType;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
@@ -25,6 +26,9 @@ public class Post extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
+
+    @Enumerated(EnumType.STRING)
+    private PostType postType; // 공지사항 여부
 
     @Column(name = "title", length = 50, nullable = false)
     private String title;
