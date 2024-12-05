@@ -3,6 +3,7 @@ package com.hr_handlers.admin.service;
 import com.hr_handlers.admin.dto.salary.request.*;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponseDto;
 import com.hr_handlers.admin.repository.AdminSalaryRepository;
+import com.hr_handlers.admin.repository.mapper.AdminSalaryMapper;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
@@ -31,6 +32,8 @@ public class AdminSalaryService {
     private final EmpRepository empRepository;
     private final ExcelUploadUtils excelUploadUtils;
 
+    private final AdminSalaryMapper adminSalaryMapper;
+    
     // 급여관리 전체 조회
     public SuccessResponse<List<AdminSalaryResponseDto>> getAllUserSalary() {
         return SuccessResponse.of("급여 관리 조회 성공", adminSalaryRepository.findAllSalary());
@@ -100,7 +103,10 @@ public class AdminSalaryService {
     }
 
     public SuccessResponse<Boolean> excelDownloadSalary(OutputStream stream, AdminSalarySearchRequestDto adminSalarySearchRequestDto) throws IOException, IllegalAccessException {
-        List<AdminSalaryExcelDownloadRequestDto> adminSalaryResponseDtos = adminSalaryRepository.searchSalaryForExcel(adminSalarySearchRequestDto);
+//        List<AdminSalaryExcelDownloadRequestDto> adminSalaryResponseDtos = adminSalaryRepository.searchSalaryForExcel(adminSalarySearchRequestDto);
+//        excelUploadUtils.renderObjectToExcel(stream, adminSalaryResponseDtos, AdminSalaryExcelDownloadRequestDto.class);
+
+        List<AdminSalaryExcelDownloadRequestDto> adminSalaryResponseDtos = adminSalaryMapper.findAllSalaries();
         excelUploadUtils.renderObjectToExcel(stream, adminSalaryResponseDtos, AdminSalaryExcelDownloadRequestDto.class);
         return SuccessResponse.of("성공적으로 다운로드 되었습니다.", true);
     }

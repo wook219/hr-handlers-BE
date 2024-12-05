@@ -35,4 +35,7 @@ public class Salary extends BaseTimeEntity {
 
     @Column(name = "pay_date", nullable = false, columnDefinition = "DATE")
     private LocalDate payDate;
+
+    @Column(name = "year", nullable = false)
+    private String year;
 }

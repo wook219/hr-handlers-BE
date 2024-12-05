@@ -113,14 +113,34 @@ public class ExcelUploadUtils implements ExcelUtilMethodFactory {
         int rowIdx = 1;
         int startColToRender = 0;
 
+        Workbook workbook = sheet.getWorkbook();
+        CellStyle highlightStyle = workbook.createCellStyle();
+        highlightStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+        highlightStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
         for (T datum : data) {
             Row row = sheet.createRow(rowIdx);
             int colIdx = startColToRender;
+            boolean highlightRow = false;
+
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true); // private 필드에 접근하기 위해
-                row.createCell(colIdx, CellType.STRING).setCellValue(String.valueOf(field.get(datum)));
+                String value = field.get(datum) == null ? "" : String.valueOf(field.get(datum));
+
+                row.createCell(colIdx, CellType.STRING).setCellValue(Objects.requireNonNullElse(value, ""));
                 colIdx++;
+
+                if (value.equals("월별 합계")) {
+                    highlightRow = true;
+                }
             }
+
+            if (highlightRow) {
+                for (int i = 0; i < row.getPhysicalNumberOfCells(); i++) {
+                    row.getCell(i).setCellStyle(highlightStyle); // 색상 적용
+                }
+            }
+
             rowIdx++;
         }
     }
