@@ -38,10 +38,12 @@ public class PostService {
 
     private final S3Service s3Service;
 
+
+
     // 게시글 목록 조회
     public SuccessResponse<PostListResponseDto> getAllPosts(Pageable pageable) {
         // 활성화된 게시글만 조회
-        Page<Post> postsPage = postRepository.findActivePosts(pageable);
+        Page<Post> postsPage = postRepository.findActivePostsByType(PostType.POST, pageable);
 
         List<PostResponseDto> response = postsPage.isEmpty()
                 ? Collections.emptyList() // 빈 리스트
@@ -200,7 +202,7 @@ public class PostService {
     }
 
     public SuccessResponse<PostListResponseDto> getAllNotices(Pageable pageable) {
-        Page<Post> noticesPage = postRepository.findPostsByPostType(PostType.NOTICE, pageable);
+        Page<Post> noticesPage = postRepository.findActivePostsByType(PostType.NOTICE, pageable);
 
         List<PostResponseDto> response = noticesPage.isEmpty()
                 ? Collections.emptyList()
