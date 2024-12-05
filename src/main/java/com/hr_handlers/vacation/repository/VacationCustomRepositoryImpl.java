@@ -14,6 +14,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import static com.hr_handlers.employee.entity.QEmployee.employee;
 import static com.hr_handlers.vacation.entity.QVacation.vacation;
 
 @Repository
+@Slf4j
 public class VacationCustomRepositoryImpl implements VacationCustomRepository{
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -101,64 +103,47 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
 
     @Override
     public VacationSummaryResponseDto findEmployeeVacationBalanceById(String empNo) {
-        // DATEDIFF 함수 정의
+        VacationStatus approvedStatus = VacationStatus.APPROVED;
+        VacationStatus pendingStatus = VacationStatus.PENDING;
+        VacationType halfType = VacationType.HALF;
+        VacationType publicType = VacationType.PUBLIC;
+
+        log.info("Query parameters - empNo: {}, half type: {}, public type: {}",
+                empNo, halfType, publicType);
+
         NumberTemplate<Double> dateDiff = Expressions.numberTemplate(
                 Double.class,
-                "DATEDIFF({0}, {1})",
+                "DATEDIFF({1}, {0})",
                 vacation.startDate,
                 vacation.endDate
         );
 
-        // 승인된 휴가 일수 서브쿼리
+        NumberExpression<Double> vacationDaysExpression = new CaseBuilder()
+                .when(vacation.type.eq(VacationType.HALF))
+                .then(Expressions.numberTemplate(Double.class, "0.5"))  // SQL에서 직접 0.5를 사용
+                .when(vacation.type.eq(VacationType.PUBLIC))
+                .then(Expressions.numberTemplate(Double.class, "0.0"))  // SQL에서 직접 0.0을 사용
+                .otherwise(dateDiff.multiply(-1).add(1.0));
+
         SubQueryExpression<Double> approvedSum = JPAExpressions
-                .select(
-                        new CaseBuilder()
-                                .when(vacation.type.eq(VacationType.HALF))
-                                .then(0.5)
-                                .when(vacation.type.eq(VacationType.PUBLIC))
-                                .then(0.0)
-                                .otherwise(dateDiff.multiply(-1).add(1.0))
-                                .sum()
-                )
+                .select(vacationDaysExpression.sum())
                 .from(vacation)
-                .where(
-                        vacation.employee.empNo.eq(empNo)
-                                .and(vacation.status.eq(VacationStatus.APPROVED))
-                );
+                .where(vacation.employee.empNo.eq(empNo)
+                        .and(vacation.status.eq(approvedStatus)));
 
-        // 승인 대기 휴가 일수 서브쿼리
         SubQueryExpression<Double> pendingSum = JPAExpressions
-                .select(
-                        new CaseBuilder()
-                                .when(vacation.type.eq(VacationType.HALF))
-                                .then(0.5)
-                                .when(vacation.type.eq(VacationType.PUBLIC))
-                                .then(0.0)
-                                .otherwise(dateDiff.multiply(-1).add(1.0))
-                                .sum()
-                )
+                .select(vacationDaysExpression.sum())
                 .from(vacation)
-                .where(
-                        vacation.employee.empNo.eq(empNo)
-                                .and(vacation.status.eq(VacationStatus.PENDING))
-                );
+                .where(vacation.employee.empNo.eq(empNo)
+                        .and(vacation.status.eq(pendingStatus)));
 
-        // 최종 조회
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
                                 VacationSummaryResponseDto.class,
                                 employee.leaveBalance,
-                                Expressions.numberTemplate(
-                                        Double.class,
-                                        "COALESCE({0}, 0.0)",
-                                        approvedSum
-                                ),
-                                Expressions.numberTemplate(
-                                        Double.class,
-                                        "COALESCE({0}, 0.0)",
-                                        pendingSum
-                                )
+                                Expressions.numberTemplate(Double.class, "COALESCE({0}, 0.0)", approvedSum),
+                                Expressions.numberTemplate(Double.class, "COALESCE({0}, 0.0)", pendingSum)
                         )
                 )
                 .from(employee)
