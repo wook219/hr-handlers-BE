@@ -11,6 +11,7 @@ public interface ChatMapper {
     @Mapping(source = "employee.id", target = "employeeId")
     @Mapping(source = "chatRoom.id", target = "chatRoomId")
     @Mapping(source = "chatRoom.title", target = "title")
+    @Mapping(source = "chatRoom.isSecret", target = "isSecret")
     @Mapping(source = "employee.empNo", target = "empNo")
     @Mapping(source = "employee.name", target = "empName")
     @Mapping(source = "employee.position", target = "empPosition")

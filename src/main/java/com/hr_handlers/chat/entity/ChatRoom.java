@@ -20,7 +20,10 @@ public class ChatRoom extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(name = "title", nullable = false)
     @Size(min = 1, max = 100)
     private String title;
+
+    @Column(name = "is_secret", length = 1, nullable = false)
+    private String isSecret;
 }
