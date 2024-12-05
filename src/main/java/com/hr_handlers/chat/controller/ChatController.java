@@ -1,5 +1,6 @@
 package com.hr_handlers.chat.controller;
 
+import com.hr_handlers.chat.dto.ChatRequestDto;
 import com.hr_handlers.chat.dto.ChatResponseDto;
 import com.hr_handlers.chat.service.ChatService;
 import com.hr_handlers.global.dto.SuccessResponse;
@@ -29,10 +30,10 @@ public class ChatController {
     }
 
     // 비공개 채팅방 초대
-    @PostMapping("/{chatRoomId}/invite")
+    @PostMapping("/{chatRoomId}")
     public SuccessResponse<ChatResponseDto> inviteSecretChat(@PathVariable("chatRoomId") Long chatRoomId,
-                                                             Authentication authentication) {
-        return chatService.inviteSecretChat(chatRoomId, authentication.getName());
+                                                             @RequestBody ChatRequestDto chatRequestDto) {
+        return chatService.enterChatRoom(chatRoomId, chatRequestDto.getEmpNo());
     }
 
     // 채팅방 퇴장

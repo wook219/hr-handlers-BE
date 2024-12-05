@@ -63,36 +63,6 @@ public class ChatService {
         );
     }
 
-    // 채팅방 초대
-    public SuccessResponse<ChatResponseDto> inviteSecretChat(Long chatRoomId, String empNo) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_ROOM_NOT_FOUND));
-        Employee employee = empRepository.findByEmpNo(empNo)
-                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
-
-        Chat existingChat = chatRepository.findByChatId(chatRoom.getId(), employee.getId());
-
-        if (existingChat == null) {
-            // ChatId 객체 생성
-            ChatId chatId = ChatId.builder()
-                    .chatRoomId(chatRoom.getId())
-                    .employeeId(employee.getId())
-                    .build();
-
-            // Chat 객체 생성
-            Chat chat = Chat.builder()
-                    .id(chatId)
-                    .chatRoom(chatRoom)
-                    .employee(employee)
-                    .build();
-
-            Chat enteredChat = chatRepository.save(chat);
-            return SuccessResponse.of("채팅 초대에 성공했습니다.", chatMapper.toChatResponseDto(enteredChat));
-        } else {
-            return SuccessResponse.of("이미 이 채팅방에 참여 중입니다.", chatMapper.toChatResponseDto(existingChat));
-        }
-    }
-
     // 채팅방 퇴장
     @Transactional
     public SuccessResponse<Long> exitChatRoom(Long chatRoomId, String empNo) {
