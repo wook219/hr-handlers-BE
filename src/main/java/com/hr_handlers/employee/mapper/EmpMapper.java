@@ -35,13 +35,14 @@ public class EmpMapper {
                 .position(employee.getPosition())
                 // TODO : .password(employee.getPassword())
                 .phone(employee.getPhone())
+                .role(String.valueOf(employee.getRole()))
                 .birthDate(employee.getBirthDate())
                 .deptName(employee.getDepartment() != null ? employee.getDepartment().getDeptName() : null)
                 .contractType(String.valueOf(employee.getContractType()))
                 .leaveBalance(employee.getLeaveBalance())
                 .joinDate(employee.getJoinDate())
                 .introduction(employee.getIntroduction())
-                .profileImageUrl(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null)
+                .profileImage(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null)
                 .build();
     }
 
