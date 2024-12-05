@@ -57,7 +57,7 @@ public class PostController {
 
     @GetMapping("/notices")
     public SuccessResponse<PostListResponseDto> getAllNotices(
-            @PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 5) Pageable pageable) {
         return postService.getAllNotices(pageable);
     }
 }
