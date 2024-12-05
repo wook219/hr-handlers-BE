@@ -35,6 +35,9 @@ spring:
             enable: true
         debug: true
 
+mybatis:
+  mapper-locations: mybatis/mapper/*.xml
+
 aws:
   s3:
     bucket:
