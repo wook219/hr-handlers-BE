@@ -32,33 +32,10 @@ public class ChatService {
 
     // 채팅 참여 추가 -> ChatRoom에서 추가를 받을 것
     public SuccessResponse<ChatResponseDto> enterChatRoom(Long chatRoomId, String empNo) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new GlobalException(ErrorCode.CHAT_ROOM_NOT_FOUND));
         Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
-        Chat existingChat = chatRepository.findByChatId(chatRoom.getId(), employee.getId());
-
-        if (existingChat == null) {
-            // ChatId 객체 생성
-            ChatId chatId = ChatId.builder()
-                    .chatRoomId(chatRoom.getId())
-                    .employeeId(employee.getId())
-                    .build();
-
-            // Chat 객체 생성
-            Chat chat = Chat.builder()
-                    .id(chatId)
-                    .chatRoom(chatRoom)
-                    .employee(employee)
-                    .build();
-
-            Chat enteredChat = chatRepository.save(chat);
-            return SuccessResponse.of("채팅 참여에 성공했습니다.", chatMapper.toChatResponseDto(enteredChat));
-        } else {
-            // 이미 참여 중인 채팅방인 경우
-            return SuccessResponse.of("이미 이 채팅방에 참여 중입니다.", chatMapper.toChatResponseDto(existingChat));
-        }
+        return SuccessResponse.of("채팅 참여에 성공했습니다.", chatMapper.toChatResponseDto(chatRepository.insertChat(chatRoomId, employee.getId())));
     }
     
     // 참여한 채팅 목록 조회
@@ -86,7 +63,7 @@ public class ChatService {
         );
     }
 
-    // 채팅방 탈퇴
+    // 채팅방 퇴장
     @Transactional
     public SuccessResponse<Long> exitChatRoom(Long chatRoomId, String empNo) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)

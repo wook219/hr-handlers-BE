@@ -5,8 +5,11 @@ import com.hr_handlers.chat.entity.Chat;
 import com.hr_handlers.chat.entity.ChatRoom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,6 +20,9 @@ import static com.hr_handlers.chat.entity.QChat.chat;
 public class ChatCustomRepositoryImpl implements ChatCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public List<Chat> findByEmployeeId(Long employeeId) {
@@ -39,6 +45,24 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
                 .fetchOne();
     }
 
+    @Transactional
+    @Override
+    public Chat insertChat(Long chatRoomId, Long employeeId) {
+        Chat existingChat = findByChatId(chatRoomId, employeeId);
+
+        if (existingChat == null) {
+            String sql = "INSERT IGNORE INTO chat (chat_room_id, employee_id) VALUES (:chatRoomId, :employeeId)";
+            entityManager.createNativeQuery(sql)
+                    .setParameter("chatRoomId", chatRoomId)
+                    .setParameter("employeeId", employeeId)
+                    .executeUpdate();
+
+            return findByChatId(chatRoomId, employeeId);
+        } else {
+            return existingChat;
+        }
+    }
+
     @Override
     public List<ChatResponseDto> findJoinedEmployees(Long chatRoomId) {
         return jpaQueryFactory
@@ -48,6 +72,7 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
                                 chat.employee.id,
                                 chat.chatRoom.id,
                                 chat.chatRoom.title,
+                                chat.chatRoom.isSecret,
                                 chat.employee.empNo,
                                 chat.employee.name,
                                 chat.employee.position,
