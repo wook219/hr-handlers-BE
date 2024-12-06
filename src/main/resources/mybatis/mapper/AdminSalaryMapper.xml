@@ -26,12 +26,8 @@
     <!--  개인별 year 급여 집계  -->
     <select id="getYearlySummaryByIndividual" resultType="com.hr_handlers.admin.dto.salary.request.excel.IndividualYearSalaryExcelRequestDto">
         SELECT
-            CASE
-                WHEN d.dept_name IS NULL THEN '총합계'
-                ELSE dept_name
-            END AS dept_name,
-            position,
-            name,
+            get_individual_dept_name(dept_name, name, year) as dept_name,
+            get_individual_name(name, year) as name,
             year,
             SUM(s.basic_salary) AS basic_salary,
             SUM(s.deduction) AS deduction,
@@ -41,35 +37,39 @@
         LEFT JOIN employee e ON s.employee_id = e.id
         LEFT JOIN department d ON e.department_id = d.id
         <include refid="CommonWhereClause" />
-        GROUP BY dept_name, name, year  WITH ROLLUP;
+        GROUP BY dept_name, name, year WITH ROLLUP;
     </select>
 
     <!--  개인별 month 급여 집계  -->
     <select id="getMonthlySummaryByIndividual" resultType="com.hr_handlers.admin.dto.salary.request.excel.IndividualMonthSalaryExcelRequestDto">
         SELECT
             CASE
-                WHEN d.dept_name IS NULL THEN '총합계'
-                ELSE d.dept_name
+                WHEN dept_name IS NULL THEN '총 합계'
+                WHEN name IS NULL THEN '팀간 합계'
+                WHEN pay_date IS NULL THEN '합계'
+                ELSE dept_name
             END AS dept_name,
-            get_position(d.dept_name, e.position, e.name, s.pay_date) AS position,
-            e.name,
+            CASE
+                WHEN pay_date IS NULL THEN ''
+                ELSE name
+            END AS name,
+            pay_date,
             SUM(s.basic_salary) AS basic_salary,
             SUM(s.deduction) AS deduction,
-            SUM(s.net_salary) AS net_salary,
-            s.pay_date
+            SUM(s.net_salary) AS net_salary
         FROM
             salary s
         LEFT JOIN employee e ON s.employee_id = e.id
         LEFT JOIN department d ON e.department_id = d.id
         <include refid="CommonWhereClause" />
-        GROUP BY d.dept_name, s.pay_date, e.name WITH ROLLUP
+        GROUP BY dept_name, name, pay_date  WITH ROLLUP;
     </select>
 
     <!--  부서별 year 급여 집계  -->
     <select id="getYearlySummaryByDepartment" resultType="com.hr_handlers.admin.dto.salary.request.excel.DepartmentYearSalaryExcelRequestDto">
         SELECT
-            get_dept_name(d.dept_name, year) AS dept_name,
-            get_year(d.dept_name, year) AS year,
+            get_department_dept_name(dept_name, year),
+            year,
             SUM(s.basic_salary) AS basic_salary,
             SUM(s.deduction) AS deduction,
             SUM(s.net_salary) AS net_salary
@@ -84,7 +84,11 @@
     <!--  부서별 month 급여 집계  -->
     <select id="getMonthlySummaryByDepartment" resultType="com.hr_handlers.admin.dto.salary.request.excel.DepartmentMonthSalaryExcelRequestDto">
         SELECT
-            get_dept_name(d.dept_name, year) AS dept_name,
+            CASE
+                WHEN d.dept_name IS NULL THEN '총 합계'
+                WHEN pay_date IS NULL THEN '중간 합계'
+                ELSE dept_name
+            END AS dept_name,
             pay_date,
             SUM(s.basic_salary) AS basic_salary,
             SUM(s.deduction) AS deduction,

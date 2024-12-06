@@ -9,16 +9,14 @@ import lombok.Getter;
 public class IndividualYearSalaryExcelRequestDto {
     @ExcelColumn(headerName = "부서", sort=1)
     private String deptName;
-    @ExcelColumn(headerName = "직위", sort=2)
-    private String position;
-    @ExcelColumn(headerName = "이름", sort=3)
+    @ExcelColumn(headerName = "이름", sort=2)
     private String name;
-    @ExcelColumn(headerName = "연도", sort=4)
+    @ExcelColumn(headerName = "연도", sort=3)
     private String year;
-    @ExcelColumn(headerName = "지급총액", sort=5)
+    @ExcelColumn(headerName = "지급총액", sort=4)
     private int basicSalary;
-    @ExcelColumn(headerName = "공제총액", sort=6)
+    @ExcelColumn(headerName = "공제총액", sort=5)
     private int deduction;
-    @ExcelColumn(headerName = "실지급액", sort=7)
+    @ExcelColumn(headerName = "실지급액", sort=6)
     private int netSalary;
 }

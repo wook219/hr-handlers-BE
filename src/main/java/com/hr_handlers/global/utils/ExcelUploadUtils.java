@@ -113,15 +113,33 @@ public class ExcelUploadUtils implements ExcelUtilMethodFactory {
         int rowIdx = 1;
         int startColToRender = 0;
 
+        // todo : 나중에 리팩토링 ㄱㄱ
         Workbook workbook = sheet.getWorkbook();
         CellStyle highlightStyle = workbook.createCellStyle();
         highlightStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
         highlightStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
+        CellStyle midSumStyle = workbook.createCellStyle();
+        midSumStyle.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+        midSumStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle totalSumStyle = workbook.createCellStyle();
+        totalSumStyle.setFillForegroundColor(IndexedColors.LAVENDER.getIndex());
+        totalSumStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle teamSumStyle = workbook.createCellStyle();
+        teamSumStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
+        teamSumStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle grandTotalStyle = workbook.createCellStyle();
+        grandTotalStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+        grandTotalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
         for (T datum : data) {
             Row row = sheet.createRow(rowIdx);
             int colIdx = startColToRender;
-            boolean highlightRow = false;
+
+            CellStyle currentRowStyle = null;
 
             for (Field field : clazz.getDeclaredFields()) {
                 field.setAccessible(true); // private 필드에 접근하기 위해
@@ -130,14 +148,22 @@ public class ExcelUploadUtils implements ExcelUtilMethodFactory {
                 row.createCell(colIdx, CellType.STRING).setCellValue(Objects.requireNonNullElse(value, ""));
                 colIdx++;
 
-                if (value.equals("월별 합계")) {
-                    highlightRow = true;
+                // 특정 행 타입을 확인하여 스타일 지정
+                // todo : 나중에 리팩토링 ㄱㄱ
+                if (value.equals("중간 합계")) {
+                    currentRowStyle = midSumStyle;
+                } else if (value.equals("총 합계")) {
+                    currentRowStyle = totalSumStyle;
+                } else if (value.equals("팀간 합계")) {
+                    currentRowStyle = teamSumStyle;
+                } else if (value.equals("합계")) {
+                    currentRowStyle = grandTotalStyle;
                 }
             }
 
-            if (highlightRow) {
+            if (currentRowStyle != null) {
                 for (int i = 0; i < row.getPhysicalNumberOfCells(); i++) {
-                    row.getCell(i).setCellStyle(highlightStyle); // 색상 적용
+                    row.getCell(i).setCellStyle(currentRowStyle); // 색상 적용
                 }
             }
 
