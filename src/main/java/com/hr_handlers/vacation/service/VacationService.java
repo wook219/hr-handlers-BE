@@ -177,6 +177,4 @@ public class VacationService {
 
         return year + randomPart;
     }
-
-
 }

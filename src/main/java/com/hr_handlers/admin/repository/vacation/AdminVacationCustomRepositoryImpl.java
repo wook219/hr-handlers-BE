@@ -29,22 +29,23 @@ public class AdminVacationCustomRepositoryImpl implements AdminVacationCustomRep
         this.jpaQueryFactory = jpaQueryFactory;
     }
 
+    // 승인 대기 휴가 목록 조회 - 전직원 (관리자 휴가 페이지에서 승인 / 반려 처리 시 사용)
     @Override
     public List<AdminVacationResponseDto> findPendingVacations() {
         return jpaQueryFactory
                 .select(Projections.constructor(
                         AdminVacationResponseDto.class,
                         vacation.id,
-                        employee.position,                        // 직위
-                        employee.department.deptName,                // 부서명
-                        employee.name,                          // 이름
-                        Expressions.stringTemplate(             // 기간 (startDate ~ endDate)
+                        employee.position,
+                        employee.department.deptName,
+                        employee.name,
+                        Expressions.stringTemplate(
                                 "CONCAT(DATE_FORMAT({0}, '%Y-%m-%d'), ' ~ ', DATE_FORMAT({1}, '%Y-%m-%d'))",
                                 vacation.startDate,
                                 vacation.endDate
                         ),
-                        vacation.type,                          // 휴가 종류
-                        new CaseBuilder()                       // 사용 일수
+                        vacation.type,
+                        new CaseBuilder()
                                 .when(vacation.type.eq(VacationType.HALF))
                                 .then(Expressions.numberTemplate(Double.class, "0.5"))
                                 .when(vacation.type.eq(VacationType.PUBLIC))
@@ -55,7 +56,7 @@ public class AdminVacationCustomRepositoryImpl implements AdminVacationCustomRep
                                         vacation.startDate,
                                         vacation.endDate
                                 )),
-                        vacation.status                         // 상태
+                        vacation.status
                 ))
                 .from(vacation)
                 .join(vacation.employee, employee)
@@ -65,6 +66,7 @@ public class AdminVacationCustomRepositoryImpl implements AdminVacationCustomRep
                 .fetch();
     }
 
+    // 전 직원 연차, 반차, 병가, 공가, 총 사용 휴가, 잔여 휴가 조회
     @Override
     public List<AdminVacationStatusResponseDto> findVacationStatusForAllEmployees() {
         return jpaQueryFactory
@@ -97,6 +99,8 @@ public class AdminVacationCustomRepositoryImpl implements AdminVacationCustomRep
 
     // 휴가 유형별 사용 일수 계산
     private JPQLQuery<Double> calculateVacationDays(VacationType type) {
+
+        // 반차인 경우 휴가 개수를 카운트 한 뒤 0.5를 곱해서 사용 일수 계산
         if (type == VacationType.HALF) {
             return JPAExpressions
                     .select(Expressions.numberTemplate(Double.class,
@@ -110,6 +114,7 @@ public class AdminVacationCustomRepositoryImpl implements AdminVacationCustomRep
                     );
         }
 
+        // 반차를 제외한 경우, endDate와 startDate의 차이로 휴가 일수 계산
         return JPAExpressions
                 .select(Expressions.numberTemplate(
                         Double.class,
@@ -123,7 +128,7 @@ public class AdminVacationCustomRepositoryImpl implements AdminVacationCustomRep
                         vacation.type.eq(type),
                         vacation.status.eq(VacationStatus.APPROVED)
                 )
-                .groupBy(employee.id);  // 그룹화 추가
+                .groupBy(employee.id);  // 직원별 그룹화
     }
 
     // 총 사용 일수 계산

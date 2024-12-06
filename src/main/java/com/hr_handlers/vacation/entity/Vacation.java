@@ -57,6 +57,7 @@ public class Vacation extends BaseTimeEntity {
     private Employee employee;
 
 
+    // 휴가 수정
     public void modify(VacationRequestDto request){
         this.title = request.getTitle();
         this.type = request.getType();
@@ -65,12 +66,14 @@ public class Vacation extends BaseTimeEntity {
         this.reason = request.getReason();
     }
 
+    // 휴가 승인
     public void approve(String approverName){
         this.status = VacationStatus.APPROVED;
         this.approvedAt = new Timestamp(System.currentTimeMillis());
         this.approver = approverName;
     }
 
+    // 휴가 삭제
     public void reject(String approverName){
         this.status = VacationStatus.REJECTED;
         this.approvedAt = new Timestamp(System.currentTimeMillis());
