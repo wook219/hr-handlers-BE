@@ -41,7 +41,9 @@ public enum ErrorCode {
     //급여
     SALARY_NOT_FOUND(HttpStatus.NOT_FOUND, "SALARY-01", "해당 급여를 조회할 수 없습니다."),
     // 엑셀
-    EXCEL_HEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "EXCEL_HEADER_01", "엑셀 헤더 생성 중에 문제가 발생했습니다."),
+    EXCEL_HEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "EXCEL--01", "엑셀 헤더 생성 중에 문제가 발생했습니다."),
+    INVALID_TIME_PERIOD(HttpStatus.BAD_REQUEST, "EXCEL-02", "잘못된 기간입니다."),
+    INVALID_DOWNLOAD_SCOPE(HttpStatus.BAD_REQUEST, "EXCEL-03", "잘못된 다운로드 범위입니다."),
     //사원
     EMPLOYEE_NOT_FOUND(HttpStatus.NOT_FOUND, "EMPLOYEE-01", "사원을 찾을 수 없습니다."),
     EMPLOYEE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,"EMPLOYEE-02", "사원 번호가 이미 존재합니다."),

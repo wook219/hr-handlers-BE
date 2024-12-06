@@ -10,6 +10,5 @@ import java.util.List;
 public interface AdminEmpRepository extends JpaRepository<Employee, Long>, AdminEmpCustomRepository {
     Page<Employee> findAll(Pageable pageable);
 
-   //  Optional<Employee> findByEmpNo(String empNo);
-   List<Employee> findByPositionAndDepartmentDeptName(String position, String deptName);
+    List<Employee> findByPositionAndDepartmentDeptName(String position, String deptName);
 }
