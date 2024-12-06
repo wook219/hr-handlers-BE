@@ -101,16 +101,14 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
     }
 
 
+    // 휴가 정보 조회 - 휴가 잔여 일수, 승인 확정 휴가, 승인 대기 휴가
     @Override
     public VacationSummaryResponseDto findEmployeeVacationBalanceById(String empNo) {
         VacationStatus approvedStatus = VacationStatus.APPROVED;
         VacationStatus pendingStatus = VacationStatus.PENDING;
-        VacationType halfType = VacationType.HALF;
-        VacationType publicType = VacationType.PUBLIC;
 
-        log.info("Query parameters - empNo: {}, half type: {}, public type: {}",
-                empNo, halfType, publicType);
 
+        // 연차 계산 - 시작일과 종료일 간의 차이
         NumberTemplate<Double> dateDiff = Expressions.numberTemplate(
                 Double.class,
                 "DATEDIFF({0}, {1})",
@@ -118,6 +116,7 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
                 vacation.startDate
         );
 
+        // 휴가 일수 계산. 반차는 0.5일, 공가는 0일, 그 외는 dateDiff로 처리
         NumberExpression<Double> vacationDaysExpression = new CaseBuilder()
                 .when(vacation.type.eq(VacationType.HALF))
                 .then(Expressions.numberTemplate(Double.class, "0.5"))
@@ -125,12 +124,14 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
                 .then(Expressions.numberTemplate(Double.class, "0.0"))
                 .otherwise(dateDiff.add(1.0));
 
+        // 사번이 empNo인 사원의 확정 휴가 일수 합산
         SubQueryExpression<Double> approvedSum = JPAExpressions
                 .select(vacationDaysExpression.sum())
                 .from(vacation)
                 .where(vacation.employee.empNo.eq(empNo)
                         .and(vacation.status.eq(approvedStatus)));
 
+        // 사번이 empNo인 사원의 승인 대기 휴가 일수 계산
         SubQueryExpression<Double> pendingSum = JPAExpressions
                 .select(vacationDaysExpression.sum())
                 .from(vacation)
