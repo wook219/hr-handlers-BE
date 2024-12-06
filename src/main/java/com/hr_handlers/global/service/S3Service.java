@@ -1,4 +1,4 @@
-package com.hr_handlers.global.s3bucket;
+package com.hr_handlers.global.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
@@ -18,28 +18,26 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class S3Service {
-
     private final AmazonS3 amazonS3;
 
     @Value("${aws.s3.bucket.name}")
     private String bucketName;
 
-    // S3에 파일 업로드
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(String path, MultipartFile file) throws IOException {
         File convertedFile = convertMultipartFileToFile(file);
         String fileName = generateUniqueFileName(file.getOriginalFilename());
-        amazonS3.putObject(new PutObjectRequest(bucketName, fileName, convertedFile)
+        String fullPath = path + "/" + fileName;
+
+        amazonS3.putObject(new PutObjectRequest(bucketName, fullPath, convertedFile)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
         convertedFile.delete();
-        return amazonS3.getUrl(bucketName, fileName).toString(); // S3 URL 반환
+        return amazonS3.getUrl(bucketName, fullPath).toString();
     }
 
-    // S3에서 파일 삭제
     public void deleteFile(String fileUrl) {
         try {
-            // S3 URL에서 키 추출
             String fileKey = extractFileKeyFromUrl(fileUrl);
-            amazonS3.deleteObject(bucketName, fileKey); // S3 객체 삭제
+            amazonS3.deleteObject(bucketName, fileKey);
             log.info("Deleted S3 file: {}", fileKey);
         } catch (Exception e) {
             log.error("Failed to delete S3 file: {}", fileUrl, e);
@@ -47,8 +45,6 @@ public class S3Service {
         }
     }
 
-
-    // MultipartFile을 File로 변환
     private File convertMultipartFileToFile(MultipartFile file) throws IOException {
         File convertedFile = new File(file.getOriginalFilename());
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
@@ -57,19 +53,15 @@ public class S3Service {
         return convertedFile;
     }
 
-    // 고유한 파일명 생성
     private String generateUniqueFileName(String originalFileName) {
         return UUID.randomUUID().toString() + "-" + originalFileName;
     }
 
-    // S3 URL에서 파일 키 추출
     private String extractFileKeyFromUrl(String fileUrl) {
         String urlPrefix = "https://" + bucketName + ".s3.ap-northeast-2.amazonaws.com/";
         if (fileUrl.startsWith(urlPrefix)) {
             return fileUrl.substring(urlPrefix.length());
-        } else {
-            throw new IllegalArgumentException("Invalid S3 file URL: " + fileUrl);
         }
+        throw new IllegalArgumentException("Invalid S3 file URL: " + fileUrl);
     }
-
 }

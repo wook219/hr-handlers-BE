@@ -10,7 +10,7 @@ import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
-import com.hr_handlers.global.s3bucket.S3Service;
+import com.hr_handlers.global.service.S3Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

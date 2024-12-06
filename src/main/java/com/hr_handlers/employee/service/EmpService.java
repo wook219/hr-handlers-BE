@@ -9,7 +9,7 @@ import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
-import com.hr_handlers.global.s3bucket.S3Service;
+import com.hr_handlers.global.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -41,6 +41,8 @@ public class EmpService {
     // 사원 수정
     @Transactional
     public SuccessResponse<Boolean> updateEmpDetail(String empNo, EmpUpdateRequestDto requestDto, MultipartFile profileImageFile) throws IOException {
+        String profileImageUrl = null;  // 기본값은 null로 설정
+
         // S3에 새 프로필 이미지 업로드
         if (profileImageFile != null && !profileImageFile.isEmpty()) {
             Employee existingEmployee = empRepository.findByEmpNo(empNo)
@@ -49,10 +51,11 @@ public class EmpService {
             if (existingEmployee.getProfileImage() != null && existingEmployee.getProfileImage().getProfileImageUrl() != null) {
                 s3Service.deleteFile(existingEmployee.getProfileImage().getProfileImageUrl());
             }
+            profileImageUrl = s3Service.uploadFile("user/profile", profileImageFile);
         }
 
         // 프로필 업데이트
-        empRepository.updateEmp(empNo, requestDto, s3Service.uploadFile(profileImageFile));
+        empRepository.updateEmp(empNo, requestDto, profileImageUrl);
         return SuccessResponse.of("사원 정보 수정", true);
     }
 
