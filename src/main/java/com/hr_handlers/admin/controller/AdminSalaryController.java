@@ -1,10 +1,7 @@
 package com.hr_handlers.admin.controller;
 
 
-import com.hr_handlers.admin.dto.salary.request.AdminSalaryCreateRequestDto;
-import com.hr_handlers.admin.dto.salary.request.AdminSalaryExcelUploadRequestDto;
-import com.hr_handlers.admin.dto.salary.request.AdminSalarySearchRequestDto;
-import com.hr_handlers.admin.dto.salary.request.AdminSalaryUpdateRequestDto;
+import com.hr_handlers.admin.dto.salary.request.*;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponseDto;
 import com.hr_handlers.admin.service.AdminSalaryService;
 import com.hr_handlers.global.dto.SuccessResponse;
@@ -76,7 +73,7 @@ public class AdminSalaryController {
 
     // 급여관리 다운로드
     @PostMapping("/excel/download")
-    public SuccessResponse<Boolean> excelDownload(OutputStream stream, @RequestBody @Validated AdminSalarySearchRequestDto adminSalarySearchRequestDto) throws IOException, IllegalAccessException {
-        return adminSalaryService.excelDownloadSalary(stream, adminSalarySearchRequestDto);
+    public SuccessResponse<Boolean> excelDownload(OutputStream stream, @RequestBody @Validated AdminSalaryExcelRequestDto adminSalaryExcelRequestDto) throws IOException, IllegalAccessException {
+        return adminSalaryService.excelDownloadSalary(stream, adminSalaryExcelRequestDto);
     }
 }
