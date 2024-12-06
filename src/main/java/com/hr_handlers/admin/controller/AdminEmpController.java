@@ -2,7 +2,6 @@ package com.hr_handlers.admin.controller;
 
 import com.hr_handlers.admin.dto.employee.request.EmpRegisterDto;
 import com.hr_handlers.admin.dto.employee.request.AdminEmpUpdateRequestDto;
-import com.hr_handlers.employee.repository.DeptRepository;
 import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.admin.dto.employee.response.AdminEmpResponseDto;
 import com.hr_handlers.admin.service.AdminEmpService;
@@ -31,7 +30,14 @@ public class AdminEmpController {
 
     // 사원 전체 조회
     @GetMapping
-    public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(SearchRequestDto requestDto) {
+    public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortField,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String keyword
+    ) {
+        SearchRequestDto requestDto = new SearchRequestDto(page, size, sortField, sortDir, keyword);
         return adminEmpService.getAllEmp(requestDto);
     }
 
@@ -48,19 +54,12 @@ public class AdminEmpController {
         return adminEmpService.delete(empNo);
     }
 
-    // 사원 검색
-    @GetMapping("search")
+    // 직급.부서로 사원 검색
+    @GetMapping("/search")
     public SuccessResponse<List<AdminEmpResponseDto>> searchEmp(
             @RequestParam("position") String position,
             @RequestParam("deptName") String deptName
             ) {
         return adminEmpService.searchEmp(position, deptName);
     }
-
-    // 부서 등록
-//    @PostMapping("/dept")
-//    public SuccessResponse<String> registerDept(@RequestParam String deptName){
-//       // return adminEmpService.register(deptName);
-//        return null;
-//    }
 }

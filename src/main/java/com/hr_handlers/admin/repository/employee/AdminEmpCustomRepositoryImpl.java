@@ -6,6 +6,7 @@ import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.entity.QEmployee;
 import com.hr_handlers.employee.enums.ContractType;
 import com.hr_handlers.employee.repository.DeptRepository;
+import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -15,7 +16,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,21 +33,19 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
     private final DeptRepository deptRepository;
 
     @Override
-    public Page<Employee> findEmpByName(String keyword, Pageable pageable) {
+    public Page<Employee> findEmpByName(SearchRequestDto requestDto) {
         QEmployee employee = QEmployee.employee;
 
-        // 검색 조건 생성
-        BooleanExpression condition = (keyword != null && !keyword.trim().isEmpty())
-                ? employee.name.containsIgnoreCase(keyword)
+        BooleanExpression condition = (requestDto.getKeyword() != null && !requestDto.getKeyword().trim().isEmpty())
+                ? employee.name.containsIgnoreCase(requestDto.getKeyword())
                 : null; // 전체 조회
 
-        // 사원 목록 검색 쿼리
         List<Employee> results = queryFactory
                 .selectFrom(employee)
                 .where(condition) // 검색 없으면 전체 조회, 있으면 필터링
-                .offset(pageable.getOffset()) // 페이징 시작 위치
-                .limit(pageable.getPageSize()) // 페이징 개수 제한
-                .orderBy(employee.createdAt.desc()) // 내림차순 정렬
+                .offset(requestDto.getPage() * requestDto.getSize()) // 페이징 시작 위치
+                .limit(requestDto.getSize()) // 페이징 개수 제한
+                .orderBy(employee.createdAt.desc()) // 동적 정렬
                 .fetch();
 
         Long total = queryFactory
@@ -55,18 +54,15 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
                 .where(condition)
                 .fetchOne();
 
-        return new PageImpl<>(results, pageable, total);
+        return new PageImpl<>(results, PageRequest.of(requestDto.getPage(), requestDto.getSize()), total);
     }
 
     @Override
     @Transactional
     public void updateEmp(String empNo, AdminEmpUpdateRequestDto updateRequest) {
 
-        // TODO: 부서 관련
         Department department = deptRepository.findByDeptName(updateRequest.getDeptName())
-                .orElseGet(() -> deptRepository.save(Department.builder()
-                        .deptName(updateRequest.getDeptName())
-                        .build()));
+                    .orElseThrow(() -> new GlobalException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
         JPAUpdateClause updateClause = queryFactory.update(employee)
                 .where(employee.empNo.eq(empNo));
