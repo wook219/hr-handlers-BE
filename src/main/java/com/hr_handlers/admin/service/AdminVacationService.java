@@ -51,7 +51,7 @@ public class AdminVacationService {
         Vacation vacation = adminVacationRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
 
-        //결재자
+        // 결재자
         String approverName = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND)).getName();
 

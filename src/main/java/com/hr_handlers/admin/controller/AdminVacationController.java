@@ -31,12 +31,20 @@ public class AdminVacationController {
     }
 
     @PutMapping("/{id}/approve")
-    public SuccessResponse<VacationResponseDto> approveVacation(@PathVariable("id") Long id, Authentication authentication){
+    public SuccessResponse<VacationResponseDto> approveVacation(
+            @PathVariable("id") Long id,
+            Authentication authentication
+    )
+    {
         return adminVacationService.approveVacation(id, authentication.getName());
     }
 
     @PutMapping("/{id}/reject")
-    public SuccessResponse<VacationResponseDto> rejectVacation(@PathVariable("id") Long id, Authentication authentication){
+    public SuccessResponse<VacationResponseDto> rejectVacation(
+            @PathVariable("id") Long id,
+            Authentication authentication
+    )
+    {
         return adminVacationService.rejectVacation(id, authentication.getName());
     }
 }

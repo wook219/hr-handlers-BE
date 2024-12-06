@@ -15,9 +15,10 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class VacationHandler {
     // 휴가 일수 계산 로직
-    public double calculateVacationDays(VacationType type,
-                                         Timestamp startDate,
-                                         Timestamp endDate)
+    public double calculateVacationDays(
+            VacationType type,
+            Timestamp startDate,
+            Timestamp endDate)
     {
         // 고정 일수가 있는 타입(반차, 공가)인 경우
         if (type.getFixedDays() != null) {
@@ -31,7 +32,13 @@ public class VacationHandler {
     }
 
     // 휴가 일수 처리 메서드
-    public void processVacationDays(Employee employee, VacationType type, Timestamp startDate, Timestamp endDate, boolean isRestore) {
+    public void processVacationDays(
+            Employee employee,
+            VacationType type,
+            Timestamp startDate,
+            Timestamp endDate,
+            boolean isRestore)
+    {
         if (type != VacationType.PUBLIC) {
             double days = calculateVacationDays(type, startDate, endDate);
 
@@ -41,7 +48,12 @@ public class VacationHandler {
     }
 
     // 새로운 휴가 일수 유효성 검사
-    public void validateVacationDays(Employee employee, VacationType type, Timestamp startDate, Timestamp endDate) {
+    public void validateVacationDays(
+            Employee employee,
+            VacationType type,
+            Timestamp startDate,
+            Timestamp endDate)
+    {
         if (type != VacationType.PUBLIC) {
             double newDays = calculateVacationDays(type, startDate, endDate);
             if (employee.getLeaveBalance() < newDays) {
