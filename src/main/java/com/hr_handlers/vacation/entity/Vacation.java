@@ -64,4 +64,17 @@ public class Vacation extends BaseTimeEntity {
         this.endDate = request.getEndDate();
         this.reason = request.getReason();
     }
+
+    public void approve(String approverName){
+        this.status = VacationStatus.APPROVED;
+        this.approvedAt = new Timestamp(System.currentTimeMillis());
+        this.approver = approverName;
+    }
+
+    public void reject(String approverName){
+        this.status = VacationStatus.REJECTED;
+        this.approvedAt = new Timestamp(System.currentTimeMillis());
+        this.approver = approverName;
+
+    }
 }
