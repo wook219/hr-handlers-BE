@@ -1,4 +1,4 @@
-package com.hr_handlers.global.s3bucket;
+package com.hr_handlers.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
