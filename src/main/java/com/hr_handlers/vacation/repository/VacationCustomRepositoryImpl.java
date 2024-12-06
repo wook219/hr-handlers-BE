@@ -113,17 +113,17 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
 
         NumberTemplate<Double> dateDiff = Expressions.numberTemplate(
                 Double.class,
-                "DATEDIFF({1}, {0})",
-                vacation.startDate,
-                vacation.endDate
+                "DATEDIFF({0}, {1})",
+                vacation.endDate,
+                vacation.startDate
         );
 
         NumberExpression<Double> vacationDaysExpression = new CaseBuilder()
                 .when(vacation.type.eq(VacationType.HALF))
-                .then(Expressions.numberTemplate(Double.class, "0.5"))  // SQL에서 직접 0.5를 사용
+                .then(Expressions.numberTemplate(Double.class, "0.5"))
                 .when(vacation.type.eq(VacationType.PUBLIC))
-                .then(Expressions.numberTemplate(Double.class, "0.0"))  // SQL에서 직접 0.0을 사용
-                .otherwise(dateDiff.multiply(-1).add(1.0));
+                .then(Expressions.numberTemplate(Double.class, "0.0"))
+                .otherwise(dateDiff.add(1.0));
 
         SubQueryExpression<Double> approvedSum = JPAExpressions
                 .select(vacationDaysExpression.sum())
