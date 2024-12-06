@@ -1,5 +1,6 @@
 package com.hr_handlers.chat.repository;
 
+import com.hr_handlers.chat.dto.ChatInviteResponseDto;
 import com.hr_handlers.chat.dto.ChatResponseDto;
 import com.hr_handlers.chat.entity.Chat;
 
@@ -18,6 +19,9 @@ public interface ChatCustomRepository {
 
     // 채팅방 참여 사원 목록 조회
     List<ChatResponseDto> findJoinedEmployees(Long chatRoomId);
+
+    // 채팅방에 참여하고 있지 않은 사원 조회
+    List<ChatInviteResponseDto> findEmployeesNotInChat(Long chatRoomId, String keyword);
 
     // 채팅 참여 삭제
     void deleteChatByChatRoomId(Long chatRoomId);
