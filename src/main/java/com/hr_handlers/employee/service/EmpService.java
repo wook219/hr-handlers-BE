@@ -9,12 +9,17 @@ import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
+import com.hr_handlers.global.s3bucket.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +27,7 @@ public class EmpService {
 
     private final EmpRepository empRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
     private final JavaMailSender mailSender;
     private static final String FROM_ADDRESS = "hth130598@gmail.com";
 
@@ -33,8 +39,20 @@ public class EmpService {
     }
 
     // 사원 수정
-    public SuccessResponse<Boolean> updateEmpDetail(String empNo, EmpUpdateRequestDto updateRequest) {
-        empRepository.updateEmp(empNo, updateRequest);
+    @Transactional
+    public SuccessResponse<Boolean> updateEmpDetail(String empNo, EmpUpdateRequestDto requestDto, MultipartFile profileImageFile) throws IOException {
+        // S3에 새 프로필 이미지 업로드
+        if (profileImageFile != null && !profileImageFile.isEmpty()) {
+            Employee existingEmployee = empRepository.findByEmpNo(empNo)
+                    .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+            // 기존 프로필 이미지 삭제
+            if (existingEmployee.getProfileImage() != null && existingEmployee.getProfileImage().getProfileImageUrl() != null) {
+                s3Service.deleteFile(existingEmployee.getProfileImage().getProfileImageUrl());
+            }
+        }
+
+        // 프로필 업데이트
+        empRepository.updateEmp(empNo, requestDto, s3Service.uploadFile(profileImageFile));
         return SuccessResponse.of("사원 정보 수정", true);
     }
 
