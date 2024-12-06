@@ -1,7 +1,6 @@
 package com.hr_handlers.employee.controller;
 
 import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
-import com.hr_handlers.employee.dto.response.MailDto;
 import com.hr_handlers.employee.dto.request.PasswordRecoveryRequestDto;
 import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
 import com.hr_handlers.employee.service.EmpService;
@@ -10,6 +9,9 @@ import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,9 +28,11 @@ public class EmpController {
 
     // 사원 수정
     @PatchMapping
-    public SuccessResponse<Boolean> updateEmpDetail(Authentication authentication,
-                                                 @RequestBody EmpUpdateRequestDto updateRequest){
-        return empService.updateEmpDetail(authentication.getName(), updateRequest);
+    public SuccessResponse<Boolean> updateEmpDetail(
+            Authentication authentication,
+            @RequestPart("updateRequest") EmpUpdateRequestDto updateRequest,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImageFile) throws IOException {
+        return empService.updateEmpDetail(authentication.getName(), updateRequest, profileImageFile);
     }
 
     // 비밀번호 찾기
@@ -39,7 +43,7 @@ public class EmpController {
 
     // 메일 전송
     @PostMapping("/send/mail")
-    public SuccessResponse<Boolean> sendResetPassword(@RequestBody PasswordRecoveryRequestDto requestDto) {
-        return empService.resetPasswordAndSendMail(requestDto.getEmpNo(), requestDto.getEmail());
+    public SuccessResponse<Boolean> sendResetPassword(@RequestBody PasswordRecoveryRequestDto requestDto){
+        return empService.sendMail(empService.sendResetPassword(requestDto.getEmpNo(), requestDto.getEmail()));
     }
 }

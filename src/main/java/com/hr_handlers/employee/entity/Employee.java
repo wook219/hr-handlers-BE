@@ -75,7 +75,7 @@ public class Employee extends BaseTimeEntity {
     private ProfileImage profileImage; // TODO: 사원 삭제 시 프로필 삭제
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
+    @JoinColumn(name = "department_id", nullable = true)
     private Department department;
 
     // 비밀번호 업데이트 메서드
@@ -85,5 +85,9 @@ public class Employee extends BaseTimeEntity {
 
     public void leaveBalanceUpdate(Double deductionDays){
         this.leaveBalance -= deductionDays;
+    }
+
+    public void departmentUpdate(Department department) {
+        this.department = department;
     }
 }
