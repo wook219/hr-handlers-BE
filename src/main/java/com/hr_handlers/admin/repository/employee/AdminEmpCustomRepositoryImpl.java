@@ -71,8 +71,11 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
         if (updateRequest.getPosition() != null) {
             updateClause.set(employee.position, updateRequest.getPosition());
         }
+
         if (updateRequest.getContractType() != null) {
-            updateClause.set(employee.contractType, ContractType.valueOf(updateRequest.getContractType()));
+            // 한글을 Enum으로 변환
+            ContractType contractTypeEnum = ContractType.fromDescription(updateRequest.getContractType());
+            updateClause.set(employee.contractType, contractTypeEnum);
         }
         if (updateRequest.getLeaveBalance() != null) {
             updateClause.set(employee.leaveBalance, updateRequest.getLeaveBalance());

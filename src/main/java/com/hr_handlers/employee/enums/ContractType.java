@@ -1,5 +1,7 @@
 package com.hr_handlers.employee.enums;
 
+import java.util.Arrays;
+
 public enum ContractType {
     PERMANENT("정규직"),
     CONTRACT("계약직"),
@@ -16,5 +18,12 @@ public enum ContractType {
 
     public String getDescription() {
         return description;
+    }
+
+    public static ContractType fromDescription(String description) {
+        return Arrays.stream(values())
+                .filter(type -> type.getDescription().equals(description))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid contract type: " + description));
     }
 }
