@@ -1,6 +1,10 @@
 package com.hr_handlers.admin.service;
 
 import com.hr_handlers.admin.dto.salary.request.*;
+import com.hr_handlers.admin.dto.salary.request.excel.DepartmentMonthSalaryExcelRequestDto;
+import com.hr_handlers.admin.dto.salary.request.excel.DepartmentYearSalaryExcelRequestDto;
+import com.hr_handlers.admin.dto.salary.request.excel.IndividualMonthSalaryExcelRequestDto;
+import com.hr_handlers.admin.dto.salary.request.excel.IndividualYearSalaryExcelRequestDto;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponseDto;
 import com.hr_handlers.admin.repository.AdminSalaryRepository;
 import com.hr_handlers.admin.repository.mapper.AdminSalaryMapper;
@@ -13,6 +17,7 @@ import com.hr_handlers.global.utils.ExcelUploadUtils;
 import com.hr_handlers.salary.entity.Salary;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -83,12 +88,6 @@ public class AdminSalaryService {
         Map<String, Employee> employeeMap = empRepository.findAllByEmpNoIn(employeeIds).stream()
                 .collect(Collectors.toMap(Employee::getEmpNo, e -> e));
 
-        // todo :
-//        select
-//                *
-//                from table
-//        where employee in (select * from employee where id = 1)
-
         List<Salary> salaries = adminSalaryExcelUploadRequestDtos.stream()
                 .map(request -> {
                     Employee employee = Optional.ofNullable(employeeMap.get(request.getEmployeeId()))
@@ -102,12 +101,64 @@ public class AdminSalaryService {
         return SuccessResponse.of("급여가 등록 되었습니다.", true);
     }
 
-    public SuccessResponse<Boolean> excelDownloadSalary(OutputStream stream, AdminSalarySearchRequestDto adminSalarySearchRequestDto) throws IOException, IllegalAccessException {
-//        List<AdminSalaryExcelDownloadRequestDto> adminSalaryResponseDtos = adminSalaryRepository.searchSalaryForExcel(adminSalarySearchRequestDto);
-//        excelUploadUtils.renderObjectToExcel(stream, adminSalaryResponseDtos, AdminSalaryExcelDownloadRequestDto.class);
+    public SuccessResponse<Boolean> excelDownloadSalary(OutputStream stream, AdminSalaryExcelRequestDto adminSalaryExcelRequestDto) throws IOException, IllegalAccessException {
 
-        List<AdminSalaryExcelDownloadRequestDto> adminSalaryResponseDtos = adminSalaryMapper.findAllSalaries();
-        excelUploadUtils.renderObjectToExcel(stream, adminSalaryResponseDtos, AdminSalaryExcelDownloadRequestDto.class);
+        // 현재 excelUtil로는 응답값과 헤더의 순서가 일치해야 정상작동함
+        // 그래서 집계 방식마다 excelDto 만드는중....
+        // 리팩토링이 필요...
+        List<T> adminSalaryResponseDtos = getSalarySummaryByType(adminSalaryExcelRequestDto);
+        Class<T> adminSalaryResponseClazz = getDtoClassForResponseType(adminSalaryExcelRequestDto);
+        excelUploadUtils.renderObjectToExcel(stream, adminSalaryResponseDtos, adminSalaryResponseClazz);
         return SuccessResponse.of("성공적으로 다운로드 되었습니다.", true);
+    }
+
+    private List<T> getSalarySummaryByType(AdminSalaryExcelRequestDto adminSalaryExcelRequestDto) {
+        String downloadScope = adminSalaryExcelRequestDto.getExcelTypeParam().getDownloadScope();
+        String timePeriod = adminSalaryExcelRequestDto.getExcelTypeParam().getTimePeriod();
+
+        if ("individual".equals(downloadScope)) {
+            if ("yearly".equals(timePeriod)) {
+                return adminSalaryMapper.getYearlySummaryByIndividual(adminSalaryExcelRequestDto.getSearchParam());
+            } else if ("monthly".equals(timePeriod)) {
+                return adminSalaryMapper.getMonthlySummaryByIndividual(adminSalaryExcelRequestDto.getSearchParam());
+            } else {
+                throw new GlobalException(ErrorCode.INVALID_TIME_PERIOD);
+            }
+        } else if ("department".equals(downloadScope)) {
+            if ("yearly".equals(timePeriod)) {
+                return adminSalaryMapper.getYearlySummaryByDepartment(adminSalaryExcelRequestDto.getSearchParam());
+            } else if ("monthly".equals(timePeriod)) {
+                return adminSalaryMapper.getMonthlySummaryByDepartment(adminSalaryExcelRequestDto.getSearchParam());
+            } else {
+                throw new GlobalException(ErrorCode.INVALID_TIME_PERIOD);
+            }
+        } else {
+            throw new GlobalException(ErrorCode.INVALID_DOWNLOAD_SCOPE);
+        }
+    }
+
+    // DTO에 맞는 클래스를 반환하는 헬퍼 메서드
+    private <T> Class<T> getDtoClassForResponseType(AdminSalaryExcelRequestDto adminSalaryExcelRequestDto) {
+        String downloadScope = adminSalaryExcelRequestDto.getExcelTypeParam().getDownloadScope();
+        String timePeriod = adminSalaryExcelRequestDto.getExcelTypeParam().getTimePeriod();
+        if ("individual".equals(downloadScope)) {
+            if ("yearly".equals(timePeriod)) {
+                return (Class<T>) IndividualYearSalaryExcelRequestDto.class;
+            } else if ("monthly".equals(timePeriod)) {
+                return (Class<T>) IndividualMonthSalaryExcelRequestDto.class;
+            } else {
+                throw new GlobalException(ErrorCode.INVALID_TIME_PERIOD);
+            }
+        } else if ("department".equals(downloadScope)) {
+            if ("yearly".equals(timePeriod)) {
+                return (Class<T>) DepartmentYearSalaryExcelRequestDto.class;
+            } else if ("monthly".equals(timePeriod)) {
+                return (Class<T>) DepartmentMonthSalaryExcelRequestDto.class;
+            } else {
+                throw new GlobalException(ErrorCode.INVALID_TIME_PERIOD);
+            }
+        } else {
+            throw new GlobalException(ErrorCode.INVALID_DOWNLOAD_SCOPE);
+        }
     }
 }
