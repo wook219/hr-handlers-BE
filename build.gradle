@@ -70,6 +70,9 @@ dependencies {
 	// mysql
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
+	// mybatis
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+
 	// mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 

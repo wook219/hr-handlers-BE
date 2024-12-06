@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hr_handlers.admin.repository.mapper.AdminSalaryMapper">
+    <select id="findAll" resultType="string">
+        SELECT 'Hello from dual!' AS message FROM dual
+    </select>
+
+    <select id="findAllSalaries" resultType="com.hr_handlers.admin.dto.salary.request.AdminSalaryExcelDownloadRequestDto">
+        SELECT
+            CASE
+                WHEN d.dept_name IS NULL THEN '총합계'
+                ELSE d.dept_name
+            END AS dept_name,
+            get_position(d.dept_name, e.position, e.name, s.pay_date) AS position,
+            e.name,
+            SUM(s.basic_salary) AS basic_salary,
+            SUM(s.deduction) AS deduction,
+            SUM(s.net_salary) AS net_salary,
+            s.pay_date
+        FROM
+            salary s
+        LEFT JOIN employee e ON s.employee_id = e.id
+        LEFT JOIN department d ON e.department_id = d.id
+        GROUP BY d.dept_name, s.pay_date, e.name WITH ROLLUP
+    </select>
+</mapper>

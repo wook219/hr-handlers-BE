@@ -39,6 +39,7 @@ public class AdminSalaryExcelUploadRequestDto {
                 .deduction(this.deduction)
                 .netSalary(this.netSalary)
                 .payDate(this.payDate)
+                .year(String.valueOf(this.payDate.getYear()))
                 .build();
     }
 
