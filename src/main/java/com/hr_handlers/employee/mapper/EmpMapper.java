@@ -56,7 +56,7 @@ public class EmpMapper {
                 .phone(employee.getPhone())
                 .position(employee.getPosition())
                 .birthDate(employee.getBirthDate())
-                .contractType(employee.getContractType() != null ? employee.getContractType().name() : null)
+                .contractType(employee.getContractType() != null ? employee.getContractType().getDescription() : "알 수 없음")
                 .joinDate(employee.getJoinDate())
                 .introduction(employee.getIntroduction())
                 .leaveBalance(employee.getLeaveBalance())
