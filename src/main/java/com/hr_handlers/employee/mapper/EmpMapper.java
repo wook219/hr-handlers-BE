@@ -1,6 +1,7 @@
 package com.hr_handlers.employee.mapper;
 
 import com.hr_handlers.admin.dto.employee.request.EmpRegisterDto;
+import com.hr_handlers.admin.dto.employee.response.AdminDeptResponseDto;
 import com.hr_handlers.admin.dto.employee.response.AdminEmpResponseDto;
 import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
 import com.hr_handlers.employee.entity.Department;
@@ -61,6 +62,14 @@ public class EmpMapper {
                 .leaveBalance(employee.getLeaveBalance())
                 .profileImageUrl(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null)
                 .deptName(employee.getDepartment() != null ? employee.getDepartment().getDeptName() : null)
+                .build();
+    }
+
+    // Department -> AdminDeptResponseDto
+    public static AdminDeptResponseDto toDeptListResponseDto(Department department){
+        return AdminDeptResponseDto.builder()
+                .id(department.getId())
+                .deptName(department.getDeptName())
                 .build();
     }
 }

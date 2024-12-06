@@ -15,7 +15,6 @@ import java.time.LocalDate;
 public class EmpRegisterDto {
 
     @NotBlank(message = "사원 번호는 필수입니다.")
-    @Size(max = 20, message = "사원 번호는 최대 20자까지 가능합니다.")
     private String empNo;
 
     @NotBlank(message = "비밀번호는 필수입니다.")

@@ -1,7 +1,6 @@
 package com.hr_handlers.employee.repository.custom;
 
 import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
-import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.entity.ProfileImage;
 import com.hr_handlers.employee.repository.ProfileImageRepository;
 import com.hr_handlers.global.exception.ErrorCode;
@@ -27,13 +26,15 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
 
     @Override
     @Transactional
-    public void updateEmp(String empNo, EmpUpdateRequestDto requestDto) {
+    public void updateEmp(String empNo, EmpUpdateRequestDto requestDto, String newProfileImageUrl) {
         // 프로필 이미지 변경 및 생성
-        ProfileImage profileImage = ProfileImage.builder()
-                .profileImageUrl(requestDto.getProfileImageUrl())
-                .build();
-        profileImageRepository.save(profileImage);
-
+        ProfileImage profileImage = null;
+        if (newProfileImageUrl != null) {
+            profileImage = ProfileImage.builder()
+                    .profileImageUrl(newProfileImageUrl)
+                    .build();
+            profileImageRepository.save(profileImage);
+        }
         // 비밀번호 암호화 처리
         String encryptedPassword = requestDto.getPassword() != null && !requestDto.getPassword().isEmpty()
                 ? passwordEncoder.encode(requestDto.getPassword())
@@ -44,8 +45,12 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
                 .where(employee.empNo.eq(empNo))
                 .set(employee.email, requestDto.getEmail())
                 .set(employee.phone, requestDto.getPhone())
-                .set(employee.introduction, requestDto.getIntroduction())
-                .set(employee.profileImage, profileImage);
+                .set(employee.introduction, requestDto.getIntroduction());
+
+        // 프로필 이미지가 있을 경우 업데이트
+        if (profileImage != null) {
+            updateClause.set(employee.profileImage, profileImage);
+        }
 
         // 비밀번호가 제공된 경우에만 업데이트
         if (encryptedPassword != null) {
