@@ -8,6 +8,7 @@ import com.hr_handlers.board.entity.Post;
 import com.hr_handlers.board.repository.CommentRepository;
 import com.hr_handlers.board.repository.PostRepository;
 import com.hr_handlers.employee.entity.Employee;
+import com.hr_handlers.employee.enums.Role;
 import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.GlobalException;
@@ -114,7 +115,8 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
 
-        if (!comment.getEmployee().equals(employee)) {
+        if (!comment.getEmployee().equals(employee) &&
+                employee.getRole() != Role.ROLE_ADMIN) {
             throw new GlobalException(ErrorCode.COMMENT_DELETE_UNAUTHORIZED);
         }
 
