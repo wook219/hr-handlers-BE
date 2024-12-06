@@ -1,5 +1,6 @@
 package com.hr_handlers.chat.controller;
 
+import com.hr_handlers.chat.dto.ChatInviteResponseDto;
 import com.hr_handlers.chat.dto.ChatRequestDto;
 import com.hr_handlers.chat.dto.ChatResponseDto;
 import com.hr_handlers.chat.service.ChatService;
@@ -27,6 +28,15 @@ public class ChatController {
     @GetMapping("/{chatRoomId}")
     public SuccessResponse<List<ChatResponseDto>> getJoinedEmployees(@PathVariable("chatRoomId") Long chatRoomId) {
         return chatService.getJoinedEmployees(chatRoomId);
+    }
+
+    // 채팅방 초대 목록 조회
+    @GetMapping("/{chatRoomId}/invite")
+    public SuccessResponse<List<ChatInviteResponseDto>> getNotExistsChat(
+            @PathVariable("chatRoomId") Long chatRoomId,
+            @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword
+    ) {
+        return chatService.getNotExistsChat(chatRoomId, keyword);
     }
 
     // 비공개 채팅방 초대

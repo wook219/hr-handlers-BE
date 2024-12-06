@@ -1,5 +1,6 @@
 package com.hr_handlers.chat.service;
 
+import com.hr_handlers.chat.dto.ChatInviteResponseDto;
 import com.hr_handlers.chat.dto.ChatResponseDto;
 import com.hr_handlers.chat.entity.Chat;
 import com.hr_handlers.chat.entity.ChatId;
@@ -60,6 +61,14 @@ public class ChatService {
         return SuccessResponse.of(
                 "채팅방에 참여한 사원 목록 조회에 성공했습니다.",
                 chatRepository.findJoinedEmployees(chatRoomId)
+        );
+    }
+
+    // 채팅방 초대 목록 조회
+    public SuccessResponse<List<ChatInviteResponseDto>> getNotExistsChat(Long chatRoomId, String keyword) {
+        return SuccessResponse.of(
+                "채팅방 초대 목록 조회에 성공했습니다.",
+                chatRepository.findEmployeesNotInChat(chatRoomId, keyword)
         );
     }
 
