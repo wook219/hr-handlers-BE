@@ -11,6 +11,8 @@ import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -26,34 +28,55 @@ public class AttendanceService {
 
     private final EmpRepository empRepository;
 
-    Timestamp currentTime = Timestamp.valueOf(LocalDateTime.now());
-
     public SuccessResponse<List<EmployeeAttendanceListResponseDto>> getAllAttendance(){
-        List<EmployeeAttendanceListResponseDto> response = attendanceRepository.findAllAttendance();
 
         return SuccessResponse.of(
                 "전직원 출퇴근 조회 성공",
+                attendanceRepository.findAllAttendance()
+        );
+    }
+
+    public SuccessResponse<EmployeeAttendanceResponseDto> getAttendance(String empNo){
+
+        return SuccessResponse.of(
+                "사원 출퇴근 시간 조회 성공",
+                attendanceRepository.findAttendance(empNo)
+        );
+    }
+
+    public SuccessResponse<Page<AttendanceHistoryResponseDto>> getAttendanceHistory(
+            String empNo,
+            AttendanceHistorySearchDto searchDto,
+            Pageable pageable
+    )
+    {
+        Page<AttendanceHistoryResponseDto> response = attendanceRepository.findAttendanceHistory(
+                empNo,
+                searchDto,
+                pageable
+        );
+
+        return SuccessResponse.of(
+                "출퇴근 기록 조회 성공",
                 response
         );
     }
 
-    public SuccessResponse<CheckInResponseDto> checkIn(CheckInRequestDto request){
-        Employee employee = empRepository.findById(request.getEmployeeId())
+    public SuccessResponse<CheckInResponseDto> checkIn(String empNo){
+        Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         Attendance attendance = Attendance.builder()
                 .status(AttendanceStatus.WORK)
-                .checkInTime(currentTime)
+                .checkInTime(Timestamp.valueOf(LocalDateTime.now()))
                 .employee(employee)
                 .build();
 
         attendanceRepository.save(attendance);
 
-        CheckInResponseDto response = attendanceMapper.toCheckInResponse(attendance);
-
         return SuccessResponse.of(
                 "출근 성공",
-                response
+                attendanceMapper.toCheckInResponse(attendance)
         );
     }
 
@@ -65,11 +88,9 @@ public class AttendanceService {
 
         attendanceRepository.save(attendance);
 
-        CheckOutResponseDto response = attendanceMapper.toCheckOutResponse(attendance);
-
         return SuccessResponse.of(
                 "퇴근 성공",
-                response
+                attendanceMapper.toCheckOutResponse(attendance)
         );
     }
 }
