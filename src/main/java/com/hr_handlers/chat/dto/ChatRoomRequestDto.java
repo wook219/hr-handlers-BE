@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ChatRoomRequestDto {
     private String title;
+    private String isSecret;
 }

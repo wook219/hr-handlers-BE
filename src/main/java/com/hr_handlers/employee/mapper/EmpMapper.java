@@ -1,6 +1,7 @@
 package com.hr_handlers.employee.mapper;
 
 import com.hr_handlers.admin.dto.employee.request.EmpRegisterDto;
+import com.hr_handlers.admin.dto.employee.response.AdminDeptResponseDto;
 import com.hr_handlers.admin.dto.employee.response.AdminEmpResponseDto;
 import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
 import com.hr_handlers.employee.entity.Department;
@@ -35,13 +36,14 @@ public class EmpMapper {
                 .position(employee.getPosition())
                 // TODO : .password(employee.getPassword())
                 .phone(employee.getPhone())
+                .role(String.valueOf(employee.getRole()))
                 .birthDate(employee.getBirthDate())
                 .deptName(employee.getDepartment() != null ? employee.getDepartment().getDeptName() : null)
                 .contractType(String.valueOf(employee.getContractType()))
                 .leaveBalance(employee.getLeaveBalance())
                 .joinDate(employee.getJoinDate())
                 .introduction(employee.getIntroduction())
-                .profileImageUrl(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null)
+                .profileImage(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null)
                 .build();
     }
 
@@ -54,12 +56,20 @@ public class EmpMapper {
                 .phone(employee.getPhone())
                 .position(employee.getPosition())
                 .birthDate(employee.getBirthDate())
-                .contractType(employee.getContractType() != null ? employee.getContractType().name() : null)
+                .contractType(employee.getContractType() != null ? employee.getContractType().getDescription() : "알 수 없음")
                 .joinDate(employee.getJoinDate())
                 .introduction(employee.getIntroduction())
                 .leaveBalance(employee.getLeaveBalance())
                 .profileImageUrl(employee.getProfileImage() != null ? employee.getProfileImage().getProfileImageUrl() : null)
                 .deptName(employee.getDepartment() != null ? employee.getDepartment().getDeptName() : null)
+                .build();
+    }
+
+    // Department -> AdminDeptResponseDto
+    public static AdminDeptResponseDto toDeptListResponseDto(Department department){
+        return AdminDeptResponseDto.builder()
+                .id(department.getId())
+                .deptName(department.getDeptName())
                 .build();
     }
 }

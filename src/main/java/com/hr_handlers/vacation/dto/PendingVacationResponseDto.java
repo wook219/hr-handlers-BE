@@ -1,5 +1,8 @@
 package com.hr_handlers.vacation.dto;
 
+import com.hr_handlers.vacation.entity.VacationStatus;
+import com.hr_handlers.vacation.entity.VacationType;
+import com.hr_handlers.vacation.service.VacationService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +15,10 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PendingVacationResponseDto {
-    private String doc_num;
+    private Long id;
+    private String docNum;
     private String title;
+    private VacationType type;
     private Timestamp createdAt;
     private Long employeeId;
 }

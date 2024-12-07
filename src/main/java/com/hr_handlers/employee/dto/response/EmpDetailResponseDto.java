@@ -20,6 +20,8 @@ public class EmpDetailResponseDto {
     private LocalDate joinDate;
     private String introduction;
     private Double leaveBalance;
-    private String profileImageUrl;
+    private String profileImage;
     private String deptName;
+    private String password;
+    private String role;
 }

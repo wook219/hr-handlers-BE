@@ -55,11 +55,9 @@ public class PostController {
         return postService.deletePost(id);
     }
 
-    /*
-    // 특정 해시태그로 게시글 조회
-    @GetMapping(params = "hashtag")
-    public SuccessResponse<List<PostResponseDto>> getPostsByHashtag(@RequestParam String hashtag) {
-        return postService.getPostsByHashtag(hashtag);
+    @GetMapping("/notices")
+    public SuccessResponse<PostListResponseDto> getAllNotices(
+            @PageableDefault(size = 5) Pageable pageable) {
+        return postService.getAllNotices(pageable);
     }
-    */
 }

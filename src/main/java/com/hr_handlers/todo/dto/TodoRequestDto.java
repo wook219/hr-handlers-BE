@@ -27,6 +27,4 @@ public class TodoRequestDto {
 
     @NotNull(message = "종료 시간를 선택해주세요.")
     private Timestamp endTime;
-
-    private String empNo;
 }

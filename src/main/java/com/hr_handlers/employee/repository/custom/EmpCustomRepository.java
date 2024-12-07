@@ -4,5 +4,5 @@ import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
 
 public interface EmpCustomRepository {
 
-    void updateEmp(String emp, EmpUpdateRequestDto requestDto);
+    void updateEmp(String emp, EmpUpdateRequestDto requestDto, String newProfileImageUrl);
 }

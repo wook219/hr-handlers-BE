@@ -1,5 +1,6 @@
 package com.hr_handlers.vacation.dto;
 
+import com.hr_handlers.vacation.entity.VacationStatus;
 import com.hr_handlers.vacation.entity.VacationType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class VacationDetailResponseDto {
     private Long id;
+    private String docNum;
     private String title;
     private VacationType type;
     private Timestamp startDate;
