@@ -2,7 +2,7 @@ package com.hr_handlers.vacation.entity;
 
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.global.entity.BaseTimeEntity;
-import com.hr_handlers.vacation.dto.VacationModifyRequestDto;
+import com.hr_handlers.vacation.dto.VacationRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -57,11 +57,27 @@ public class Vacation extends BaseTimeEntity {
     private Employee employee;
 
 
-    public void modify(VacationModifyRequestDto request){
+    // 휴가 수정
+    public void modify(VacationRequestDto request){
         this.title = request.getTitle();
         this.type = request.getType();
         this.startDate = request.getStartDate();
         this.endDate = request.getEndDate();
         this.reason = request.getReason();
+    }
+
+    // 휴가 승인
+    public void approve(String approverName){
+        this.status = VacationStatus.APPROVED;
+        this.approvedAt = new Timestamp(System.currentTimeMillis());
+        this.approver = approverName;
+    }
+
+    // 휴가 삭제
+    public void reject(String approverName){
+        this.status = VacationStatus.REJECTED;
+        this.approvedAt = new Timestamp(System.currentTimeMillis());
+        this.approver = approverName;
+
     }
 }

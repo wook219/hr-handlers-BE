@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin/emp")
@@ -29,7 +31,13 @@ public class AdminEmpController {
     // 사원 전체 조회
     @GetMapping
     public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(
-            @RequestBody SearchRequestDto requestDto) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortField,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String keyword
+    ) {
+        SearchRequestDto requestDto = new SearchRequestDto(page, size, sortField, sortDir, keyword);
         return adminEmpService.getAllEmp(requestDto);
     }
 
@@ -44,5 +52,14 @@ public class AdminEmpController {
     @DeleteMapping("/{empNo}")
     public SuccessResponse<Boolean> deleteEmp(@PathVariable("empNo") String empNo){
         return adminEmpService.delete(empNo);
+    }
+
+    // 직급.부서로 사원 검색
+    @GetMapping("/search")
+    public SuccessResponse<List<AdminEmpResponseDto>> searchEmp(
+            @RequestParam("position") String position,
+            @RequestParam("deptName") String deptName
+            ) {
+        return adminEmpService.searchEmp(position, deptName);
     }
 }

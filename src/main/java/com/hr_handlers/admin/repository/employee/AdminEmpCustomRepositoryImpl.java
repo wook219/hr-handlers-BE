@@ -6,15 +6,17 @@ import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.entity.QEmployee;
 import com.hr_handlers.employee.enums.ContractType;
 import com.hr_handlers.employee.repository.DeptRepository;
+import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,21 +33,19 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
     private final DeptRepository deptRepository;
 
     @Override
-    public Page<Employee> findEmpByName(String keyword, Pageable pageable) {
+    public Page<Employee> findEmpByName(SearchRequestDto requestDto) {
         QEmployee employee = QEmployee.employee;
 
-        // 검색 조건 생성
-        BooleanExpression condition = (keyword != null && !keyword.trim().isEmpty())
-                ? employee.name.containsIgnoreCase(keyword)
+        BooleanExpression condition = (requestDto.getKeyword() != null && !requestDto.getKeyword().trim().isEmpty())
+                ? employee.name.containsIgnoreCase(requestDto.getKeyword())
                 : null; // 전체 조회
 
-        // 사원 목록 검색 쿼리
         List<Employee> results = queryFactory
                 .selectFrom(employee)
                 .where(condition) // 검색 없으면 전체 조회, 있으면 필터링
-                .offset(pageable.getOffset()) // 페이징 시작 위치
-                .limit(pageable.getPageSize()) // 페이징 개수 제한
-                .orderBy(employee.createdAt.desc()) // 내림차순 정렬
+                .offset(requestDto.getPage() * requestDto.getSize()) // 페이징 시작 위치
+                .limit(requestDto.getSize()) // 페이징 개수 제한
+                .orderBy(employee.createdAt.desc()) // 동적 정렬
                 .fetch();
 
         Long total = queryFactory
@@ -54,31 +54,37 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
                 .where(condition)
                 .fetchOne();
 
-        return new PageImpl<>(results, pageable, total);
+        return new PageImpl<>(results, PageRequest.of(requestDto.getPage(), requestDto.getSize()), total);
     }
 
     @Override
     @Transactional
     public void updateEmp(String empNo, AdminEmpUpdateRequestDto updateRequest) {
 
-        // TODO: 커넥션 줄이기
-        // 새로운 Department 객체 생성
-        Department newDepartment = Department.builder()
-                .deptName(updateRequest.getDeptName())
-                .build();
-
-        // DB에 저장 (이미 존재하는 부서는 가져오고, 없으면 새로 생성)
         Department department = deptRepository.findByDeptName(updateRequest.getDeptName())
-                .orElseGet(() -> deptRepository.save(newDepartment));
+                    .orElseThrow(() -> new GlobalException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
-        long updatedCount = queryFactory
-                .update(employee)
-                .where(employee.empNo.eq(empNo))
-                .set(employee.position, updateRequest.getPosition())
-                .set(employee.contractType, ContractType.valueOf(updateRequest.getContractType()))
-                .set(employee.leaveBalance, updateRequest.getLeaveBalance())
-                .set(employee.department, department) // 부서를 새로운 객체로 교체
-                .execute();
+        JPAUpdateClause updateClause = queryFactory.update(employee)
+                .where(employee.empNo.eq(empNo));
+
+        // 조건에 따라 set 호출
+        if (updateRequest.getPosition() != null) {
+            updateClause.set(employee.position, updateRequest.getPosition());
+        }
+
+        if (updateRequest.getContractType() != null) {
+            // 한글을 Enum으로 변환
+            ContractType contractTypeEnum = ContractType.fromDescription(updateRequest.getContractType());
+            updateClause.set(employee.contractType, contractTypeEnum);
+        }
+        if (updateRequest.getLeaveBalance() != null) {
+            updateClause.set(employee.leaveBalance, updateRequest.getLeaveBalance());
+        }
+        if (updateRequest.getDeptName() != null) {
+            updateClause.set(employee.department, department);
+        }
+
+        long updatedCount = updateClause.execute();
 
         entityManager.flush();
         entityManager.clear();

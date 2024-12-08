@@ -22,6 +22,6 @@ public class Department extends BaseTimeEntity {
     @Comment(value = "부서명")
     private String deptName;
 
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = false)
+    @OneToMany(mappedBy = "department", fetch = FetchType.LAZY)
     private List<Employee> employees;
 }

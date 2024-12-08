@@ -61,8 +61,8 @@ public class TodoService {
     }
 
     // 일정 등록
-    public SuccessResponse<TodoResponseDto> enrollTodo(TodoRequestDto request){
-        Employee employee = empRepository.findByEmpNo(request.getEmpNo())
+    public SuccessResponse<TodoResponseDto> enrollTodo(TodoRequestDto request, String empNo){
+        Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
         Todo todo = Todo.builder()

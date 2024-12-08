@@ -8,14 +8,18 @@ import com.hr_handlers.global.exception.GlobalException;
 import com.hr_handlers.vacation.dto.*;
 import com.hr_handlers.vacation.entity.Vacation;
 import com.hr_handlers.vacation.entity.VacationStatus;
+import com.hr_handlers.vacation.entity.VacationType;
 import com.hr_handlers.vacation.mapper.VacationMapper;
 import com.hr_handlers.vacation.repository.VacationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -23,40 +27,55 @@ public class VacationService {
 
     private final VacationRepository vacationRepository;
     private final VacationMapper vacationMapper;
+    private final VacationHandler vacationHandler;
 
     private final EmpRepository empRepository;
 
     //휴가 상세 조회
     public SuccessResponse<VacationDetailResponseDto> getVacationDetail(Long id){
-        VacationDetailResponseDto response = vacationRepository.findVacationDetailById(id);
 
         return SuccessResponse.of(
                 "휴가 상세 조회 성공",
-                response);
+                vacationRepository.findVacationDetailById(id));
     }
 
     // 휴가 승인 대기 목록 조회
-    public SuccessResponse<List<PendingVacationResponseDto>> getPendingVacations(Long employeeId){
-        List<PendingVacationResponseDto> response = vacationRepository.findPendingVacations(employeeId);
+    public SuccessResponse<List<PendingVacationResponseDto>> getPendingVacations(String empNo){
 
         return SuccessResponse.of(
                 "승인 대기 휴가 목록 조회 성공",
-                response);
+                vacationRepository.findPendingVacations(empNo));
     }
 
     // 휴가 승인 확정 목록 조회
-    public SuccessResponse<List<ApprovedVacationResponseDto>> getApprovedVacations(Long employeeId){
-        List<ApprovedVacationResponseDto> response = vacationRepository.findApprovedVacations(employeeId);
+    public SuccessResponse<List<ApprovedVacationResponseDto>> getApprovedVacations(String empNo){
 
         return SuccessResponse.of(
                 "승인 확정 휴가 목록 조회 성공",
-                response);
+                vacationRepository.findApprovedVacations(empNo));
     }
 
     // 휴가 등록
-    public SuccessResponse<VacationResponseDto> enrollVacation(VacationRequestDto request){
-        Employee employee = empRepository.findById(request.getEmployeeId())
+    public SuccessResponse<VacationResponseDto> enrollVacation(VacationRequestDto request, String empNo){
+        Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+
+        // 휴가 일수 계산 및 검증
+        vacationHandler.validateVacationDays(
+                employee,
+                request.getType(),
+                request.getStartDate(),
+                request.getEndDate()
+        );
+
+        // 휴가 일수 차감
+        vacationHandler.processVacationDays(
+                employee,
+                request.getType(),
+                request.getStartDate(),
+                request.getEndDate(),
+                false
+        );
 
         Vacation vacation = Vacation.builder()
                 .docNum(generateDocNum())
@@ -71,58 +90,91 @@ public class VacationService {
 
         vacationRepository.save(vacation);
 
-        VacationResponseDto response = vacationMapper.toVacationResponse(vacation);
-
         return SuccessResponse.of(
                 "휴가 등록 성공",
-                response);
-    }
-
-    // 문서 번호 생성 로직
-    private String generateDocNum() {
-        String year = String.valueOf(LocalDate.now().getYear()); // 현재 연도 가져오기
-        String randomPart = UUID.randomUUID().toString().replace("-", "").substring(0, 8); // 랜덤 문자열 8자리
-        return year + randomPart;
+                vacationMapper.toVacationResponse(vacation));
     }
 
     // 휴가 수정
-    public SuccessResponse<VacationResponseDto> modifyVacation(Long id, VacationModifyRequestDto request){
+    @Transactional
+    public SuccessResponse<VacationResponseDto> modifyVacation(Long id, VacationRequestDto request){
         Vacation vacation = vacationRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
 
+        // 기존 휴가 일수 복구
+        vacationHandler.processVacationDays(
+                vacation.getEmployee(),
+                vacation.getType(),
+                vacation.getStartDate(),
+                vacation.getEndDate(),
+                true
+        );
+
+        // 새로운 휴가 일수 검증
+        vacationHandler.validateVacationDays(
+                vacation.getEmployee(),
+                request.getType(),
+                request.getStartDate(),
+                request.getEndDate()
+        );
+
+        // 새로운 휴가 일수 차감
+        vacationHandler.processVacationDays(
+                vacation.getEmployee(),
+                request.getType(),
+                request.getStartDate(),
+                request.getEndDate(),
+                false
+        );
+
         vacation.modify(request);
-
-        vacationRepository.save(vacation);
-
-        VacationResponseDto response = vacationMapper.toVacationResponse(vacation);
 
         return SuccessResponse.of(
                 "휴가 수정 성공",
-                response);
+                vacationMapper.toVacationResponse(vacation));
     }
 
     // 휴가 삭제
-    public SuccessResponse<VacationResponseDto> deleteVacation(Long id){
+    @Transactional
+    public SuccessResponse<Boolean> deleteVacation(Long id){
         Vacation vacation = vacationRepository.findById(id)
                 .orElseThrow(() -> new GlobalException(ErrorCode.VACATION_NOT_FOUND));
 
         vacationRepository.delete(vacation);
 
-        VacationResponseDto response = vacationMapper.toVacationResponse(vacation);
+        // 기존 휴가 일수 복구
+        vacationHandler.processVacationDays(
+                vacation.getEmployee(),
+                vacation.getType(),
+                vacation.getStartDate(),
+                vacation.getEndDate(),
+                true
+        );
 
         return SuccessResponse.of(
                 "휴가 삭제 성공",
+                Boolean.TRUE);
+    }
+
+    // 휴가 일수 정보 조회
+    public SuccessResponse<VacationSummaryResponseDto> getBalance(String empNo){
+        VacationSummaryResponseDto response = vacationRepository.findEmployeeVacationBalanceById(empNo);
+
+        return  SuccessResponse.of(
+                "휴가 일수 정보 조회 성공",
                 response);
     }
 
-    // 잔여 휴가 일수 조회
-    public SuccessResponse<VacationBalanceResponseDto> getBalance(Long employeeId){
-        Double balance = vacationRepository.findEmployeeVacationBalanceById(employeeId);
 
-        VacationBalanceResponseDto response = new VacationBalanceResponseDto(balance);
 
-        return  SuccessResponse.of(
-                "잔여 휴가 조회 성공",
-                response);
+    // 문서 번호 생성 로직
+    private String generateDocNum() {
+        String year = String.valueOf(LocalDate.now().getYear()); // 현재 연도 가져오기
+        String randomPart = UUID.randomUUID()
+                .toString()
+                .replace("-", "")
+                .substring(0, 8); // 랜덤 문자열 8자리
+
+        return year + randomPart;
     }
 }

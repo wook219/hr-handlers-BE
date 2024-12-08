@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class VacationResponseDto {
 
     private Long id;
-    private String doc_num;
+    private String docNum;
     private String title;
     private Timestamp startDate;
     private Timestamp endDate;

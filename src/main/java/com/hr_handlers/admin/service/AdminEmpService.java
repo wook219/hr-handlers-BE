@@ -12,11 +12,10 @@ import com.hr_handlers.employee.repository.DeptRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +27,9 @@ public class AdminEmpService {
 
     // 사원 등록
     public SuccessResponse<String> register(EmpRegisterDto registerRequest){
-        // 없는 부서면 저장
+
         Department department = deptRepository.findByDeptName(registerRequest.getDeptName())
-                .orElseGet(() -> deptRepository.save(
-                        Department.builder().deptName(registerRequest.getDeptName()).build()
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 부서입니다."));
 
         empRepository.save(EmpMapper.toEmployeeEntity(registerRequest,
                 bCryptPasswordEncoder.encode(registerRequest.getPassword()),
@@ -55,14 +52,17 @@ public class AdminEmpService {
 
     // 사원 전체 조회
     public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(SearchRequestDto requestDto) {
-        Pageable pageable = PageRequest.of(
-                requestDto.getPage(),
-                requestDto.getSize(),
-                Sort.by(Sort.Direction.fromString(requestDto.getSortDir()), requestDto.getSortField())
-        );
         // 검색 조건에 따른 데이터 조회
-        Page<Employee> employees = empRepository.findEmpByName(requestDto.getKeyword(), pageable);
+        Page<Employee> employees = empRepository.findEmpByName(requestDto);
 
         return SuccessResponse.of("사원 전체 조회 성공", employees.map(EmpMapper::toEmpListResponseDto));
+    }
+
+    public SuccessResponse<List<AdminEmpResponseDto>> searchEmp(String position, String deptName) {
+        List<Employee> employeeEntity = empRepository.findByPositionAndDepartmentDeptName(position, deptName);
+        List<AdminEmpResponseDto> employeeResponse  = employeeEntity.stream()
+                .map(EmpMapper::toEmpListResponseDto)
+                .toList();
+        return SuccessResponse.of("사원 조회 성공", employeeResponse);
     }
 }

@@ -1,13 +1,14 @@
 package com.hr_handlers.global.utils;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import com.hr_handlers.global.exception.ErrorCode;
+import com.hr_handlers.global.exception.GlobalException;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.util.*;
 
 @Component
@@ -69,5 +70,104 @@ public class ExcelUploadUtils implements ExcelUtilMethodFactory {
             throw new RuntimeException("Excel 데이터 변환 중 오류가 발생했습니다.", e);
         }
         return objects;
+    }
+
+    public <T> void renderObjectToExcel(OutputStream stream, List<T> data, Class<T> clazz) throws IOException, IllegalAccessException {
+        /* create workbook & sheet */
+        Workbook workbook = WorkbookFactory.create(true);
+        Sheet sheet = workbook.createSheet();
+
+        /* render header & body */
+        renderHeader(sheet, clazz);
+        renderBody(sheet, data, clazz);
+
+        /* close stream */
+        workbook.write(stream);
+        workbook.close();
+    }
+
+    public <T> void renderHeader(Sheet sheet, Class<T> clazz) {
+        int headerStartRowToRender = 0;
+        int startColToRender = 0;
+
+        Row row = sheet.createRow(headerStartRowToRender);
+        int colIdx = startColToRender;
+
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(ExcelColumn.class)) {
+                String headerName = field.getAnnotation(ExcelColumn.class).headerName();
+                row.createCell(colIdx, CellType.STRING).setCellValue(
+                        headerName.equals("") ? field.getName() : headerName
+                );
+                colIdx++;
+            }
+        }
+
+        // ExcelDownloaddto에 ExcelColumn이 없을때 예외처리
+        if (colIdx == startColToRender) {
+            throw new GlobalException(ErrorCode.EXCEL_HEADER_NOT_FOUND);
+        }
+    }
+
+    public <T> void renderBody(Sheet sheet, List<T> data, Class<T> clazz) throws IllegalAccessException {
+        int rowIdx = 1;
+        int startColToRender = 0;
+
+        // todo : 나중에 리팩토링 ㄱㄱ
+        Workbook workbook = sheet.getWorkbook();
+        CellStyle highlightStyle = workbook.createCellStyle();
+        highlightStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+        highlightStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle midSumStyle = workbook.createCellStyle();
+        midSumStyle.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+        midSumStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle totalSumStyle = workbook.createCellStyle();
+        totalSumStyle.setFillForegroundColor(IndexedColors.LAVENDER.getIndex());
+        totalSumStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle teamSumStyle = workbook.createCellStyle();
+        teamSumStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
+        teamSumStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        CellStyle grandTotalStyle = workbook.createCellStyle();
+        grandTotalStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+        grandTotalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        for (T datum : data) {
+            Row row = sheet.createRow(rowIdx);
+            int colIdx = startColToRender;
+
+            CellStyle currentRowStyle = null;
+
+            for (Field field : clazz.getDeclaredFields()) {
+                field.setAccessible(true); // private 필드에 접근하기 위해
+                String value = field.get(datum) == null ? "" : String.valueOf(field.get(datum));
+
+                row.createCell(colIdx, CellType.STRING).setCellValue(Objects.requireNonNullElse(value, ""));
+                colIdx++;
+
+                // 특정 행 타입을 확인하여 스타일 지정
+                // todo : 나중에 리팩토링 ㄱㄱ
+                if (value.equals("중간 합계")) {
+                    currentRowStyle = midSumStyle;
+                } else if (value.equals("총 합계")) {
+                    currentRowStyle = totalSumStyle;
+                } else if (value.equals("팀간 합계")) {
+                    currentRowStyle = teamSumStyle;
+                } else if (value.equals("합계")) {
+                    currentRowStyle = grandTotalStyle;
+                }
+            }
+
+            if (currentRowStyle != null) {
+                for (int i = 0; i < row.getPhysicalNumberOfCells(); i++) {
+                    row.getCell(i).setCellStyle(currentRowStyle); // 색상 적용
+                }
+            }
+
+            rowIdx++;
+        }
     }
 }

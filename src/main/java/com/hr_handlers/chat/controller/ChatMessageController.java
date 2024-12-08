@@ -51,6 +51,6 @@ public class ChatMessageController {
                               @Header("simpUser") Principal principal) {
         String empNo = principal.getName();
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.deleteMessage(chatMessageRequestDto, empNo);
-        messagingTemplate.convertAndSend("/topic/message/delete/" + chatRoomId, chatMessageResponseDto);
+        messagingTemplate.convertAndSend("/topic/message/delete/" + chatRoomId, chatMessageResponseDto.getMessageId());
     }
 }

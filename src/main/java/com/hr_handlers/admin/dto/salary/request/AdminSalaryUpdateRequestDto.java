@@ -39,6 +39,7 @@ public class AdminSalaryUpdateRequestDto {
         Optional.ofNullable(this.getDeduction()).ifPresent(entity::setDeduction);
         Optional.ofNullable(this.getNetSalary()).ifPresent(entity::setNetSalary);
         Optional.of(this.getPayDate()).ifPresent(entity::setPayDate);
+        Optional.of(String.valueOf(this.payDate.getYear())).ifPresent(entity::setYear);
         return entity;
     }
 }
