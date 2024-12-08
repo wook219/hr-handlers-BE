@@ -33,9 +33,11 @@ public class TodoService {
     private final EmpRepository empRepository;
 
     // 모든 일정 조회
-    public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(String empNo,
-                                                                String start,
-                                                                String end){
+    public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(
+            String empNo,
+            String start,
+            String end
+    ) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

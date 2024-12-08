@@ -24,8 +24,8 @@ public class TodoController {
     public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(
             Authentication authentication,
             @RequestParam("start") String start,
-            @RequestParam("end") String end)
-    {
+            @RequestParam("end") String end
+    ) {
         return todoService.getAllTodo(authentication.getName(), start, end);
     }
 
@@ -34,7 +34,7 @@ public class TodoController {
     public SuccessResponse<List<HolidayResponseDto>> getHolidays(
             @PathVariable("year") int year,
             @PathVariable("month") int month
-    ){
+    ) {
         return holidayService.getHolidays(year, month);
     }
 
@@ -48,8 +48,8 @@ public class TodoController {
     @PostMapping
     public SuccessResponse<TodoResponseDto> enrollTodo(
             @Valid @RequestBody TodoRequestDto request,
-            Authentication authentication)
-    {
+            Authentication authentication
+    ) {
         return todoService.enrollTodo(request, authentication.getName());
     }
 
@@ -58,8 +58,7 @@ public class TodoController {
     public SuccessResponse<TodoResponseDto> modifyTodo(
             @PathVariable("todoId") Long id,
             @Valid @RequestBody TodoModifyRequestDto request
-    )
-    {
+    ) {
         return todoService.modifyTodo(id, request);
     }
 

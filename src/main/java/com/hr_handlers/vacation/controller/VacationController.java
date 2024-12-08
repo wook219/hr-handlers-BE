@@ -40,8 +40,7 @@ public class VacationController {
     public SuccessResponse<VacationResponseDto> enrollVacation(
             @RequestBody @Valid VacationRequestDto request,
             Authentication authentication
-    )
-    {
+    ){
         return vacationService.enrollVacation(request, authentication.getName());
     }
 
@@ -50,8 +49,7 @@ public class VacationController {
     public SuccessResponse<VacationResponseDto> modifyVacation(
             @PathVariable("vacationId") Long id,
             @RequestBody VacationRequestDto request
-    )
-    {
+    ){
         return vacationService.modifyVacation(id, request);
     }
 
