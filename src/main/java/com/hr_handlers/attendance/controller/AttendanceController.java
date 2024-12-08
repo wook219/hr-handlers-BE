@@ -22,8 +22,6 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
-
-
     // 출 퇴근 조회
     @GetMapping
     public SuccessResponse<EmployeeAttendanceResponseDto> getAttendance(Authentication authentication){
@@ -39,8 +37,7 @@ public class AttendanceController {
         @RequestParam(required = false, value = "checkOutTime")
         @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime checkOutTime,
         @PageableDefault(size = 10, sort = "checkInTime", direction = Sort.Direction.DESC) Pageable pageable
-    )
-    {
+    ) {
         AttendanceHistorySearchDto searchDto = new AttendanceHistorySearchDto(checkInTime, checkOutTime);
         return attendanceService.getAttendanceHistory(
                 authentication.getName(),

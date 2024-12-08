@@ -41,8 +41,7 @@ public class AttendanceService {
             String empNo,
             AttendanceHistorySearchDto searchDto,
             Pageable pageable
-    )
-    {
+    ) {
         Page<AttendanceHistoryResponseDto> response = attendanceRepository.findAttendanceHistory(
                 empNo,
                 searchDto,

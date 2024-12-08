@@ -21,7 +21,7 @@ public class AdminAttendanceService {
     public SuccessResponse<Page<AdminAttendanceResponseDto>> getAllAttendance(
             AdminAttendanceSearchDto searchDto,
             Pageable pageable
-    ){
+    ) {
 
         Page<AdminAttendanceResponseDto> adminAttendancePage =
                 adminAttendanceRepository.findAllAttendance(searchDto, pageable);

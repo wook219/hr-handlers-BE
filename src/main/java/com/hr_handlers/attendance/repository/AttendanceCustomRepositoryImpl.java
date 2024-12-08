@@ -48,7 +48,11 @@ public class AttendanceCustomRepositoryImpl implements AttendanceCustomRepositor
     }
 
     @Override
-    public Page<AttendanceHistoryResponseDto> findAttendanceHistory(String empNo, AttendanceHistorySearchDto searchDto, Pageable pageable) {
+    public Page<AttendanceHistoryResponseDto> findAttendanceHistory(
+            String empNo,
+            AttendanceHistorySearchDto searchDto,
+            Pageable pageable
+    ) {
 
         NumberExpression<Integer> totalHours = attendance.checkOutTime.hour().subtract(attendance.checkInTime.hour());
         NumberExpression<Integer> totalMinutes = attendance.checkOutTime.minute().subtract(attendance.checkInTime.minute());
