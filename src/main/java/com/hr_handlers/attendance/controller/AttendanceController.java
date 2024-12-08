@@ -22,11 +22,7 @@ public class AttendanceController {
 
     private final AttendanceService attendanceService;
 
-    // 전 사원 출퇴근 조회
-//    @GetMapping
-//    public SuccessResponse<List<EmployeeAttendanceListResponseDto>> getAllAttendance(){
-//        return attendanceService.getAllAttendance();
-//    }
+
 
     // 출 퇴근 조회
     @GetMapping

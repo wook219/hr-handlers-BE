@@ -2,14 +2,11 @@ package com.hr_handlers.attendance.repository;
 
 import com.hr_handlers.attendance.dto.AttendanceHistoryResponseDto;
 import com.hr_handlers.attendance.dto.AttendanceHistorySearchDto;
-import com.hr_handlers.attendance.dto.EmployeeAttendanceListResponseDto;
 import com.hr_handlers.attendance.dto.EmployeeAttendanceResponseDto;
-import com.hr_handlers.attendance.entity.QAttendance;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,23 +27,6 @@ public class AttendanceCustomRepositoryImpl implements AttendanceCustomRepositor
 
     public AttendanceCustomRepositoryImpl(JPAQueryFactory jpaQueryFactory){
         this.jpaQueryFactory = jpaQueryFactory;
-    }
-
-
-    @Override
-    public List<EmployeeAttendanceListResponseDto> findAllAttendance() {
-        return jpaQueryFactory
-                .select(
-                        Projections.constructor(
-                                EmployeeAttendanceListResponseDto.class,
-                                attendance.status,
-                                attendance.checkInTime,
-                                attendance.checkOutTime,
-                                attendance.employee.name
-                        )
-                )
-                .from(attendance)
-                .fetch();
     }
 
     @Override

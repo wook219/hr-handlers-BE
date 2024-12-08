@@ -28,13 +28,6 @@ public class AttendanceService {
 
     private final EmpRepository empRepository;
 
-    public SuccessResponse<List<EmployeeAttendanceListResponseDto>> getAllAttendance(){
-
-        return SuccessResponse.of(
-                "전직원 출퇴근 조회 성공",
-                attendanceRepository.findAllAttendance()
-        );
-    }
 
     public SuccessResponse<EmployeeAttendanceResponseDto> getAttendance(String empNo){
 
