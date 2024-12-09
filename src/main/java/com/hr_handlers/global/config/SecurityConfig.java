@@ -53,7 +53,7 @@ public class SecurityConfig {
                             configuration.setAllowedHeaders(Collections.singletonList("*"));
                             // configuration.setMaxAge(3600L);
                             configuration.setExposedHeaders(Collections.singletonList("*"));
-                            configuration.addExposedHeader("access");
+                            configuration.setExposedHeaders(List.of("access", "Content-Disposition")); // S3 관련 헤더 추가
                             return configuration;
                         }))
                 .formLogin((auth) -> auth.disable())

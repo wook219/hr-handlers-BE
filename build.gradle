@@ -67,8 +67,11 @@ dependencies {
 
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-	// mysql
+	// mysql (로컬)
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// mariadb (배포)
+	//implementation 'org.mariadb.jdbc:mariadb-java-client:3.2.0'
 
 	// mybatis
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
