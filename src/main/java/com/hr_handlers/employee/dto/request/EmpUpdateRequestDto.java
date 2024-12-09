@@ -12,5 +12,6 @@ public class EmpUpdateRequestDto {
     private String phone;
     private String introduction;
     private String profileImageUrl;
-    private String password; // 새 비밀번호
+    private String password;
+    private String newPassword; // 새 비밀번호
 }
