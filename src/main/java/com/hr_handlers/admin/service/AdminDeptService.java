@@ -4,8 +4,10 @@ import com.hr_handlers.admin.dto.employee.response.AdminDeptResponseDto;
 import com.hr_handlers.employee.entity.Department;
 import com.hr_handlers.employee.mapper.EmpMapper;
 import com.hr_handlers.employee.repository.DeptRepository;
+import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,13 +35,10 @@ public class AdminDeptService {
     }
 
     // 부서 전체 조회
-    public SuccessResponse<List<AdminDeptResponseDto>> getAllDept() {
-        List<Department> departments = deptRepository.findAll();
+    public SuccessResponse<Page<AdminDeptResponseDto>> getAllDept(SearchRequestDto requestDto) {
+        Page<Department> departments = deptRepository.findDeptByName(requestDto);
 
-        List<AdminDeptResponseDto> departmentDtos = departments.stream()
-                .map(EmpMapper::toDeptListResponseDto)
-                .collect(Collectors.toList());
-        return SuccessResponse.of("부서 조회 성공", departmentDtos);
+        return SuccessResponse.of("부서 조회 성공", departments.map(EmpMapper::toDeptListResponseDto));
     }
 
     // 부서 수정

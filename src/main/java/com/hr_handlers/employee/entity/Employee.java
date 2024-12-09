@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Employee extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,5 +89,11 @@ public class Employee extends BaseTimeEntity {
 
     public void departmentUpdate(Department department) {
         this.department = department;
+    }
+
+    public Employee changePassword(String newPassword) {
+        return this.toBuilder()
+                .password(newPassword)
+                .build();
     }
 }
