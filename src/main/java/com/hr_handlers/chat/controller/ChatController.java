@@ -39,6 +39,12 @@ public class ChatController {
         return chatService.getNotExistsChat(chatRoomId, keyword);
     }
 
+    // 채팅방 인원 수 조회
+    @GetMapping("/{chatRoomId}/count")
+    public SuccessResponse<Long> getJoinedEmployeesCount(@PathVariable("chatRoomId") Long chatRoomId) {
+        return chatService.getJoinedEmployeesCount(chatRoomId);
+    }
+
     // 비공개 채팅방 초대
     @PostMapping("/{chatRoomId}")
     public SuccessResponse<ChatResponseDto> inviteSecretChat(@PathVariable("chatRoomId") Long chatRoomId,

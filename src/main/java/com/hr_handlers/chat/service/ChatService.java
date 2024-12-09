@@ -72,6 +72,14 @@ public class ChatService {
         );
     }
 
+    // 채팅방 참여 인원 수 조회
+    public SuccessResponse<Long> getJoinedEmployeesCount(Long chatRoomId) {
+        return SuccessResponse.of(
+                "채팅방 인원 수 조회에 성공했습니다.",
+                chatRepository.countChatByChatRoomId(chatRoomId)
+        );
+    }
+
     // 채팅방 퇴장
     @Transactional
     public SuccessResponse<Long> exitChatRoom(Long chatRoomId, String empNo) {
