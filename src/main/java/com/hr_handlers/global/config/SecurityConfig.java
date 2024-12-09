@@ -65,7 +65,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((request) ->
                 request
                         // 전체 접근
-                        .requestMatchers("/login", "/reissue").permitAll()
+                        .requestMatchers("/login", "/reissue","/api/s3/**").permitAll()
 
                         // Swagger 경로 전체 접근
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**").permitAll()
@@ -80,6 +80,9 @@ public class SecurityConfig {
 
 
                         /* 휴가 */
+
+                        /* 게시판 */
+                        .requestMatchers("/post/**", "/comment/**").hasAnyRole("ADMIN", "EMPLOYEE")
 
 
 

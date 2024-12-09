@@ -18,24 +18,24 @@ public class CommentController {
     private final CommentService commentService;
 
     // 특정 게시글의 댓글 조회
-    @GetMapping("/post/{post_id}/comment")
+    @GetMapping("/post/{postId}/comment")
     public SuccessResponse<Page<CommentResponseDto>> getCommentsByPost(
-            @PathVariable Long post_id,
+            @PathVariable Long postId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return commentService.getCommentsByPost(post_id, page, size);
+        return commentService.getCommentsByPost(postId, page, size);
     }
 
 
     // 댓글/대댓글 작성
-    @PostMapping("/post/{post_id}/comment")
+    @PostMapping("/post/{postId}/comment")
     public SuccessResponse<CommentActionResponseDto> createComment(
-            @PathVariable Long post_id,
+            @PathVariable Long postId,
             @RequestBody CommentRequestDto request,
             Authentication authentication
     ) {
-        return commentService.createComment(post_id, request, authentication.getName());
+        return commentService.createComment(postId, request, authentication.getName());
     }
 
 
