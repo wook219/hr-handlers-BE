@@ -38,6 +38,11 @@ public class TodoController {
         return holidayService.getHolidays(year, month);
     }
 
+    @GetMapping("today")
+    public SuccessResponse<List<TodoTodayResponseDto>> getTodayTodo(Authentication authentication){
+        return todoService.getTodayTodo(authentication.getName());
+    }
+
     // 일정 상세 조회
     @GetMapping("/detail/{todoId}")
     public SuccessResponse<TodoResponseDto> getTodo(@PathVariable("todoId") Long id){

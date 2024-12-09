@@ -22,13 +22,9 @@ public class AdminAttendanceService {
             AdminAttendanceSearchDto searchDto,
             Pageable pageable
     ) {
-
-        Page<AdminAttendanceResponseDto> adminAttendancePage =
-                adminAttendanceRepository.findAllAttendance(searchDto, pageable);
-
         return SuccessResponse.of(
                 "전체 출퇴근 기록 조회 성공",
-                adminAttendancePage
+                adminAttendanceRepository.findAllAttendance(searchDto, pageable)
         );
     }
 }
