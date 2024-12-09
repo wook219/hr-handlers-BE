@@ -27,8 +27,8 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
     public List<AllTodoResponseDto> findAllTodoByEmployeeId(
             String empNo,
             Timestamp start,
-            Timestamp end)
-    {
+            Timestamp end
+    ) {
         return jpaQueryFactory
                 .select(
                         Projections.constructor(

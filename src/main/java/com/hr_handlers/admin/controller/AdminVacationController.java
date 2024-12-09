@@ -34,8 +34,7 @@ public class AdminVacationController {
     public SuccessResponse<VacationResponseDto> approveVacation(
             @PathVariable("id") Long id,
             Authentication authentication
-    )
-    {
+    ) {
         return adminVacationService.approveVacation(id, authentication.getName());
     }
 
@@ -43,8 +42,7 @@ public class AdminVacationController {
     public SuccessResponse<VacationResponseDto> rejectVacation(
             @PathVariable("id") Long id,
             Authentication authentication
-    )
-    {
+    ) {
         return adminVacationService.rejectVacation(id, authentication.getName());
     }
 }
