@@ -23,7 +23,8 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
     public Page<ChatRoomResponseDto> findPublicChatRoom(String keyword, Pageable pageable) {
         List<ChatRoomResponseDto> chatRoomResponseDtos = jpaQueryFactory
                 .select(
-                        Projections.constructor(ChatRoomResponseDto.class,
+                        Projections.constructor(
+                                ChatRoomResponseDto.class,
                                 chatRoom.id,
                                 chatRoom.title,
                                 chatRoom.isSecret
