@@ -10,6 +10,7 @@ import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
 import com.hr_handlers.global.service.S3Service;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -29,7 +30,7 @@ public class EmpService {
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final JavaMailSender mailSender;
-    private static final String FROM_ADDRESS = "hth130598@gmail.com";
+    private static final String FROM_ADDRESS = "jsjhyun98@gmail.com";
 
     // 사원 상세 조회
     public SuccessResponse<EmpDetailResponseDto> getEmpDetail(String empNo){
@@ -41,7 +42,7 @@ public class EmpService {
     // 사원 수정
     @Transactional
     public SuccessResponse<Boolean> updateEmpDetail(String empNo, EmpUpdateRequestDto requestDto, MultipartFile profileImageFile) throws IOException {
-        String profileImageUrl = null;  // 기본값은 null로 설정
+        String profileImageUrl = null;  // 기본값
 
         // S3에 새 프로필 이미지 업로드
         if (profileImageFile != null && !profileImageFile.isEmpty()) {
@@ -54,7 +55,6 @@ public class EmpService {
             profileImageUrl = s3Service.uploadFile("user/profile", profileImageFile);
         }
 
-        // 프로필 업데이트
         empRepository.updateEmp(empNo, requestDto, profileImageUrl);
         return SuccessResponse.of("사원 정보 수정", true);
     }
@@ -77,7 +77,7 @@ public class EmpService {
 
         // 임시 비밀번호 생성
         String tempPassword = generateTempPassword();
-        if (tempPassword == null || tempPassword.isEmpty()) {
+        if (tempPassword.isEmpty()) {
             throw new GlobalException(ErrorCode.TEMP_PASSWORD_GENERATION_FAILED);
         }
         // 비밀번호 업데이트
@@ -89,30 +89,25 @@ public class EmpService {
         return MailDto.builder()
                 .address(email)
                 .title(employee.getName() + "님의 임시 비밀번호 안내 메일입니다.")
-                .message("안녕하세요.\n\n임시 비밀번호 안내 메일입니다.\n\n" +
-                        "임시 비밀번호는 다음과 같습니다:\n" +
-                        tempPassword +
-                        "\n\n로그인 후 반드시 비밀번호를 변경해주세요.")
+                .message("""
+                        안녕하세요.
+
+                        임시 비밀번호 안내 메일입니다.
+
+                        임시 비밀번호는 다음과 같습니다:
+                        %s
+
+                        로그인 후 반드시 비밀번호를 변경해주세요.
+                        """.formatted(tempPassword))
                 .build();
     }
 
-    // 이메일 형식 체크
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
-        return email.matches(emailRegex);
-    }
-
     // 메일 전송
-    public SuccessResponse<Boolean> sendMail(MailDto dto) {
-        // 이메일 유효성 검증
-        String cleanedEmail = dto.getAddress().trim();
-        if (!isValidEmail(cleanedEmail)) {
-            throw new GlobalException(ErrorCode.INVALID_EMAIL_FORMAT);
-        }
+    public SuccessResponse<Boolean> sendMail(@Valid MailDto dto) {
 
         // 메일 전송
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(cleanedEmail);
+        message.setTo(dto.getAddress().trim());
         message.setFrom(FROM_ADDRESS);
         message.setSubject(dto.getTitle());
         message.setText(dto.getMessage());
@@ -138,9 +133,8 @@ public class EmpService {
         }
         return password.toString();
     }
-
-    public SuccessResponse<Boolean> resetPasswordAndSendMail(String empNo, String email) {
-        MailDto mailDto = sendResetPassword(empNo, email); // 임시 비밀번호 생성
-        return sendMail(mailDto); // 이메일 전송
-    }
+//    public SuccessResponse<Boolean> resetPasswordAndSendMail(String empNo, String email) {
+//        MailDto mailDto = sendResetPassword(empNo, email); // 임시 비밀번호 생성
+//        return sendMail(mailDto); // 이메일 전송
+//    }
 }
