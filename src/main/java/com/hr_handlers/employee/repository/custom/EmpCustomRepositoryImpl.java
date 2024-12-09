@@ -9,7 +9,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,6 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final EntityManager entityManager;
     private final ProfileImageRepository profileImageRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -36,9 +34,9 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
             profileImageRepository.save(profileImage);
         }
         // 비밀번호 암호화 처리
-        String encryptedPassword = requestDto.getPassword() != null && !requestDto.getPassword().isEmpty()
-                ? passwordEncoder.encode(requestDto.getPassword())
-                : null;
+//        String encryptedPassword = requestDto.getPassword() != null && !requestDto.getPassword().isEmpty()
+//                ? passwordEncoder.encode(requestDto.getPassword())
+//                : null;
 
         JPAUpdateClause updateClause = jpaQueryFactory
                 .update(employee)
@@ -53,9 +51,9 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
         }
 
         // 비밀번호가 제공된 경우에만 업데이트
-        if (encryptedPassword != null) {
-            updateClause.set(employee.password, encryptedPassword);
-        }
+//        if (encryptedPassword != null) {
+//            updateClause.set(employee.password, encryptedPassword);
+//        }
 
         long updatedCount = updateClause.execute();
 
