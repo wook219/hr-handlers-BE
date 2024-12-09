@@ -47,13 +47,15 @@ public class SecurityConfig {
                 .cors((cors) -> cors
                         .configurationSource(request -> {
                             CorsConfiguration configuration = new CorsConfiguration();
-                            configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://34.47.90.224:8080", "http://34.47.90.224:3000"));
+                            configuration.setAllowedOrigins(List.of(
+                                    "http://localhost:3000",
+                                    "http://34.47.90.224:8080",
+                                    "http://34.47.90.224:3000"));
                             configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
                             configuration.setAllowCredentials(true);
                             configuration.setAllowedHeaders(Collections.singletonList("*"));
                             configuration.setMaxAge(3600L);
-                            configuration.setExposedHeaders(Collections.singletonList("*"));
-                            configuration.setExposedHeaders(List.of("access", "Content-Disposition")); // S3 관련 헤더 추가
+                            configuration.setExposedHeaders(List.of("access", "Content-Disposition"));
                             return configuration;
                         }))
                 .formLogin((auth) -> auth.disable())
