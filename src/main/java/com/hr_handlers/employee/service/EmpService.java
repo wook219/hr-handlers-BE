@@ -1,6 +1,7 @@
 package com.hr_handlers.employee.service;
 
 import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
+import com.hr_handlers.employee.dto.request.PasswordUpdateRequestDto;
 import com.hr_handlers.employee.dto.response.MailDto;
 import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
 import com.hr_handlers.employee.entity.Employee;
@@ -133,6 +134,31 @@ public class EmpService {
         }
         return password.toString();
     }
+
+    public SuccessResponse<Boolean> updatePassword(String empNo, PasswordUpdateRequestDto requestDto) {
+        Employee employee = empRepository.findByEmpNo(empNo)
+                .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
+
+        // 2. 현재 비밀번호 확인
+        if (!passwordEncoder.matches(requestDto.getCurrentPassword(), employee.getPassword())) {
+            throw new GlobalException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        // 3. 새 비밀번호와 확인 비밀번호 비교
+        if (!requestDto.getNewPassword().equals(requestDto.getConfirmPassword())) {
+            throw new GlobalException(ErrorCode.PASSWORD_MISMATCH);
+        }
+
+        String encryptedPassword = passwordEncoder.encode(requestDto.getNewPassword());
+        Employee updatedEmployee = employee.changePassword(encryptedPassword);
+        empRepository.save(updatedEmployee);
+
+        return SuccessResponse.of("비밀번호가 성공적으로 변경되었습니다.", true);
+
+    }
+
+
+
 //    public SuccessResponse<Boolean> resetPasswordAndSendMail(String empNo, String email) {
 //        MailDto mailDto = sendResetPassword(empNo, email); // 임시 비밀번호 생성
 //        return sendMail(mailDto); // 이메일 전송

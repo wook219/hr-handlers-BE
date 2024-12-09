@@ -6,6 +6,7 @@ import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.admin.dto.employee.response.AdminEmpResponseDto;
 import com.hr_handlers.admin.service.AdminEmpService;
 import com.hr_handlers.global.dto.SuccessResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,14 +23,14 @@ public class AdminEmpController {
 
     private final AdminEmpService adminEmpService;
 
-    // 사원 등록
     @PostMapping
+    @Operation(summary = "사원 등록", description = "사원을 등록합니다.")
     public SuccessResponse<String> registerEmp(@Valid @RequestBody EmpRegisterDto registerDto){
         return adminEmpService.register(registerDto);
     }
 
-    // 사원 전체 조회
     @GetMapping
+    @Operation(summary = "사원 전체 조회", description = "모든 사원을 조회, 검색합니다.")
     public SuccessResponse<Page<AdminEmpResponseDto>> getAllEmp(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -41,21 +42,21 @@ public class AdminEmpController {
         return adminEmpService.getAllEmp(requestDto);
     }
 
-    // 사원 수정
     @PatchMapping("/{empNo}")
+    @Operation(summary = "사원 정보 수정", description = "사원의 직급, 부서, 계약형태를 수정합니다.")
     public SuccessResponse<Boolean> updateEmpDetail(@PathVariable("empNo") String empNo,
                                                  @Valid @RequestBody AdminEmpUpdateRequestDto updateRequest){
         return adminEmpService.updateEmpDetail(empNo, updateRequest);
     }
 
-    // 사원 삭제
     @DeleteMapping("/{empNo}")
+    @Operation(summary = "사원 삭제", description = "사원을 삭제합니다.")
     public SuccessResponse<Boolean> deleteEmp(@PathVariable("empNo") String empNo){
         return adminEmpService.delete(empNo);
     }
 
-    // 직급.부서로 사원 검색
     @GetMapping("/search")
+    @Operation(summary = "사원 검색", description = "직급. 부서로 사원을 검색합니다.")
     public SuccessResponse<List<AdminEmpResponseDto>> searchEmp(
             @RequestParam("position") String position,
             @RequestParam("deptName") String deptName
