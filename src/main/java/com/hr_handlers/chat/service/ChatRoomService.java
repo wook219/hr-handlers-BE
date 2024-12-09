@@ -10,6 +10,8 @@ import com.hr_handlers.chat.repository.ChatRoomRepository;
 import com.hr_handlers.employee.repository.EmpRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,15 +43,11 @@ public class ChatRoomService {
     }
 
     // 채팅방 조회
-    public SuccessResponse<List<ChatRoomResponseDto>> getChatRooms() {
-        List<ChatRoom> chatRooms = chatRoomRepository.findAll();
-
-        List<ChatRoomResponseDto> chatRoomResponseDtos = new ArrayList<>();
-
-        for (ChatRoom chatRoom : chatRooms) {
-            chatRoomResponseDtos.add(chatRoomMapper.toChatRoomResponseDto(chatRoom));
-        }
-        return SuccessResponse.of("생성된 채팅방 목록 조회 성공", chatRoomResponseDtos);
+    public SuccessResponse<Page<ChatRoomResponseDto>> getChatRooms(String keyword, Pageable pageable) {
+        return SuccessResponse.of(
+                "생성된 채팅방 목록 조회 성공",
+                chatRoomRepository.findPublicChatRoom(keyword, pageable)
+                );
     }
 
     // 채팅방 삭제
