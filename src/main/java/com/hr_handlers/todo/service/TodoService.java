@@ -19,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,13 @@ public class TodoService {
         return SuccessResponse.of(
                 "일정 상세 조회 성공",
                 todoMapper.toTodoResponse(todo)
+        );
+    }
+
+    public SuccessResponse<List<TodoTodayResponseDto>> getTodayTodo(String empNo){
+        return SuccessResponse.of(
+                "오늘의 일정 조회 성공",
+                todoRepository.findTodayTodosByEmployeeId(empNo, LocalDateTime.now())
         );
     }
 

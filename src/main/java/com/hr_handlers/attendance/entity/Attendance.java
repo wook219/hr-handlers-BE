@@ -38,5 +38,6 @@ public class Attendance {
 
     public void modify(){
         this.checkOutTime = Timestamp.valueOf(LocalDateTime.now());
+        this.status = AttendanceStatus.LEAVE;
     }
 }

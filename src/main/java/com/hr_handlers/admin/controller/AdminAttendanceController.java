@@ -39,9 +39,6 @@ public class AdminAttendanceController {
             @RequestParam(required = false, value = "name") String name,
             @PageableDefault(size = 10, sort = "checkInTime", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        System.out.println("Received params - deptName: " + deptName
-                + ", position: " + position
-                + ", name: " + name);
 
         AdminAttendanceSearchDto searchDto = new AdminAttendanceSearchDto(
                 checkInTime, checkOutTime, deptName, position, name
