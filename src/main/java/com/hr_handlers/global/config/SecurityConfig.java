@@ -48,10 +48,10 @@ public class SecurityConfig {
                         .configurationSource(request -> {
                             CorsConfiguration configuration = new CorsConfiguration();
                             configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://34.47.90.224:8080", "http://34.47.90.224:3000"));
-                            configuration.setAllowedMethods(Collections.singletonList("*"));
+                            configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
                             configuration.setAllowCredentials(true);
                             configuration.setAllowedHeaders(Collections.singletonList("*"));
-                            // configuration.setMaxAge(3600L);
+                            configuration.setMaxAge(3600L);
                             configuration.setExposedHeaders(Collections.singletonList("*"));
                             configuration.setExposedHeaders(List.of("access", "Content-Disposition")); // S3 관련 헤더 추가
                             return configuration;
@@ -62,10 +62,25 @@ public class SecurityConfig {
         // 경로별 접근 제어
         http.authorizeHttpRequests((request) ->
                 request
-                        .requestMatchers("/login", "/emp/**", "/reissue").permitAll()
+                        // 전체 접근
+                        .requestMatchers("/login", "/reissue").permitAll()
+
+                        // Swagger 경로 전체 접근
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**").permitAll()
+
+                        // 관리자만 접근
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        // Swagger 문서 관련 경로 전체 접근 허용
-                        // .requestMatchers("/swagger-ui/**").permitAll()
+
+                        /* 사원 */
+                        .requestMatchers("/emp/**").hasAnyRole("ADMIN", "EMPLOYEE")
+
+                        /* 채팅 */
+
+
+                        /* 휴가 */
+
+
+
                         // .anyRequest().permitAll());          // 전체 허용(임시)
                         .anyRequest().authenticated());
         http
