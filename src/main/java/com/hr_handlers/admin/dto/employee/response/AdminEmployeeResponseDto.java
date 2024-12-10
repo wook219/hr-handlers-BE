@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @Builder
-public class AdminEmpResponseDto {
+public class AdminEmployeeResponseDto {
     private String empNo;
     private String name;
     private String email;

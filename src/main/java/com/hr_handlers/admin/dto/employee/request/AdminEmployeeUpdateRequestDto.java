@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminEmpUpdateRequestDto {
+public class AdminEmployeeUpdateRequestDto {
 
     @NotBlank(message = "직급은 필수입니다.")
     private String position;

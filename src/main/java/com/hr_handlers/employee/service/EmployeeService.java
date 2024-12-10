@@ -1,13 +1,13 @@
 package com.hr_handlers.employee.service;
 
-import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
+import com.hr_handlers.employee.dto.request.EmployeeUpdateRequestDto;
 import com.hr_handlers.employee.dto.request.PasswordUpdateRequestDto;
-import com.hr_handlers.employee.dto.response.MailDto;
+import com.hr_handlers.employee.dto.response.MailResponseDto;
 import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
 import com.hr_handlers.employee.dto.response.TeamDetailResponseDto;
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.employee.mapper.EmpMapper;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.mapper.EmployeeMapper;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
@@ -27,9 +27,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class EmpService {
+public class EmployeeService {
 
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final JavaMailSender mailSender;
@@ -39,12 +39,12 @@ public class EmpService {
     public SuccessResponse<EmpDetailResponseDto> getEmpDetail(String empNo){
         Employee employee =  empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
-        return SuccessResponse.of("사원 상세 조회 성공", EmpMapper.toEmpDetailResponseDto(employee));
+        return SuccessResponse.of("사원 상세 조회 성공", EmployeeMapper.toEmpDetailResponseDto(employee));
     }
 
     // 사원 수정
     @Transactional
-    public SuccessResponse<Boolean> updateEmpDetail(String empNo, EmpUpdateRequestDto requestDto, MultipartFile profileImageFile) throws IOException {
+    public SuccessResponse<Boolean> updateEmpDetail(String empNo, EmployeeUpdateRequestDto requestDto, MultipartFile profileImageFile) throws IOException {
         String profileImageUrl = null;
 
         // S3에 새 프로필 이미지 업로드
@@ -72,7 +72,7 @@ public class EmpService {
     }
 
     // 임시 비밀번호
-    public MailDto sendResetPassword(String empNo, String email) {
+    public MailResponseDto sendResetPassword(String empNo, String email) {
         // 사원번호와 이메일 확인
         Employee employee = empRepository.findByEmpNoAndEmail(empNo, email)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
@@ -88,7 +88,7 @@ public class EmpService {
         empRepository.save(employee);
 
         // 메일 데이터 생성
-        return MailDto.builder()
+        return MailResponseDto.builder()
                 .address(email)
                 .title(employee.getName() + "님의 임시 비밀번호 안내 메일입니다.")
                 .message("""
@@ -105,7 +105,7 @@ public class EmpService {
     }
 
     // 메일 전송
-    public SuccessResponse<Boolean> sendMail(@Valid MailDto dto) {
+    public SuccessResponse<Boolean> sendMail(@Valid MailResponseDto dto) {
         // 메일 전송
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(dto.getAddress().trim());

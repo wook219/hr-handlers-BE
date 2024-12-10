@@ -8,7 +8,7 @@ import com.hr_handlers.chat.mapper.ChatMessageMapper;
 import com.hr_handlers.chat.repository.ChatMessageRepository;
 import com.hr_handlers.chat.repository.ChatRoomRepository;
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
@@ -25,7 +25,7 @@ public class ChatMessageService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageMapper chatMessageMapper;
 
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
 
     // 메시지 전송
     public ChatMessageResponseDto sendMessage(Long chatRoomId, ChatMessageRequestDto chatMessageRequestDto, String empNo) {

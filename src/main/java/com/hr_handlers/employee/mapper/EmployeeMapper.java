@@ -1,16 +1,16 @@
 package com.hr_handlers.employee.mapper;
 
-import com.hr_handlers.admin.dto.employee.request.EmpRegisterDto;
-import com.hr_handlers.admin.dto.employee.response.AdminDeptResponseDto;
-import com.hr_handlers.admin.dto.employee.response.AdminEmpResponseDto;
+import com.hr_handlers.admin.dto.employee.request.EmployeeRegisterRequestDto;
+import com.hr_handlers.admin.dto.employee.response.AdminDepartmentResponseDto;
+import com.hr_handlers.admin.dto.employee.response.AdminEmployeeResponseDto;
 import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
 import com.hr_handlers.employee.entity.Department;
 import com.hr_handlers.employee.entity.Employee;
 
-public class EmpMapper {
+public class EmployeeMapper {
 
     // EmpRegisterDto -> Employee
-    public static Employee toEmployeeEntity(EmpRegisterDto registerRequest, String encodedPassword, Department department) {
+    public static Employee toEmployeeEntity(EmployeeRegisterRequestDto registerRequest, String encodedPassword, Department department) {
         return Employee.builder()
                 .empNo(registerRequest.getEmpNo())
                 .password(encodedPassword) // 암호화된 비밀번호
@@ -47,8 +47,8 @@ public class EmpMapper {
     }
 
     // Employee -> EmpListResponseDto
-    public static AdminEmpResponseDto toEmpListResponseDto(Employee employee) {
-        return AdminEmpResponseDto.builder()
+    public static AdminEmployeeResponseDto toEmpListResponseDto(Employee employee) {
+        return AdminEmployeeResponseDto.builder()
                 .empNo(employee.getEmpNo())
                 .name(employee.getName())
                 .email(employee.getEmail())
@@ -65,8 +65,8 @@ public class EmpMapper {
     }
 
     // Department -> AdminDeptResponseDto
-    public static AdminDeptResponseDto toDeptListResponseDto(Department department){
-        return AdminDeptResponseDto.builder()
+    public static AdminDepartmentResponseDto toDeptListResponseDto(Department department){
+        return AdminDepartmentResponseDto.builder()
                 .id(department.getId())
                 .deptName(department.getDeptName())
                 .build();

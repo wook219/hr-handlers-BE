@@ -1,6 +1,6 @@
 package com.hr_handlers.employee.repository.custom;
 
-import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
+import com.hr_handlers.employee.dto.request.EmployeeUpdateRequestDto;
 import com.hr_handlers.employee.dto.response.TeamDetailResponseDto;
 import com.hr_handlers.employee.entity.ProfileImage;
 import com.hr_handlers.employee.repository.ProfileImageRepository;
@@ -22,7 +22,7 @@ import static com.hr_handlers.employee.entity.QProfileImage.profileImage;
 
 @Repository
 @RequiredArgsConstructor
-public class EmpCustomRepositoryImpl implements EmpCustomRepository {
+public class EmployeeCustomRepositoryImpl implements EmployeeCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
     private final EntityManager entityManager;
@@ -30,8 +30,7 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
 
     @Override
     @Transactional
-    public void updateEmp(String empNo, EmpUpdateRequestDto requestDto, String newProfileImageUrl) {
-        // 프로필 이미지 변경 및 생성
+    public void updateEmp(String empNo, EmployeeUpdateRequestDto requestDto, String newProfileImageUrl) {
         ProfileImage profileImage = null;
         if (newProfileImageUrl != null) {
             profileImage = ProfileImage.builder()
@@ -54,23 +53,22 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
 
         long updatedCount = updateClause.execute();
 
-        entityManager.flush();
-        entityManager.close();
-
         if (updatedCount == 0) {
             throw new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND);
         }
+
+        entityManager.flush();
+        entityManager.close();
     }
 
     @Override
     public List<TeamDetailResponseDto> findTeamMembers(String empNo) {
-        // 동일 부서의 모든 사원 정보 조회
         return jpaQueryFactory
                 .select(Projections.constructor(
                         TeamDetailResponseDto.class,
-                        employee.profileImage.profileImageUrl, // 프로필 이미지 URL
-                        employee.position,                    // 직급
-                        employee.name                         // 이름
+                        employee.profileImage.profileImageUrl,
+                        employee.position,
+                        employee.name
                 ))
                 .from(employee)
                 .leftJoin(employee.profileImage, profileImage) // 프로필 이미지 없는 사원 조회 가능

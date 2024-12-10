@@ -1,4 +1,4 @@
-package com.hr_handlers.admin.repository.mapper;
+package com.hr_handlers.admin.mapper;
 
 import com.hr_handlers.admin.dto.salary.request.AdminSalarySearchRequestDto;
 import org.apache.ibatis.annotations.Mapper;
