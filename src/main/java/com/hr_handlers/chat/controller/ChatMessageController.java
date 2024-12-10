@@ -31,7 +31,7 @@ public class ChatMessageController {
                             @Header("simpUser") Principal principal) {
         String empNo = principal.getName();
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.sendMessage(chatRoomId, chatMessageRequestDto, empNo);
-        messagingTemplate.convertAndSend("/topic/message/" + chatRoomId, chatMessageResponseDto);
+        messagingTemplate.convertAndSend("/topic/message/%s".formatted(chatRoomId), chatMessageResponseDto);
     }
     
     // 메시지 수정
@@ -41,7 +41,7 @@ public class ChatMessageController {
                               @Header("simpUser") Principal principal) {
         String empNo = principal.getName();
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.updateMessage(chatMessageRequestDto, empNo);
-        messagingTemplate.convertAndSend("/topic/message/update/" + chatRoomId, chatMessageResponseDto);
+        messagingTemplate.convertAndSend("/topic/message/update/%s".formatted(chatRoomId), chatMessageResponseDto);
     }
 
     // 메시지 삭제
@@ -51,6 +51,6 @@ public class ChatMessageController {
                               @Header("simpUser") Principal principal) {
         String empNo = principal.getName();
         ChatMessageResponseDto chatMessageResponseDto = chatMessageService.deleteMessage(chatMessageRequestDto, empNo);
-        messagingTemplate.convertAndSend("/topic/message/delete/" + chatRoomId, chatMessageResponseDto.getMessageId());
+        messagingTemplate.convertAndSend("/topic/message/delete/%s".formatted(chatRoomId), chatMessageResponseDto.getMessageId());
     }
 }
