@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -67,10 +69,10 @@ public class SecurityConfig {
                         // 전체 접근
                         .requestMatchers("/login", "/reissue","/api/s3/**").permitAll()
 
-                        // Swagger 경로 전체 접근
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**").permitAll()
+                        // Swagger 경로 접근
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**").hasRole("ADMIN")
 
-                        // 관리자만 접근
+                        // 관리자 접근
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         /* 사원 */
@@ -80,16 +82,29 @@ public class SecurityConfig {
                         .requestMatchers("/chat/**").hasAnyRole("ADMIN", "EMPLOYEE")
                         .requestMatchers("/chatroom/**").hasAnyRole("ADMIN", "EMPLOYEE")
                         .requestMatchers("/message/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/ws/**").permitAll()
 
                         /* 휴가 */
+
+                        /* 근태 */
+
+                        /* 할일 */
 
                         /* 게시판 */
                         .requestMatchers("/post/**", "/comment/**").hasAnyRole("ADMIN", "EMPLOYEE")
 
-
+                        /* 급여 */
+                        .requestMatchers("/salary/**").hasAnyRole("ADMIN", "EMPLOYEE")
 
                         // .anyRequest().permitAll());          // 전체 허용(임시)
                         .anyRequest().authenticated());
+
+        // 인증되지 않은 사용자 처리
+        http.exceptionHandling((exceptions) -> exceptions
+                .authenticationEntryPoint(new HttpStatusEntryPoint(org.springframework.http.HttpStatus.UNAUTHORIZED)) // 401 처리
+                .accessDeniedHandler(accessDeniedHandler()) // 403 처리
+        );
+
         http
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), JwtAuthenticationFilter.class);
 
@@ -100,5 +115,15 @@ public class SecurityConfig {
         http.sessionManagement((sm) -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
+    }
+
+    // 권한 없는 사용자 처리 핸들러
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, accessDeniedException) -> {
+            response.setStatus(org.springframework.http.HttpStatus.FORBIDDEN.value());
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Access Denied\", \"message\": \"접근 권한이 없습니다.\"}");
+        };
     }
 }
