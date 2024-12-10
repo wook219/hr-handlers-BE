@@ -43,9 +43,9 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
         List<Employee> results = queryFactory
                 .selectFrom(employee)
                 .where(condition) // 검색 없으면 전체 조회, 있으면 필터링
-                .offset(requestDto.getPage() * requestDto.getSize()) // 페이징 시작 위치
-                .limit(requestDto.getSize()) // 페이징 개수 제한
-                .orderBy(employee.createdAt.desc()) // 동적 정렬
+                .offset(requestDto.getPage() * requestDto.getSize())
+                .limit(requestDto.getSize())
+                .orderBy(employee.createdAt.desc())
                 .fetch();
 
         Long total = queryFactory
@@ -60,7 +60,6 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
     @Override
     @Transactional
     public void updateEmp(String empNo, AdminEmpUpdateRequestDto updateRequest) {
-
         Department department = deptRepository.findByDeptName(updateRequest.getDeptName())
                     .orElseThrow(() -> new GlobalException(ErrorCode.DEPARTMENT_NOT_FOUND));
 

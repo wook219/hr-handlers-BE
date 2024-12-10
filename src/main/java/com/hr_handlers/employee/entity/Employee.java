@@ -78,17 +78,13 @@ public class Employee extends BaseTimeEntity {
     @JoinColumn(name = "department_id", nullable = true)
     private Department department;
 
-    // 비밀번호 업데이트 메서드
+    //  메서드
     public void updatePassword(String encryptedPassword) {
         this.password = encryptedPassword;
     }
 
     public void leaveBalanceUpdate(Double deductionDays){
         this.leaveBalance -= deductionDays;
-    }
-
-    public void departmentUpdate(Department department) {
-        this.department = department;
     }
 
     public Employee changePassword(String newPassword) {
