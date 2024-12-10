@@ -15,6 +15,9 @@ import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -79,8 +82,8 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
     }
 
     @Override
-    public List<ApprovedVacationResponseDto> findApprovedVacations(String empNo) {
-        return jpaQueryFactory
+    public Page<ApprovedVacationResponseDto> findApprovedVacations(String empNo, Pageable pageable) {
+        List<ApprovedVacationResponseDto> content = jpaQueryFactory
                 .select(
                         Projections.constructor(
                                 ApprovedVacationResponseDto.class,
@@ -98,10 +101,24 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
                 .from(vacation)
                 .where(
                         vacation.employee.empNo.eq(empNo)
-                            .and(vacation.status.eq(VacationStatus.APPROVED)
-                                    .or(vacation.status.eq(VacationStatus.REJECTED)))
+                                .and(vacation.status.eq(VacationStatus.APPROVED)
+                                        .or(vacation.status.eq(VacationStatus.REJECTED)))
                 )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        Long total = jpaQueryFactory
+                .select(vacation.count())
+                .from(vacation)
+                .where(
+                        vacation.employee.empNo.eq(empNo)
+                                .and(vacation.status.eq(VacationStatus.APPROVED)
+                                        .or(vacation.status.eq(VacationStatus.REJECTED)))
+                )
+                .fetchOne();
+
+        return new PageImpl<>(content, pageable, total);
     }
 
 
