@@ -51,7 +51,8 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
                 .select(chatRoom.count())
                 .from(chatRoom)
                 .where(
-                        condition
+                        chatRoom.isSecret.eq("N")
+                                .and(condition)
                 )
                 .fetchOne();
 
