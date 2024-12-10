@@ -12,6 +12,8 @@ import com.hr_handlers.vacation.entity.VacationType;
 import com.hr_handlers.vacation.mapper.VacationMapper;
 import com.hr_handlers.vacation.repository.VacationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,11 +50,10 @@ public class VacationService {
     }
 
     // 휴가 승인 확정 목록 조회
-    public SuccessResponse<List<ApprovedVacationResponseDto>> getApprovedVacations(String empNo){
-
+    public SuccessResponse<Page<ApprovedVacationResponseDto>> getApprovedVacations(String empNo, Pageable pageable) {
         return SuccessResponse.of(
                 "승인 확정 휴가 목록 조회 성공",
-                vacationRepository.findApprovedVacations(empNo));
+                vacationRepository.findApprovedVacations(empNo, pageable));
     }
 
     // 휴가 등록

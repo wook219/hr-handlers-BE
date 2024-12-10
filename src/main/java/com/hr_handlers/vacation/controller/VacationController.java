@@ -5,6 +5,8 @@ import com.hr_handlers.vacation.dto.*;
 import com.hr_handlers.vacation.service.VacationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +33,12 @@ public class VacationController {
 
     // 휴가 승인 확정 목록 조회
     @GetMapping("/approved")
-    public SuccessResponse<List<ApprovedVacationResponseDto>> getApprovedVacations(Authentication authentication){
-        return vacationService.getApprovedVacations(authentication.getName());
+    public SuccessResponse<Page<ApprovedVacationResponseDto>> getApprovedVacations(
+            Authentication authentication,
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "4", value = "size") int size
+    ) {
+        return vacationService.getApprovedVacations(authentication.getName(), PageRequest.of(page, size));
     }
 
     // 휴가 등록
