@@ -27,11 +27,11 @@ public class AdminDeptController {
     @GetMapping
     @Operation(summary = "부서 전체 조회", description = "모든 부서를 조회합니다.")
     public SuccessResponse<Page<AdminDeptResponseDto>> getAllDepartments(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "createdAt") String sortField,
-            @RequestParam(defaultValue = "desc") String sortDir,
-            @RequestParam(required = false) String keyword
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10", value = "size") int size,
+            @RequestParam(defaultValue = "createdAt", value = "sortField") String sortField,
+            @RequestParam(defaultValue = "desc", value = "sortDir") String sortDir,
+            @RequestParam(required = false, value = "keyword") String keyword
     ) {
         SearchRequestDto requestDto = new SearchRequestDto(page, size, sortField, sortDir, keyword);
         return deptService.getAllDept(requestDto);
