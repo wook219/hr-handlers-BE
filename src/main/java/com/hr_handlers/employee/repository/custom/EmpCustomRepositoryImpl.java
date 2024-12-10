@@ -1,10 +1,13 @@
 package com.hr_handlers.employee.repository.custom;
 
 import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
+import com.hr_handlers.employee.dto.response.TeamDetailResponseDto;
 import com.hr_handlers.employee.entity.ProfileImage;
 import com.hr_handlers.employee.repository.ProfileImageRepository;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
@@ -12,7 +15,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.hr_handlers.employee.entity.QEmployee.employee;
+import static com.hr_handlers.employee.entity.QProfileImage.profileImage;
 
 @Repository
 @RequiredArgsConstructor
@@ -33,10 +39,6 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
                     .build();
             profileImageRepository.save(profileImage);
         }
-        // 비밀번호 암호화 처리
-//        String encryptedPassword = requestDto.getPassword() != null && !requestDto.getPassword().isEmpty()
-//                ? passwordEncoder.encode(requestDto.getPassword())
-//                : null;
 
         JPAUpdateClause updateClause = jpaQueryFactory
                 .update(employee)
@@ -50,11 +52,6 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
             updateClause.set(employee.profileImage, profileImage);
         }
 
-        // 비밀번호가 제공된 경우에만 업데이트
-//        if (encryptedPassword != null) {
-//            updateClause.set(employee.password, encryptedPassword);
-//        }
-
         long updatedCount = updateClause.execute();
 
         entityManager.flush();
@@ -63,5 +60,26 @@ public class EmpCustomRepositoryImpl implements EmpCustomRepository {
         if (updatedCount == 0) {
             throw new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND);
         }
+    }
+
+    @Override
+    public List<TeamDetailResponseDto> findTeamMembers(String empNo) {
+        // 동일 부서의 모든 사원 정보 조회
+        return jpaQueryFactory
+                .select(Projections.constructor(
+                        TeamDetailResponseDto.class,
+                        employee.profileImage.profileImageUrl, // 프로필 이미지 URL
+                        employee.position,                    // 직급
+                        employee.name                         // 이름
+                ))
+                .from(employee)
+                .leftJoin(employee.profileImage, profileImage) // 프로필 이미지 없는 사원 조회 가능
+                .where(employee.department.id.eq(
+                        JPAExpressions
+                                .select(employee.department.id)
+                                .from(employee)
+                                .where(employee.empNo.eq(empNo))
+                ))
+                .fetch();
     }
 }
