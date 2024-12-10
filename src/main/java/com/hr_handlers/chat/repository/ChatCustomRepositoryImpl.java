@@ -7,6 +7,7 @@ import com.hr_handlers.chat.entity.QChat;
 import com.hr_handlers.employee.entity.QDepartment;
 import com.hr_handlers.employee.entity.QEmployee;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.hr_handlers.chat.entity.QChat.chat;
+import static com.hr_handlers.chat.entity.QChatRoom.chatRoom;
 
 @Repository
 @AllArgsConstructor
@@ -33,6 +35,11 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
 
     @Override
     public Page<ChatResponseDto> findByEmployeeId(Long employeeId, String keyword, Pageable pageable) {
+
+        BooleanExpression condition = (keyword != null && !keyword.trim().isEmpty())
+                ? chat.chatRoom.title.containsIgnoreCase(keyword)
+                : null; // 전체 조회
+
         List<ChatResponseDto> chatResponseDtos = jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -52,6 +59,7 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
                 .join(chat.employee)
                 .where(
                         chat.employee.id.eq(employeeId)
+                                .and(condition)
                 )
                 .orderBy(chat.chatRoom.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -63,7 +71,7 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
                 .from(chat)
                 .where(
                         chat.employee.id.eq(employeeId)
-                                .and(chat.chatRoom.title.likeIgnoreCase("%" + keyword + "%"))
+                                .and(condition)
                 )
                 .fetchOne();
 

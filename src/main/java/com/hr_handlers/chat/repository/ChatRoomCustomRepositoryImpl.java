@@ -2,6 +2,7 @@ package com.hr_handlers.chat.repository;
 
 import com.hr_handlers.chat.dto.ChatRoomResponseDto;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +22,12 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
 
     @Override
     public Page<ChatRoomResponseDto> findPublicChatRoom(String keyword, Pageable pageable) {
+
+        BooleanExpression condition = (keyword != null && !keyword.trim().isEmpty())
+                ? chatRoom.title.containsIgnoreCase(keyword)
+                : null; // 전체 조회
+
+
         List<ChatRoomResponseDto> chatRoomResponseDtos = jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -33,6 +40,7 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
                 .from(chatRoom)
                 .where(
                         chatRoom.isSecret.eq("N")
+                                .and(condition)
                 )
                 .orderBy(chatRoom.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -43,7 +51,7 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
                 .select(chatRoom.count())
                 .from(chatRoom)
                 .where(
-                        chatRoom.title.likeIgnoreCase("%" + keyword + "%")
+                        condition
                 )
                 .fetchOne();
 
