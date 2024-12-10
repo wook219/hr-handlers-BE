@@ -14,6 +14,8 @@ import com.hr_handlers.vacation.mapper.VacationMapper;
 import com.hr_handlers.vacation.repository.VacationRepository;
 import com.hr_handlers.vacation.service.VacationHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,19 +31,19 @@ public class AdminVacationService {
 
     private final VacationMapper vacationMapper;
 
-    // 승인 대기 휴가 목록 조회
-    public SuccessResponse<List<AdminVacationResponseDto>> getPendingVacations(){
+    // 승인 대기 휴가 목록 페이징 조회
+    public SuccessResponse<Page<AdminVacationResponseDto>> getPendingVacations(Pageable pageable) {
         return SuccessResponse.of(
-                    "승인 대기 휴가 목록 조회 성공",
-                    adminVacationRepository.findPendingVacations()
-                );
+                "승인 대기 휴가 목록 조회 성공",
+                adminVacationRepository.findPendingVacations(pageable)
+        );
     }
 
-    // 휴가 보유 현황 조회
-    public SuccessResponse<List<AdminVacationStatusResponseDto>> getVacationStatus(){
+    // 휴가 보유 현황 페이징 조회
+    public SuccessResponse<Page<AdminVacationStatusResponseDto>> getVacationStatus(Pageable pageable) {
         return SuccessResponse.of(
                 "휴가 보유 현황 조회 성공",
-                adminVacationRepository.findVacationStatusForAllEmployees()
+                adminVacationRepository.findVacationStatusForAllEmployees(pageable)
         );
     }
 

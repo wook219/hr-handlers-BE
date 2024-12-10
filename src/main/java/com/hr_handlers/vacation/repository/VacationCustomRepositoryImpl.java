@@ -65,6 +65,8 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
                                 vacation.title,
                                 vacation.type,
                                 vacation.updatedAt,
+                                vacation.startDate,
+                                vacation.endDate,
                                 vacation.employee.id
                         )
                 )
@@ -85,6 +87,8 @@ public class VacationCustomRepositoryImpl implements VacationCustomRepository{
                                 vacation.docNum,
                                 vacation.title,
                                 vacation.updatedAt,
+                                vacation.startDate,
+                                vacation.endDate,
                                 vacation.approvedAt,
                                 vacation.status,
                                 vacation.approver,
