@@ -1,5 +1,7 @@
 package com.hr_handlers.employee.dto.request;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,10 +10,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmpUpdateRequestDto {
+
+    @NotBlank(message = "이메일 입력은 필수입니다.")
     private String email;
+
+    @NotBlank(message = "연락처 입력은 필수입니다.")
+    @Email(message = "유효한 이메일 주소를 입력해주세요.")
     private String phone;
+
     private String introduction;
+
     private String profileImageUrl;
-    private String password;
-    private String newPassword; // 새 비밀번호
 }
