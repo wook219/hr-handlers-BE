@@ -58,6 +58,7 @@ public class AdminEmpService {
         return SuccessResponse.of("사원 전체 조회 성공", employees.map(EmpMapper::toEmpListResponseDto));
     }
 
+    // 사원 조건 조회
     public SuccessResponse<List<AdminEmpResponseDto>> searchEmp(String position, String deptName) {
         List<Employee> employeeEntity = empRepository.findByPositionAndDepartmentDeptName(position, deptName);
         List<AdminEmpResponseDto> employeeResponse  = employeeEntity.stream()

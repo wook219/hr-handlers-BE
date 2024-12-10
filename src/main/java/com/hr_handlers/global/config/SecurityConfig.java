@@ -77,7 +77,9 @@ public class SecurityConfig {
                         .requestMatchers("/emp/**").hasAnyRole("ADMIN", "EMPLOYEE")
 
                         /* 채팅 */
-
+                        .requestMatchers("/chat/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/chatroom/**").hasAnyRole("ADMIN", "EMPLOYEE")
+                        .requestMatchers("/message/**").hasAnyRole("ADMIN", "EMPLOYEE")
 
                         /* 휴가 */
 

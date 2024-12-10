@@ -59,6 +59,7 @@ public enum ErrorCode {
 
     //부서
     DEPARTMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "DEPARTMENT-01", "부서를 찾을 수 없습니다."),
+    TEAM_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND,"DEPARTMENT-02", "해당 사원이 속한 부서를 찾을 수 없습니다."),
 
     //로그인
     INVALID_LOGIN_REQUEST(HttpStatus.BAD_REQUEST, "LOGIN-01", "잘못된 로그인 요청입니다."),

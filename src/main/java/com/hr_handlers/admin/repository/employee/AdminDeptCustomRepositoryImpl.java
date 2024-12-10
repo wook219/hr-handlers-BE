@@ -36,9 +36,9 @@ public class AdminDeptCustomRepositoryImpl implements AdminDeptCustomRepository{
         List<Department> results = queryFactory
                 .selectFrom(department)
                 .where(condition) // 검색 없으면 전체 조회, 있으면 필터링
-                .offset(requestDto.getPage() * requestDto.getSize()) // 페이징 시작 위치
-                .limit(requestDto.getSize()) // 페이징 개수 제한
-                .orderBy(department.createdAt.desc()) // 동적 정렬
+                .offset(requestDto.getPage() * requestDto.getSize())
+                .limit(requestDto.getSize())
+                .orderBy(department.createdAt.desc())
                 .fetch();
 
         Long total = queryFactory

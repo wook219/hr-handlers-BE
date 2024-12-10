@@ -4,6 +4,7 @@ import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
 import com.hr_handlers.employee.dto.request.PasswordUpdateRequestDto;
 import com.hr_handlers.employee.dto.response.MailDto;
 import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
+import com.hr_handlers.employee.dto.response.TeamDetailResponseDto;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.mapper.EmpMapper;
 import com.hr_handlers.employee.repository.EmpRepository;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +45,7 @@ public class EmpService {
     // 사원 수정
     @Transactional
     public SuccessResponse<Boolean> updateEmpDetail(String empNo, EmpUpdateRequestDto requestDto, MultipartFile profileImageFile) throws IOException {
-        String profileImageUrl = null;  // 기본값
+        String profileImageUrl = null;
 
         // S3에 새 프로필 이미지 업로드
         if (profileImageFile != null && !profileImageFile.isEmpty()) {
@@ -71,7 +73,6 @@ public class EmpService {
 
     // 임시 비밀번호
     public MailDto sendResetPassword(String empNo, String email) {
-
         // 사원번호와 이메일 확인
         Employee employee = empRepository.findByEmpNoAndEmail(empNo, email)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
@@ -83,7 +84,7 @@ public class EmpService {
         }
         // 비밀번호 업데이트
         String encryptedPassword = passwordEncoder.encode(tempPassword);
-        employee.updatePassword(encryptedPassword); // 암호화는 엔티티의 updatePassword 내부에서 처리
+        employee.updatePassword(encryptedPassword);
         empRepository.save(employee);
 
         // 메일 데이터 생성
@@ -105,7 +106,6 @@ public class EmpService {
 
     // 메일 전송
     public SuccessResponse<Boolean> sendMail(@Valid MailDto dto) {
-
         // 메일 전송
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(dto.getAddress().trim());
@@ -135,32 +135,35 @@ public class EmpService {
         return password.toString();
     }
 
+    // 비밀번호 변경
     public SuccessResponse<Boolean> updatePassword(String empNo, PasswordUpdateRequestDto requestDto) {
         Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
 
-        // 2. 현재 비밀번호 확인
+        // 1. 현재 비밀번호 확인
         if (!passwordEncoder.matches(requestDto.getCurrentPassword(), employee.getPassword())) {
             throw new GlobalException(ErrorCode.INVALID_PASSWORD);
         }
 
-        // 3. 새 비밀번호와 확인 비밀번호 비교
+        // 2. 새 비밀번호와 확인 비밀번호 비교
         if (!requestDto.getNewPassword().equals(requestDto.getConfirmPassword())) {
             throw new GlobalException(ErrorCode.PASSWORD_MISMATCH);
         }
 
-        String encryptedPassword = passwordEncoder.encode(requestDto.getNewPassword());
-        Employee updatedEmployee = employee.changePassword(encryptedPassword);
+        Employee updatedEmployee = employee.changePassword(passwordEncoder.encode(requestDto.getNewPassword()));
         empRepository.save(updatedEmployee);
 
         return SuccessResponse.of("비밀번호가 성공적으로 변경되었습니다.", true);
-
     }
 
+    // 부서가 같은 사원 정보 조회
+    public SuccessResponse<List<TeamDetailResponseDto>> getTeamDetail(String empNo) {
+        List<TeamDetailResponseDto> teamDetails = empRepository.findTeamMembers(empNo);
 
+        if (teamDetails.isEmpty()) {
+            throw new GlobalException(ErrorCode.TEAM_MEMBER_NOT_FOUND);
+        }
 
-//    public SuccessResponse<Boolean> resetPasswordAndSendMail(String empNo, String email) {
-//        MailDto mailDto = sendResetPassword(empNo, email); // 임시 비밀번호 생성
-//        return sendMail(mailDto); // 이메일 전송
-//    }
+        return SuccessResponse.of("같은 부서 사원 조회 성공", teamDetails);
+    }
 }
