@@ -96,59 +96,6 @@ public class PostService {
                 new PostActionResponseDto(post.getId(), post.getCreatedAt().toString()));
     }
 
-    // 게시글 수정 (ver.1)
-    /*
-    @Transactional
-    public SuccessResponse<PostActionResponseDto> updatePost(Long postId, PostRequestDto dto) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new GlobalException(ErrorCode.POST_NOT_FOUND));
-
-        // 기존 해시태그 가져오기
-        List<HashTag> existingHashTags = post.getHashtagContent();
-
-        // DTO로 전달된 해시태그 리스트
-        List<String> newHashtagContents = dto.getHashtagContent();
-
-        // 기존 해시태그 업데이트 또는 추가
-        Map<String, HashTag> existingHashTagMap = existingHashTags.stream()
-                .collect(Collectors.toMap(HashTag::getHashtagContent, Function.identity()));
-
-        for (String newContent : newHashtagContents) {
-            if (existingHashTagMap.containsKey(newContent)) {
-                existingHashTagMap.remove(newContent);
-            } else {
-                // 새로 추가할 해시태그 생성
-                HashTag newHashTag = HashTag.builder()
-                        .post(post)
-                        .hashtagContent(newContent)
-                        .build();
-                existingHashTags.add(newHashTag);
-            }
-        }
-
-        // DTO에 남아있는 기존 해시태그는 제거
-        for (HashTag orphanHashTag : existingHashTagMap.values()) {
-            existingHashTags.remove(orphanHashTag);
-        }
-
-        // Post 정보 업데이트
-        post.setTitle(dto.getTitle());
-        post.setContent(dto.getContent());
-        post.setImageUrl(dto.getImageUrl());
-
-        Post updatedPost = postRepository.save(post);
-
-        PostActionResponseDto responseDto = PostActionResponseDto.builder()
-                .id(updatedPost.getId())
-                .timestamp(updatedPost.getUpdatedAt().toString()) // updatedAt 활용
-                .build();
-
-        return SuccessResponse.of("게시글이 성공적으로 수정되었습니다.", responseDto);
-    }*/
-
-    /**
-     * 게시글 수정
-     */
     @Transactional
     public SuccessResponse<PostActionResponseDto> updatePost(Long postId, PostRequestDto dto) {
         Post post = postRepository.findById(postId)
