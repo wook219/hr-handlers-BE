@@ -85,11 +85,11 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll()
 
                         /* 휴가 */
-
+                        .requestMatchers("/vacation/**").hasAnyRole("ADMIN", "EMPLOYEE")
                         /* 근태 */
-
+                        .requestMatchers("/attendance/**").hasAnyRole("ADMIN", "EMPLOYEE")
                         /* 할일 */
-
+                        .requestMatchers("/todo/**").hasAnyRole("ADMIN", "EMPLOYEE")
                         /* 게시판 */
                         .requestMatchers("/post/**", "/comment/**").hasAnyRole("ADMIN", "EMPLOYEE")
 
