@@ -35,8 +35,8 @@ public class CommentController {
     @GetMapping("/post/{postId}/comment")
     public SuccessResponse<Page<CommentResponseDto>> getCommentsByPost(
             @PathVariable("postId") Long postId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10",value = "size") int size
     ) {
         return commentService.getCommentsByPost(postId, page, size);
     }
