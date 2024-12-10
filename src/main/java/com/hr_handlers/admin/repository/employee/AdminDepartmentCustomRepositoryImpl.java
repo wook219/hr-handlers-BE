@@ -20,7 +20,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class AdminDeptCustomRepositoryImpl implements AdminDeptCustomRepository{
+public class AdminDepartmentCustomRepositoryImpl implements AdminDepartmentCustomRepository {
 
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManager;

@@ -1,10 +1,11 @@
 package com.hr_handlers.admin.controller;
 
-import com.hr_handlers.admin.dto.employee.response.AdminDeptResponseDto;
-import com.hr_handlers.admin.service.AdminDeptService;
+import com.hr_handlers.admin.dto.employee.response.AdminDepartmentResponseDto;
+import com.hr_handlers.admin.service.AdminDepartmentService;
 import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.global.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,9 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/admin/dept")
 @PreAuthorize("hasRole('ADMIN')")
-public class AdminDeptController {
+@Tag(name = "부서 관리", description = "부서 관리 API")
+public class AdminDepartmentController {
 
-    private final AdminDeptService deptService;
+    private final AdminDepartmentService deptService;
 
     @PostMapping
     @Operation(summary = "부서 등록", description = "부서를 등록합니다.")
@@ -26,7 +28,7 @@ public class AdminDeptController {
 
     @GetMapping
     @Operation(summary = "부서 전체 조회", description = "모든 부서를 조회합니다.")
-    public SuccessResponse<Page<AdminDeptResponseDto>> getAllDepartments(
+    public SuccessResponse<Page<AdminDepartmentResponseDto>> getAllDepartments(
             @RequestParam(defaultValue = "0", value = "page") int page,
             @RequestParam(defaultValue = "10", value = "size") int size,
             @RequestParam(defaultValue = "createdAt", value = "sortField") String sortField,

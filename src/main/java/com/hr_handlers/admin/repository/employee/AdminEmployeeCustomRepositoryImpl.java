@@ -1,11 +1,10 @@
 package com.hr_handlers.admin.repository.employee;
 
-import com.hr_handlers.admin.dto.employee.request.AdminEmpUpdateRequestDto;
+import com.hr_handlers.admin.dto.employee.request.AdminEmployeeUpdateRequestDto;
 import com.hr_handlers.employee.entity.Department;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.entity.QEmployee;
 import com.hr_handlers.employee.enums.ContractType;
-import com.hr_handlers.employee.repository.DeptRepository;
 import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
@@ -26,11 +25,11 @@ import static com.hr_handlers.employee.entity.QEmployee.employee;
 
 @Repository
 @RequiredArgsConstructor
-public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
+public class AdminEmployeeCustomRepositoryImpl implements AdminEmployeeCustomRepository {
 
     private final JPAQueryFactory queryFactory;
     private final EntityManager entityManager;
-    private final DeptRepository deptRepository;
+    private final AdminDepartmentRepository deptRepository;
 
     @Override
     public Page<Employee> findEmpByName(SearchRequestDto requestDto) {
@@ -59,7 +58,7 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
 
     @Override
     @Transactional
-    public void updateEmp(String empNo, AdminEmpUpdateRequestDto updateRequest) {
+    public void updateEmp(String empNo, AdminEmployeeUpdateRequestDto updateRequest) {
         Department department = deptRepository.findByDeptName(updateRequest.getDeptName())
                     .orElseThrow(() -> new GlobalException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
@@ -85,12 +84,12 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
 
         long updatedCount = updateClause.execute();
 
-        entityManager.flush();
-        entityManager.clear();
-
         if (updatedCount == 0) {
             throw new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND);
         }
+
+        entityManager.flush();
+        entityManager.clear();
     }
 
     @Override
@@ -104,5 +103,8 @@ public class AdminEmpCustomRepositoryImpl implements AdminEmpCustomRepository {
         if(deletedCount == 0){
             throw new GlobalException(ErrorCode.TODO_NOT_FOUND);
         }
+
+        entityManager.flush();
+        entityManager.clear();
     }
 }

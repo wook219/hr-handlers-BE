@@ -1,4 +1,4 @@
-package com.hr_handlers.admin.repository;
+package com.hr_handlers.admin.repository.salary;
 
 import com.hr_handlers.salary.entity.Salary;
 import org.springframework.data.jpa.repository.JpaRepository;

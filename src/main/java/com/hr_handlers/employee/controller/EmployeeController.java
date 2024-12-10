@@ -1,14 +1,15 @@
 package com.hr_handlers.employee.controller;
 
-import com.hr_handlers.employee.dto.request.EmpUpdateRequestDto;
+import com.hr_handlers.employee.dto.request.EmployeeUpdateRequestDto;
 import com.hr_handlers.employee.dto.request.PasswordRecoveryRequestDto;
 import com.hr_handlers.employee.dto.request.PasswordUpdateRequestDto;
 import com.hr_handlers.employee.dto.response.EmpDetailResponseDto;
 import com.hr_handlers.employee.dto.response.TeamDetailResponseDto;
-import com.hr_handlers.employee.service.EmpService;
+import com.hr_handlers.employee.service.EmployeeService;
 
 import com.hr_handlers.global.dto.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,23 +24,24 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/emp")
 @PreAuthorize("hasRole('EMPLOYEE') or hasRole('ADMIN')")
-public class EmpController {
+@Tag(name = "사원", description = "사원 API")
+public class EmployeeController {
 
-    private final EmpService empService;
+    private final EmployeeService employeeService;
 
     @GetMapping
     @Operation(summary = "시원 조회", description = "시원이 마이페이지를 조회합니다.")
     public SuccessResponse<EmpDetailResponseDto> getEmpDetail(Authentication authentication){
-        return empService.getEmpDetail(authentication.getName());
+        return employeeService.getEmpDetail(authentication.getName());
     }
 
     @PatchMapping
     @Operation(summary = "시원 수정", description = "시원이 마이페이지를 수정합니다.")
     public SuccessResponse<Boolean> updateEmpDetail(
             Authentication authentication,
-            @RequestPart("updateRequest") EmpUpdateRequestDto updateRequest,
+            @RequestPart("updateRequest") EmployeeUpdateRequestDto updateRequest,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImageFile) throws IOException {
-        return empService.updateEmpDetail(authentication.getName(), updateRequest, profileImageFile);
+        return employeeService.updateEmpDetail(authentication.getName(), updateRequest, profileImageFile);
     }
 
     @PutMapping("/password")
@@ -47,24 +49,24 @@ public class EmpController {
     public SuccessResponse<Boolean> updatePassword(
             Authentication authentication,
             @Valid @RequestBody PasswordUpdateRequestDto requestDto){
-        return empService.updatePassword(authentication.getName(), requestDto);
+        return employeeService.updatePassword(authentication.getName(), requestDto);
     }
 
     @PostMapping("/check")
     @Operation(summary = "비밀번호 찾기", description = "이메일과 사원 번호가 일치하는지 검사합니다.")
     public SuccessResponse<Boolean> matchEmailAndEmpNo(@Valid @RequestBody PasswordRecoveryRequestDto requestDto){
-        return empService.matchEmailAndEmpNo(requestDto.getEmpNo(), requestDto.getEmail());
+        return employeeService.matchEmailAndEmpNo(requestDto.getEmpNo(), requestDto.getEmail());
     }
-
+    // TODO: api 병합
     @PostMapping("/send/mail")
     @Operation(summary = "메일 전송", description = "임시 비밀번호를 메일로 전송합니다.")
     public SuccessResponse<Boolean> sendResetPassword(@Valid @RequestBody PasswordRecoveryRequestDto requestDto){
-        return empService.sendMail(empService.sendResetPassword(requestDto.getEmpNo(), requestDto.getEmail()));
+        return employeeService.sendMail(employeeService.sendResetPassword(requestDto.getEmpNo(), requestDto.getEmail()));
     }
 
     @GetMapping("/team")
     @Operation(summary = "같은 부서의 사원 조회", description = "같은 부서 사원들의 정보를 조회합니다.")
     public SuccessResponse<List<TeamDetailResponseDto>> getTeamDetail(Authentication authentication){
-        return empService.getTeamDetail(authentication.getName());
+        return employeeService.getTeamDetail(authentication.getName());
     }
 }

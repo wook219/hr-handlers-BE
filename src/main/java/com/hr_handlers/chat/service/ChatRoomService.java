@@ -7,7 +7,7 @@ import com.hr_handlers.chat.mapper.ChatRoomMapper;
 import com.hr_handlers.chat.repository.ChatMessageRepository;
 import com.hr_handlers.chat.repository.ChatRepository;
 import com.hr_handlers.chat.repository.ChatRoomRepository;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,16 +15,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRepository chatRepository;
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
     private final ChatRoomMapper chatRoomMapper;
 
     // 채팅방 생성

@@ -9,7 +9,7 @@ import com.hr_handlers.board.repository.CommentRepository;
 import com.hr_handlers.board.repository.PostRepository;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.enums.Role;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.GlobalException;
 import com.hr_handlers.global.exception.ErrorCode;
@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
 
     // 댓글 조회
     public SuccessResponse<Page<CommentResponseDto>> getCommentsByPost(Long postId, int page, int size) {

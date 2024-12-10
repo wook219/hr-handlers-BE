@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.hr_handlers.admin.repository.mapper.AdminSalaryMapper">
+<mapper namespace="com.hr_handlers.admin.mapper.AdminSalaryMapper">
 
     <!-- 공통 조건 정의 -->
     <sql id="CommonWhereClause">
