@@ -3,13 +3,15 @@ package com.hr_handlers.chat.repository;
 import com.hr_handlers.chat.dto.ChatInviteResponseDto;
 import com.hr_handlers.chat.dto.ChatResponseDto;
 import com.hr_handlers.chat.entity.Chat;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface ChatCustomRepository {
 
     // 참여한 채팅 목록 조회
-    List<Chat> findByEmployeeId(Long employeeId);
+    Page<ChatResponseDto> findByEmployeeId(Long employeeId, String keyword, Pageable pageable);
 
     // Chat 객체 찾기
     Chat findByChatId(Long chatRoomId, Long employeeId);
