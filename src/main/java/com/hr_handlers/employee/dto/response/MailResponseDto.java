@@ -9,8 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class MailDto {
-
+public class MailResponseDto {
     @NotBlank
     @Email(message = "유효한 이메일 주소를 입력해주세요.")
     private String address;

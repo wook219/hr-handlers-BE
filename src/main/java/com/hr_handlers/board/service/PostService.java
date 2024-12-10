@@ -6,7 +6,7 @@ import com.hr_handlers.board.entity.HashTag;
 import com.hr_handlers.board.enums.PostType;
 import com.hr_handlers.board.repository.PostRepository;
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
@@ -34,7 +34,7 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
 
     private final S3Service s3Service;
 

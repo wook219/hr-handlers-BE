@@ -22,8 +22,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
-// JWT 인증 필터 : 로그인 필터
-@Slf4j(topic = "인증 및 Jwt 발급")
+@Slf4j(topic = "JWT 인증 필터 : 로그인 필터 및 Jwt 발급")
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 

@@ -1,9 +1,9 @@
 package com.hr_handlers.admin.service;
 
-import com.hr_handlers.admin.dto.employee.response.AdminDeptResponseDto;
+import com.hr_handlers.admin.dto.employee.response.AdminDepartmentResponseDto;
+import com.hr_handlers.admin.repository.employee.AdminDepartmentRepository;
 import com.hr_handlers.employee.entity.Department;
-import com.hr_handlers.employee.mapper.EmpMapper;
-import com.hr_handlers.employee.repository.DeptRepository;
+import com.hr_handlers.employee.mapper.EmployeeMapper;
 import com.hr_handlers.global.dto.SearchRequestDto;
 import com.hr_handlers.global.dto.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
 @RequiredArgsConstructor
-public class AdminDeptService {
+public class AdminDepartmentService {
 
-    private final DeptRepository deptRepository;
+    private final AdminDepartmentRepository deptRepository;
 
     // 부서 등록
     public SuccessResponse<String> createDepartment(@RequestParam String deptName) {
@@ -32,10 +32,10 @@ public class AdminDeptService {
     }
 
     // 부서 전체 조회
-    public SuccessResponse<Page<AdminDeptResponseDto>> getAllDept(SearchRequestDto requestDto) {
+    public SuccessResponse<Page<AdminDepartmentResponseDto>> getAllDept(SearchRequestDto requestDto) {
         Page<Department> departments = deptRepository.findDeptByName(requestDto);
 
-        return SuccessResponse.of("부서 조회 성공", departments.map(EmpMapper::toDeptListResponseDto));
+        return SuccessResponse.of("부서 조회 성공", departments.map(EmployeeMapper::toDeptListResponseDto));
     }
 
     // 부서 수정

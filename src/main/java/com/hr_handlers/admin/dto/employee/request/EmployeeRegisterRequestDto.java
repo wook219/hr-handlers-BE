@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmpRegisterDto {
+public class EmployeeRegisterRequestDto {
 
     @NotBlank(message = "사원 번호는 필수입니다.")
     private String empNo;

@@ -2,16 +2,7 @@ package com.hr_handlers.chat.controller;
 
 import com.hr_handlers.chat.dto.ChatMessageRequestDto;
 import com.hr_handlers.chat.dto.ChatMessageResponseDto;
-import com.hr_handlers.chat.entity.Chat;
 import com.hr_handlers.chat.service.ChatMessageService;
-import com.hr_handlers.employee.service.EmpService;
-import com.hr_handlers.global.exception.ErrorResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
