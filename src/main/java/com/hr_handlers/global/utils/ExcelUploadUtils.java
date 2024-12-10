@@ -120,20 +120,21 @@ public class ExcelUploadUtils implements ExcelUtilMethodFactory {
         highlightStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         CellStyle midSumStyle = workbook.createCellStyle();
-        midSumStyle.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+        midSumStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
         midSumStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         CellStyle totalSumStyle = workbook.createCellStyle();
-        totalSumStyle.setFillForegroundColor(IndexedColors.LAVENDER.getIndex());
+        totalSumStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
         totalSumStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         CellStyle teamSumStyle = workbook.createCellStyle();
-        teamSumStyle.setFillForegroundColor(IndexedColors.CORNFLOWER_BLUE.getIndex());
+        teamSumStyle.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
         teamSumStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         CellStyle grandTotalStyle = workbook.createCellStyle();
-        grandTotalStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.getIndex());
+        grandTotalStyle.setFillForegroundColor(IndexedColors.LIGHT_ORANGE.getIndex());
         grandTotalStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
 
         for (T datum : data) {
             Row row = sheet.createRow(rowIdx);
@@ -163,10 +164,25 @@ public class ExcelUploadUtils implements ExcelUtilMethodFactory {
 
             if (currentRowStyle != null) {
                 for (int i = 0; i < row.getPhysicalNumberOfCells(); i++) {
-                    row.getCell(i).setCellStyle(currentRowStyle); // 색상 적용
+
+                    CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+                    cellStyle.cloneStyleFrom(currentRowStyle); // 기존 스타일 복사
+
+                    if (i == 0) {
+                        cellStyle.setBorderLeft(BorderStyle.MEDIUM);
+                        cellStyle.setBorderTop(BorderStyle.MEDIUM);
+                        cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+                    } else if (i == row.getPhysicalNumberOfCells() - 1) {
+                        cellStyle.setBorderRight(BorderStyle.MEDIUM);
+                        cellStyle.setBorderTop(BorderStyle.MEDIUM);
+                        cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+                    } else {
+                        cellStyle.setBorderTop(BorderStyle.MEDIUM);
+                        cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+                    }
+                    row.getCell(i).setCellStyle(cellStyle); // 색상 적용
                 }
             }
-
             rowIdx++;
         }
     }
