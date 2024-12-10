@@ -10,8 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-// JWT 생성 및 검증
-@Slf4j(topic = "JwtUtil")
+@Slf4j(topic = "JWT 생성 및 검증")
 @Component
 public class JwtUtil {
 

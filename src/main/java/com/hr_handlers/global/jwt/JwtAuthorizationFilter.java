@@ -18,8 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-// JWT 인가 필터
-@Slf4j(topic = "인가")
+@Slf4j(topic = "JWT 인가 필터")
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 

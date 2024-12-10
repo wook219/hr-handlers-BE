@@ -6,7 +6,7 @@ import com.hr_handlers.attendance.entity.AttendanceStatus;
 import com.hr_handlers.attendance.mapper.AttendanceMapper;
 import com.hr_handlers.attendance.repository.AttendanceRepository;
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final AttendanceMapper attendanceMapper;
 
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
 
 
     public SuccessResponse<EmployeeAttendanceResponseDto> getAttendance(String empNo){

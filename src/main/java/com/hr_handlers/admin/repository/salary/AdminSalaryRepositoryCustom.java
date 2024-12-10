@@ -1,4 +1,4 @@
-package com.hr_handlers.admin.repository;
+package com.hr_handlers.admin.repository.salary;
 
 import com.hr_handlers.admin.dto.salary.request.AdminSalaryExcelDownloadRequestDto;
 import com.hr_handlers.admin.dto.salary.request.AdminSalarySearchRequestDto;
