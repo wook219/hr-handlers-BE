@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.hr_handlers.attendance.entity.QAttendance.attendance;
@@ -31,19 +32,24 @@ public class AttendanceCustomRepositoryImpl implements AttendanceCustomRepositor
 
     @Override
     public EmployeeAttendanceResponseDto findAttendance(String empNo) {
+
+        // 오늘 날짜의 범위를 가져옵니다
+        LocalDateTime startOfDay = LocalDateTime.now().with(LocalTime.MIN);
+        LocalDateTime endOfDay = LocalDateTime.now().with(LocalTime.MAX);
+
         return jpaQueryFactory
                 .select(Projections.constructor(EmployeeAttendanceResponseDto.class,
-                attendance.id,
-                attendance.status,
-                attendance.checkInTime,
-                attendance.checkOutTime,
-                employee.id))
+                        attendance.id,
+                        attendance.status,
+                        attendance.checkInTime,
+                        attendance.checkOutTime,
+                        attendance.employee.id))
                 .from(attendance)
                 .join(attendance.employee, employee)
-                .where(employee.empNo.eq(empNo)
-                        .and(attendance.checkInTime.between(
-                                DateUtils.getStartOfDay(LocalDateTime.now()),
-                                DateUtils.getEndOfDay(LocalDateTime.now()))))
+                .where(
+                        employee.empNo.eq(empNo),
+                        attendance.checkInTime.between(startOfDay, endOfDay)
+                )
                 .fetchOne();
     }
 
