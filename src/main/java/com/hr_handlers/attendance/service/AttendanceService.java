@@ -60,17 +60,9 @@ public class AttendanceService {
 
         Attendance attendance = Attendance.builder()
                 .status(AttendanceStatus.WORK)
-                .checkInTime(Timestamp.valueOf(LocalDateTime.now()))
+                .checkInTime(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                 .employee(employee)
                 .build();
-
-        System.out.println("LocalDateTime.now() = " + LocalDateTime.now());
-
-        System.out.println("LocalDateTime.now(ZoneId.of(\"Asia/Seoul\")) = " + LocalDateTime.now(ZoneId.of("Asia/Seoul")));
-
-        System.out.println("Timestamp.valueOf(LocalDateTime.now()) = " + Timestamp.valueOf(LocalDateTime.now()));
-
-        System.out.println("checkIn Time = " + attendance.getCheckInTime());
 
         attendanceRepository.save(attendance);
 
@@ -87,8 +79,6 @@ public class AttendanceService {
         attendance.modify();
 
         attendanceRepository.save(attendance);
-
-        System.out.println("checkout Time = " + attendance.getCheckInTime());
 
         return SuccessResponse.of(
                 "퇴근 성공",
