@@ -55,7 +55,7 @@ public class AdminSalaryController {
     })
     @PostMapping("search")
     public SuccessResponse<Page<AdminSalaryResponseDto>> searchSalary(
-            @PageableDefault(page = 0, size = 15)
+            @PageableDefault(page = 0, size = 10)
             @SortDefault.SortDefaults({
                     @SortDefault(sort = "salary.payDate", direction = Sort.Direction.ASC),
                     @SortDefault(sort = "employee.position", direction = Sort.Direction.ASC)
