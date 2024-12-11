@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
@@ -63,6 +64,14 @@ public class AttendanceService {
                 .employee(employee)
                 .build();
 
+        System.out.println("LocalDateTime.now() = " + LocalDateTime.now());
+
+        System.out.println("LocalDateTime.now(ZoneId.of(\"Asia/Seoul\")) = " + LocalDateTime.now(ZoneId.of("Asia/Seoul")));
+
+        System.out.println("Timestamp.valueOf(LocalDateTime.now()) = " + Timestamp.valueOf(LocalDateTime.now()));
+
+        System.out.println("checkIn Time = " + attendance.getCheckInTime());
+
         attendanceRepository.save(attendance);
 
         return SuccessResponse.of(
@@ -78,6 +87,8 @@ public class AttendanceService {
         attendance.modify();
 
         attendanceRepository.save(attendance);
+
+        System.out.println("checkout Time = " + attendance.getCheckInTime());
 
         return SuccessResponse.of(
                 "퇴근 성공",
