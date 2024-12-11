@@ -54,7 +54,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // stomp 접속 주소 url = ws://localhost:8080/ws
         registry.addEndpoint("/ws") // socket 연결 엔드포인트
-                .setAllowedOrigins("http://localhost:3000") // CORS 허용범위
+                .setAllowedOrigins("http://localhost:3000", "http://34.47.90.224:3000") // CORS 허용범위
                 .withSockJS(); // 브라우저 호환성을 위해
     }
 
