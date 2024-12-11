@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -26,9 +28,11 @@ public class Attendance {
     @Column(name = "status", nullable = false)
     private AttendanceStatus status;
 
+    @CreationTimestamp
     @Column(name = "check_in_time", nullable = false)
     private Timestamp checkInTime;
 
+    @UpdateTimestamp
     @Column(name = "check_out_time")
     private Timestamp checkOutTime;
 

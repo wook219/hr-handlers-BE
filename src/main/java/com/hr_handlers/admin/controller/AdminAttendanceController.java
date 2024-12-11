@@ -4,6 +4,8 @@ import com.hr_handlers.admin.dto.attendance.AdminAttendanceResponseDto;
 import com.hr_handlers.admin.dto.attendance.AdminAttendanceSearchDto;
 import com.hr_handlers.admin.service.AdminAttendanceService;
 import com.hr_handlers.global.dto.SuccessResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,12 +25,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("admin/attendance")
 @PreAuthorize("hasRole('ADMIN')")
+@Tag(name = "어드민 근태관리", description = "어드민 근태관리 API")
 public class AdminAttendanceController {
 
     private final AdminAttendanceService adminAttendanceService;
 
     // 전 사원 출퇴근 조회
     @GetMapping
+    @Operation(summary = "모든 사원 출퇴근 기록 조회", description = "모든 사원 출퇴근 기록 조회")
     public SuccessResponse<Page<AdminAttendanceResponseDto>> getAdminAttendance(
             @RequestParam(required = false, value = "checkInTime")
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime checkInTime,
