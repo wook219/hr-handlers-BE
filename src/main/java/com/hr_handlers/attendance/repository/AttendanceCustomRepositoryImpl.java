@@ -94,18 +94,18 @@ public class AttendanceCustomRepositoryImpl implements AttendanceCustomRepositor
     private BooleanExpression dateBetween(LocalDateTime checkInTime, LocalDateTime checkOutTime) {
         return checkInTime != null && checkOutTime != null ?
                 attendance.checkInTime.between(
-                        Timestamp.valueOf(checkInTime),
-                        Timestamp.valueOf(checkOutTime)
+                        checkInTime,
+                        checkOutTime
                 ) : null;
     }
 
     private static class DateUtils {
-        public static Timestamp getStartOfDay(LocalDateTime dateTime) {
-            return Timestamp.valueOf(dateTime.toLocalDate().atStartOfDay());
+        public static LocalDateTime getStartOfDay(LocalDateTime dateTime) {
+            return dateTime.toLocalDate().atStartOfDay();
         }
 
-        public static Timestamp getEndOfDay(LocalDateTime dateTime) {
-            return Timestamp.valueOf(dateTime.toLocalDate().atTime(23, 59, 59));
+        public static LocalDateTime getEndOfDay(LocalDateTime dateTime) {
+            return dateTime.toLocalDate().atTime(23, 59, 59);
         }
     }
 }
