@@ -82,8 +82,8 @@ public class AdminAttendanceCustomRepositoryImpl implements AdminAttendanceCusto
         // 날짜 조건
         if (searchDto.getCheckInTime() != null && searchDto.getCheckOutTime() != null) {
             whereCondition.and(attendance.checkInTime.between(
-                    Timestamp.valueOf(searchDto.getCheckInTime()),
-                    Timestamp.valueOf(searchDto.getCheckOutTime())
+                    searchDto.getCheckInTime(),
+                    searchDto.getCheckOutTime()
             ));
         }
 
@@ -102,6 +102,4 @@ public class AdminAttendanceCustomRepositoryImpl implements AdminAttendanceCusto
             whereCondition.and(employee.name.contains(searchDto.getName()));
         }
     }
-
-
 }
