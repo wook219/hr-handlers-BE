@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -17,9 +18,9 @@ public class CheckOutResponseDto {
 
     private AttendanceStatus status;
 
-    private Timestamp checkInTime;
+    private LocalDateTime checkInTime;
 
-    private Timestamp checkOutTime;
+    private LocalDateTime checkOutTime;
 
     private Long employeeId;
 }

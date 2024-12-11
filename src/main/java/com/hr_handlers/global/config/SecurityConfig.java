@@ -70,7 +70,7 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/reissue","/api/s3/**").permitAll()
 
                         // Swagger 경로 접근
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**").hasRole("ADMIN")
+                        .requestMatchers("/v3/api-docs/", "/swagger-ui/", "/swagger-ui.html", "/swagger-resources/**").permitAll()
 
                         // 관리자 접근
                         .requestMatchers("/admin/**").hasRole("ADMIN")
