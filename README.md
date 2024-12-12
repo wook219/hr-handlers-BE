@@ -51,7 +51,7 @@
 ---
 
 ### ERD
-![ERD](https://github.com/user-attachments/assets/ef15cc51-089b-45a7-b704-e8ffe7cad939)
+![인사잘해_ERD_](/uploads/02993122af3cce8752d894a98631465c/인사잘해_ERD_.png)
 
 ---
 
