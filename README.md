@@ -62,7 +62,7 @@
 
 ### 📌주요 기능
 ##### 홈
-![홈](https://media.discordapp.net/attachments/1303967846027755560/1316662809462833182/image.png?ex=675bdd4c&is=675a8bcc&hm=6bdf6f13d701927cd4e0a290ec67f2e83d501f35f4d890c57e928475e4094b4b&=&format=webp&quality=lossless&width=883&height=365)
+![홈](https://media.discordapp.net/attachments/1316699693832601613/1316700008166461450/image.png?ex=675bfff1&is=675aae71&hm=0adaa3ea23a303901df6b38866b1fa0d5df0b9c23d42898568160dcf27bfd0d1&=&format=webp&quality=lossless&width=883&height=361)
 
 ##### 사원
 ![사원1](https://media.discordapp.net/attachments/1303967846027755560/1316653551958884372/2024-12-12_3.31.04.png?ex=675bd4ad&is=675a832d&hm=bb4c6d2416ea6ea8fed568d12de1c97d7e284c0b01fe84127940037f9eda6129&=&format=webp&quality=lossless&width=883&height=378)
