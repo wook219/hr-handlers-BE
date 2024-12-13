@@ -10,6 +10,8 @@ import com.hr_handlers.employee.entity.Department;
 import com.hr_handlers.employee.entity.Employee;
 import com.hr_handlers.employee.mapper.EmployeeMapper;
 import com.hr_handlers.global.dto.SuccessResponse;
+import com.hr_handlers.global.exception.ErrorCode;
+import com.hr_handlers.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,7 +31,7 @@ public class AdminEmployeeService {
     public SuccessResponse<String> register(EmployeeRegisterRequestDto registerRequest){
 
         Department department = deptRepository.findByDeptName(registerRequest.getDeptName())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 부서입니다."));
+                .orElseThrow(() -> new GlobalException(ErrorCode.DEPARTMENT_NOT_FOUND));
 
         empRepository.save(EmployeeMapper.toEmployeeEntity(registerRequest,
                 bCryptPasswordEncoder.encode(registerRequest.getPassword()),

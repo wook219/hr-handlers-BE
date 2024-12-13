@@ -20,7 +20,7 @@ public class AdminDepartmentService {
     // 부서 등록
     public SuccessResponse<String> createDepartment(@RequestParam String deptName) {
         if (deptRepository.existsByDeptName(deptName)) {
-            throw new IllegalArgumentException("이미 존재하는 부서명입니다.");
+            throw new IllegalArgumentException("이미 존재하는 부서명입니다."); // TODO: ERROR CODE 생성
         }
 
         Department department = Department.builder()
