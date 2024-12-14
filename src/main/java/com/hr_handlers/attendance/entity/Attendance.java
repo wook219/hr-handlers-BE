@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Getter
@@ -27,16 +28,17 @@ public class Attendance {
     private AttendanceStatus status;
 
     @Column(name = "check_in_time", nullable = false)
-    private Timestamp checkInTime;
+    private LocalDateTime checkInTime;
 
     @Column(name = "check_out_time")
-    private Timestamp checkOutTime;
+    private LocalDateTime checkOutTime;
 
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
     private Employee employee;
 
     public void modify(){
-        this.checkOutTime = Timestamp.valueOf(LocalDateTime.now());
+        this.checkOutTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        this.status = AttendanceStatus.LEAVE;
     }
 }

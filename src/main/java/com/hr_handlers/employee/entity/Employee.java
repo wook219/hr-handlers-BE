@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Employee extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,7 +78,7 @@ public class Employee extends BaseTimeEntity {
     @JoinColumn(name = "department_id", nullable = true)
     private Department department;
 
-    // 비밀번호 업데이트 메서드
+    //  메서드
     public void updatePassword(String encryptedPassword) {
         this.password = encryptedPassword;
     }
@@ -87,7 +87,9 @@ public class Employee extends BaseTimeEntity {
         this.leaveBalance -= deductionDays;
     }
 
-    public void departmentUpdate(Department department) {
-        this.department = department;
+    public Employee changePassword(String newPassword) {
+        return this.toBuilder()
+                .password(newPassword)
+                .build();
     }
 }

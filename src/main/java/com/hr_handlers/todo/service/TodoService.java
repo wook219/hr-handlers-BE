@@ -1,7 +1,7 @@
 package com.hr_handlers.todo.service;
 
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
@@ -10,18 +10,14 @@ import com.hr_handlers.todo.entity.Todo;
 import com.hr_handlers.todo.mapper.TodoMapper;
 import com.hr_handlers.todo.repository.TodoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +26,14 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final TodoMapper todoMapper;
 
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
 
     // 모든 일정 조회
-    public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(String empNo,
-                                                                String start,
-                                                                String end){
+    public SuccessResponse<List<AllTodoResponseDto>> getAllTodo(
+            String empNo,
+            String start,
+            String end
+    ) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -57,6 +55,13 @@ public class TodoService {
         return SuccessResponse.of(
                 "일정 상세 조회 성공",
                 todoMapper.toTodoResponse(todo)
+        );
+    }
+
+    public SuccessResponse<List<TodoTodayResponseDto>> getTodayTodo(String empNo){
+        return SuccessResponse.of(
+                "오늘의 일정 조회 성공",
+                todoRepository.findTodayTodosByEmployeeId(empNo, LocalDateTime.now())
         );
     }
 

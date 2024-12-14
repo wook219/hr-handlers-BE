@@ -16,6 +16,8 @@ public class ApprovedVacationResponseDto {
     private String docNum;
     private String title;
     private Timestamp updatedAt;
+    private Timestamp startDate;
+    private Timestamp endDate;
     private Timestamp approvedAt;
     private VacationStatus status;
     private String approver;

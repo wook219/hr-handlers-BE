@@ -2,12 +2,14 @@ package com.hr_handlers.admin.repository.vacation;
 
 import com.hr_handlers.admin.dto.vacation.AdminVacationResponseDto;
 import com.hr_handlers.admin.dto.vacation.AdminVacationStatusResponseDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface AdminVacationCustomRepository {
 
-    List<AdminVacationResponseDto> findPendingVacations();
+    Page<AdminVacationResponseDto> findPendingVacations(Pageable pageable);
 
-    List<AdminVacationStatusResponseDto> findVacationStatusForAllEmployees();
+    Page<AdminVacationStatusResponseDto> findVacationStatusForAllEmployees(Pageable pageable);
 }

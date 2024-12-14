@@ -3,22 +3,26 @@ package com.hr_handlers.chat.repository;
 import com.hr_handlers.chat.dto.ChatInviteResponseDto;
 import com.hr_handlers.chat.dto.ChatResponseDto;
 import com.hr_handlers.chat.entity.Chat;
-import com.hr_handlers.chat.entity.ChatRoom;
 import com.hr_handlers.chat.entity.QChat;
 import com.hr_handlers.employee.entity.QDepartment;
 import com.hr_handlers.employee.entity.QEmployee;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.hr_handlers.chat.entity.QChat.chat;
+import static com.hr_handlers.chat.entity.QChatRoom.chatRoom;
 
 @Repository
 @AllArgsConstructor
@@ -30,13 +34,48 @@ public class ChatCustomRepositoryImpl implements ChatCustomRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<Chat> findByEmployeeId(Long employeeId) {
-        return jpaQueryFactory
-                .selectFrom(chat)
+    public Page<ChatResponseDto> findByEmployeeId(Long employeeId, String keyword, Pageable pageable) {
+
+        BooleanExpression condition = (keyword != null && !keyword.trim().isEmpty())
+                ? chat.chatRoom.title.containsIgnoreCase(keyword)
+                : null; // 전체 조회
+
+        List<ChatResponseDto> chatResponseDtos = jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                ChatResponseDto.class,
+                                chat.employee.id,
+                                chat.chatRoom.id,
+                                chat.chatRoom.title,
+                                chat.chatRoom.isSecret,
+                                chat.employee.empNo,
+                                chat.employee.name,
+                                chat.employee.position,
+                                chat.employee.department.deptName
+                                )
+                )
+                .from(chat)
+                .join(chat.chatRoom)
+                .join(chat.employee)
                 .where(
                         chat.employee.id.eq(employeeId)
+                                .and(condition)
                 )
+                .orderBy(chat.chatRoom.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        Long total = jpaQueryFactory
+                .select(chat.count())
+                .from(chat)
+                .where(
+                        chat.employee.id.eq(employeeId)
+                                .and(condition)
+                )
+                .fetchOne();
+
+        return new PageImpl<>(chatResponseDtos, pageable, total);
     }
 
     @Override

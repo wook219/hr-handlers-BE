@@ -5,6 +5,7 @@ import com.hr_handlers.global.exception.GlobalException;
 import com.hr_handlers.todo.dto.AllTodoResponseDto;
 import com.hr_handlers.todo.dto.TodoModifyRequestDto;
 import com.hr_handlers.todo.dto.TodoResponseDto;
+import com.hr_handlers.todo.dto.TodoTodayResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -12,8 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.hr_handlers.employee.entity.QEmployee.employee;
 import static com.hr_handlers.todo.entity.QTodo.todo;
 
 @Repository
@@ -27,8 +30,8 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
     public List<AllTodoResponseDto> findAllTodoByEmployeeId(
             String empNo,
             Timestamp start,
-            Timestamp end)
-    {
+            Timestamp end
+    ) {
         return jpaQueryFactory
                 .select(
                         Projections.constructor(
@@ -95,5 +98,40 @@ public class TodoCustomRepositoryImpl implements TodoCustomRepository{
                 .from(todo)
                 .where(todo.id.eq(id))
                 .fetchOne();
+    }
+
+    @Override
+    public List<TodoTodayResponseDto> findTodayTodosByEmployeeId(String empNo, LocalDateTime today) {
+        LocalDateTime startOfDay = today.toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = today.toLocalDate().atTime(23, 59, 59);
+
+        return jpaQueryFactory
+                .select(Projections.constructor(TodoTodayResponseDto.class,
+                        todo.id,
+                        todo.title,
+                        todo.startTime,
+                        todo.endTime
+                ))
+                .from(todo)
+                .join(todo.employee, employee)
+                .where(
+                        employee.empNo.eq(empNo)
+                                .and(
+                                        todo.startTime.between(
+                                                        Timestamp.valueOf(startOfDay),
+                                                        Timestamp.valueOf(endOfDay)
+                                                )
+                                                .or(todo.endTime.between(
+                                                        Timestamp.valueOf(startOfDay),
+                                                        Timestamp.valueOf(endOfDay)
+                                                ))
+                                                .or(
+                                                        todo.startTime.before(Timestamp.valueOf(startOfDay))
+                                                                .and(todo.endTime.after(Timestamp.valueOf(endOfDay)))
+                                                )
+                                )
+                )
+                .orderBy(todo.startTime.asc())
+                .fetch();
     }
 }
