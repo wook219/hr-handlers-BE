@@ -6,10 +6,10 @@ import com.hr_handlers.admin.dto.salary.request.excel.DepartmentYearSalaryExcelR
 import com.hr_handlers.admin.dto.salary.request.excel.IndividualMonthSalaryExcelRequestDto;
 import com.hr_handlers.admin.dto.salary.request.excel.IndividualYearSalaryExcelRequestDto;
 import com.hr_handlers.admin.dto.salary.response.AdminSalaryResponseDto;
-import com.hr_handlers.admin.repository.AdminSalaryRepository;
-import com.hr_handlers.admin.repository.mapper.AdminSalaryMapper;
+import com.hr_handlers.admin.repository.salary.AdminSalaryRepository;
+import com.hr_handlers.admin.mapper.AdminSalaryMapper;
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class AdminSalaryService {
 
     private final AdminSalaryRepository adminSalaryRepository;
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
     private final ExcelUploadUtils excelUploadUtils;
 
     private final AdminSalaryMapper adminSalaryMapper;

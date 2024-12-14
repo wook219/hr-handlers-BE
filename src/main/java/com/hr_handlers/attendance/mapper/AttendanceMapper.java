@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", uses = {}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring")
 public interface AttendanceMapper {
 
     @Mapping(source = "employee.id", target = "employeeId")

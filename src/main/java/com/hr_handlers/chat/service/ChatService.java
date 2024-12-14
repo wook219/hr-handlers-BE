@@ -3,22 +3,22 @@ package com.hr_handlers.chat.service;
 import com.hr_handlers.chat.dto.ChatInviteResponseDto;
 import com.hr_handlers.chat.dto.ChatResponseDto;
 import com.hr_handlers.chat.entity.Chat;
-import com.hr_handlers.chat.entity.ChatId;
 import com.hr_handlers.chat.entity.ChatRoom;
 import com.hr_handlers.chat.mapper.ChatMapper;
 import com.hr_handlers.chat.repository.ChatMessageRepository;
 import com.hr_handlers.chat.repository.ChatRepository;
 import com.hr_handlers.chat.repository.ChatRoomRepository;
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,7 +28,7 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
     private final ChatMapper chatMapper;
 
     // 채팅 참여 추가 -> ChatRoom에서 추가를 받을 것
@@ -40,19 +40,12 @@ public class ChatService {
     }
     
     // 참여한 채팅 목록 조회
-    public SuccessResponse<List<ChatResponseDto>> getChats(String empNo) {
+    public SuccessResponse<Page<ChatResponseDto>> getChats(String empNo, String keyword, Pageable pageable) {
         Employee employee = empRepository.findByEmpNo(empNo)
                 .orElseThrow(() -> new GlobalException(ErrorCode.EMPLOYEE_NOT_FOUND));
-        List<Chat> chats = chatRepository.findByEmployeeId(employee.getId());
-        List<ChatResponseDto> chatResponseDtos = new ArrayList<>();
-
-        for (Chat chat : chats) {
-            chatResponseDtos.add(chatMapper.toChatResponseDto(chat));
-        }
-
         return SuccessResponse.of(
                 "참여한 채팅 목록 조회에 성공했습니다.",
-                chatResponseDtos
+                chatRepository.findByEmployeeId(employee.getId(), keyword, pageable)
         );
     }
 
@@ -69,6 +62,14 @@ public class ChatService {
         return SuccessResponse.of(
                 "채팅방 초대 목록 조회에 성공했습니다.",
                 chatRepository.findEmployeesNotInChat(chatRoomId, keyword)
+        );
+    }
+
+    // 채팅방 참여 인원 수 조회
+    public SuccessResponse<Long> getJoinedEmployeesCount(Long chatRoomId) {
+        return SuccessResponse.of(
+                "채팅방 인원 수 조회에 성공했습니다.",
+                chatRepository.countChatByChatRoomId(chatRoomId)
         );
     }
 

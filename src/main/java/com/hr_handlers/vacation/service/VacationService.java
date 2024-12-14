@@ -1,25 +1,24 @@
 package com.hr_handlers.vacation.service;
 
 import com.hr_handlers.employee.entity.Employee;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
 import com.hr_handlers.vacation.dto.*;
 import com.hr_handlers.vacation.entity.Vacation;
 import com.hr_handlers.vacation.entity.VacationStatus;
-import com.hr_handlers.vacation.entity.VacationType;
 import com.hr_handlers.vacation.mapper.VacationMapper;
 import com.hr_handlers.vacation.repository.VacationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class VacationService {
     private final VacationMapper vacationMapper;
     private final VacationHandler vacationHandler;
 
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
 
     //휴가 상세 조회
     public SuccessResponse<VacationDetailResponseDto> getVacationDetail(Long id){
@@ -48,11 +47,10 @@ public class VacationService {
     }
 
     // 휴가 승인 확정 목록 조회
-    public SuccessResponse<List<ApprovedVacationResponseDto>> getApprovedVacations(String empNo){
-
+    public SuccessResponse<Page<ApprovedVacationResponseDto>> getApprovedVacations(String empNo, Pageable pageable) {
         return SuccessResponse.of(
                 "승인 확정 휴가 목록 조회 성공",
-                vacationRepository.findApprovedVacations(empNo));
+                vacationRepository.findApprovedVacations(empNo, pageable));
     }
 
     // 휴가 등록

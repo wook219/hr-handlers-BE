@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,7 +20,7 @@ public class CheckInResponseDto {
 
     private AttendanceStatus status;
 
-    private Timestamp checkInTime;
+    private LocalDateTime checkInTime;
 
     private Long employeeId;
 }

@@ -3,7 +3,7 @@ package com.hr_handlers.admin.service;
 import com.hr_handlers.admin.dto.vacation.AdminVacationResponseDto;
 import com.hr_handlers.admin.dto.vacation.AdminVacationStatusResponseDto;
 import com.hr_handlers.admin.repository.vacation.AdminVacationRepository;
-import com.hr_handlers.employee.repository.EmpRepository;
+import com.hr_handlers.employee.repository.EmployeeRepository;
 import com.hr_handlers.global.dto.SuccessResponse;
 import com.hr_handlers.global.exception.ErrorCode;
 import com.hr_handlers.global.exception.GlobalException;
@@ -11,13 +11,12 @@ import com.hr_handlers.vacation.dto.VacationResponseDto;
 import com.hr_handlers.vacation.entity.Vacation;
 import com.hr_handlers.vacation.entity.VacationType;
 import com.hr_handlers.vacation.mapper.VacationMapper;
-import com.hr_handlers.vacation.repository.VacationRepository;
 import com.hr_handlers.vacation.service.VacationHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,23 +24,23 @@ public class AdminVacationService {
 
     private final AdminVacationRepository adminVacationRepository;
     private final VacationHandler vacationHandler;
-    private final EmpRepository empRepository;
+    private final EmployeeRepository empRepository;
 
     private final VacationMapper vacationMapper;
 
-    // 승인 대기 휴가 목록 조회
-    public SuccessResponse<List<AdminVacationResponseDto>> getPendingVacations(){
+    // 승인 대기 휴가 목록 페이징 조회
+    public SuccessResponse<Page<AdminVacationResponseDto>> getPendingVacations(Pageable pageable) {
         return SuccessResponse.of(
-                    "승인 대기 휴가 목록 조회 성공",
-                    adminVacationRepository.findPendingVacations()
-                );
+                "승인 대기 휴가 목록 조회 성공",
+                adminVacationRepository.findPendingVacations(pageable)
+        );
     }
 
-    // 휴가 보유 현황 조회
-    public SuccessResponse<List<AdminVacationStatusResponseDto>> getVacationStatus(){
+    // 휴가 보유 현황 페이징 조회
+    public SuccessResponse<Page<AdminVacationStatusResponseDto>> getVacationStatus(Pageable pageable) {
         return SuccessResponse.of(
                 "휴가 보유 현황 조회 성공",
-                adminVacationRepository.findVacationStatusForAllEmployees()
+                adminVacationRepository.findVacationStatusForAllEmployees(pageable)
         );
     }
 

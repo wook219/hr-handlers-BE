@@ -20,6 +20,8 @@ public class PendingVacationResponseDto {
     private String title;
     private VacationType type;
     private Timestamp createdAt;
+    private Timestamp startDate;
+    private Timestamp endDate;
     private Long employeeId;
 }
 
