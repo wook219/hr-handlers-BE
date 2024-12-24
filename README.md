@@ -51,39 +51,38 @@
 ---
 
 ### ERD
-![인사잘해_ERD_](/uploads/02993122af3cce8752d894a98631465c/인사잘해_ERD_.png)
+![image](https://github.com/user-attachments/assets/c3b5e352-7591-4778-a042-db73e43aef90)
 
 ---
 
 ### 📌주요 기능
 ##### 홈
-![hr-handlers_10](/uploads/5df10ef9a1d9656df9426fd17570c0f0/hr-handlers_10.png)
+![image](https://github.com/user-attachments/assets/868a609d-e744-48ad-8adb-5ee42b6a1ebd)
 
 ##### 사원
-![hr-handlers_11](/uploads/24f7d7faff86bc1816fbef7bb70a9905/hr-handlers_11.png)
-![hr-handlers_12](/uploads/f44ad89dc51e191336aec4eb9b41c131/hr-handlers_12.png)
+![image](https://github.com/user-attachments/assets/b2149608-9bb1-4bca-8a50-7066808f4177)
+![image](https://github.com/user-attachments/assets/90ffbd4d-cea5-422e-8c15-c7cb2dc79feb)
 
 ##### 근태
-![hr-handlers_14](/uploads/044ffe42a4dca1675c6f85818f5b5ce4/hr-handlers_14.png)
+![image](https://github.com/user-attachments/assets/96b65b87-e90b-48b4-b256-1007a78d12fa)
 
 ##### 일정
-![hr-handlers_16](/uploads/c12f644c1ba6dd5439d154ccae9dfe4e/hr-handlers_16.png)
+![image](https://github.com/user-attachments/assets/6d90abcc-bda4-4761-a308-28b2dd5d747a)
 
 ##### 휴가
-![hr-handlers_15](/uploads/5ce354b1da20c284867ecb266f3b4d5c/hr-handlers_15.png)
+![image](https://github.com/user-attachments/assets/cdd28d10-149e-436b-afe5-19bc809bd881)
 
 ##### 게시판
-![hr-handlers_17](/uploads/b4f1099f094ed07bbc68cf6336c4c5c4/hr-handlers_17.png)
-![hr-handlers_18](/uploads/15d2cdec2928799fd5b49cef752dfd33/hr-handlers_18.png)
-![hr-handlers_19](/uploads/0de69facb6f0db972a68ae06023d2ca5/hr-handlers_19.png)
+![image](https://github.com/user-attachments/assets/68044344-9c15-4121-a0c8-0f586ac588dc)
+![image](https://github.com/user-attachments/assets/0fe04880-0a20-40eb-aeb0-050066edc17f)
+![image](https://github.com/user-attachments/assets/51349c9d-2cdf-4e7f-a9d8-3236c63d0a36)
 
 ##### 메신저
-![hr-handlers_13](/uploads/6412eb338426f22c78a915231904e039/hr-handlers_13.png)
+![image](https://github.com/user-attachments/assets/ecd52cd4-b4c4-45b2-9500-4ec87f855016)
 
 ##### 급여
-![hr-handlers_20](/uploads/52685a2fed9bcdc8c95bbf62436d8e91/hr-handlers_20.png)
-![hr-handlers_21](/uploads/2dccde247ddfb746f6f715c4c73aae24/hr-handlers_21.png)
-
+![image](https://github.com/user-attachments/assets/f12cb504-4483-46db-954c-292af0d9d071)
+![image](https://github.com/user-attachments/assets/426406ea-b09c-459b-8809-105d704df95a)
 ---
 
 ### 🚨트러블슈팅
